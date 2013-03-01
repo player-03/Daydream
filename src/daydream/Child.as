@@ -1,0 +1,106 @@
+package daydream {
+	import org.flixel.FlxG;
+	import org.flixel.FlxSprite;
+	
+	public class Child extends FlxSprite {
+		private static const RUN_SPEED:Number = 240;
+		private static const RUN_ACCEL:Number = RUN_SPEED * 3;
+		private static const X_DRAG:Number = 230;
+		private static const JUMP_STRENGTH:Number = 250;
+		private static const JUMP_LENGTH:Number = 1;
+		private static const JUMP_GRAVITY:Number = 300;
+		private static const FALL_SPEED:Number = 300;
+		private static const GRAVITY:Number = 470;
+		
+		[Embed(source = "../../lib/Child.png")] protected var ImgChild:Class;
+		
+		private var deadTime:Number = 0;
+		private var jumpTime:Number = 0;
+		private var usedMidairJump:Boolean = true;
+		
+		public function Child(x:Number, y:Number) {
+			super(x, y);
+			
+			loadGraphic(ImgChild, true, false /*true*/, 50, 60);
+			addAnimation("idle", [0, 1], 2);
+			addAnimation("run", [4, 5, 6, 7, 8, 9, 10, 11], 20);
+			addAnimation("jump", [12, 13, 14], 12, false);
+			addAnimation("midair jump", [20, 21, 22], 12, false);
+			addAnimation("fall", [15]);
+			addAnimation("attack", [16, 17, 18, 19], 20, false);
+			
+			acceleration.y = GRAVITY;
+			drag.x = X_DRAG;
+			maxVelocity.x = RUN_SPEED;
+			maxVelocity.y = FALL_SPEED;
+		}
+		
+		public override function update():void {
+			if(y > FlxG.worldBounds.bottom) {
+				deadTime += FlxG.elapsed;
+				if(deadTime > 0.25) {
+					FlxG.resetState();
+				}
+				return;
+			}
+			
+			if(FlxG.keys.LEFT) {
+				if(!FlxG.keys.RIGHT) {
+					facing = LEFT;
+					acceleration.x = -RUN_ACCEL;
+				} else {
+					acceleration.x = 0;
+				}
+			} else if(FlxG.keys.RIGHT) {
+				facing = RIGHT;
+				acceleration.x = RUN_ACCEL;
+			} else {
+				acceleration.x = 0;
+			}
+			
+			var onGround:Boolean = isTouching(FLOOR);
+			if(onGround) {
+				usedMidairJump = false;
+			}
+			
+			if(!usedMidairJump) {
+				if(FlxG.keys.justPressed("UP") || FlxG.keys.justPressed("SPACE")) {
+					velocity.y = -JUMP_STRENGTH;
+					jumpTime = 0;
+					
+					if(onGround) {
+						onGround = false;
+						play("jump");
+					} else {
+						usedMidairJump = true;
+						play("midair jump");
+					}
+				}
+			}
+			
+			if(jumpTime < JUMP_LENGTH) {
+				if(FlxG.keys.UP || FlxG.keys.SPACE) {
+					jumpTime += FlxG.elapsed;
+					acceleration.y = JUMP_GRAVITY;
+				} else {
+					jumpTime = JUMP_LENGTH;
+					acceleration.y = GRAVITY;
+				}
+			} else {
+				acceleration.y = GRAVITY;
+			}
+			
+			if(onGround) {
+				if(velocity.x == 0) {
+					play("idle");
+				} else {
+					play("run");
+				}
+			} else {
+				if(velocity.y >= 0) {
+					play("fall");
+				}
+			}
+		}
+	}
+}
