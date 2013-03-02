@@ -5,6 +5,7 @@ package daydream.game {
 	import org.flixel.FlxG;
 	import org.flixel.FlxGroup;
 	import org.flixel.FlxObject;
+	import org.flixel.FlxRect;
 	import org.flixel.FlxState;
 	
 	public class GameState extends FlxState {
@@ -37,7 +38,10 @@ package daydream.game {
 			add(child);
 			
 			FlxG.camera.setBounds(0, 0, Number.POSITIVE_INFINITY, Main.STAGE_HEIGHT * 1.3);
-			FlxG.camera.follow(child, FlxCamera.STYLE_PLATFORMER);
+			FlxG.camera.follow(child);
+			FlxG.camera.deadzone = new FlxRect(Main.STAGE_WIDTH * 0.16,
+										Main.STAGE_HEIGHT * 0.35,
+										0, Main.STAGE_HEIGHT * 0.2);
 		}
 		
 		public override function update():void {
