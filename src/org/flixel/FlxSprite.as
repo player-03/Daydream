@@ -205,6 +205,7 @@ package org.flixel
 		 */
 		override public function destroy():void
 		{
+			super.destroy();
 			if(_animations != null)
 			{
 				var a:FlxAnim;
@@ -229,6 +230,7 @@ package org.flixel
 			_curAnim = null;
 			_matrix = null;
 			_callback = null;
+			framePixels.dispose();
 			framePixels = null;
 		}
 		
