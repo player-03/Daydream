@@ -15,11 +15,11 @@ package daydream {
 			platforms = new FlxGroup();
 			addPlatform(new Platform(30, 400, 100));
 			addPlatform(new Platform(250, 300, 80));
-			addPlatform(new Platform(500, 200, 80));
+			addPlatform(new Platform(500, 200, 70));
 			addPlatform(new Platform(700, 400, 200));
-			addPlatform(new Platform(900, 220, 80));
-			addPlatform(new Platform(1200, 600, 200));
-			addPlatform(new Platform(400, 600, 200));
+			addPlatform(new Platform(900, 220, 85));
+			addPlatform(new Platform(1200, 600, 108));
+			addPlatform(new Platform(400, 600, 128));
 			add(platforms);
 			
 			child = new Child(50, 300);
