@@ -13,13 +13,13 @@ package daydream {
 			FlxG.bgColor = 0xFFCCDDFF;
 			
 			platforms = new FlxGroup();
-			addPlatform(new Platform(30, 400, 100));
-			addPlatform(new Platform(250, 300, 80));
-			addPlatform(new Platform(500, 200, 70));
-			addPlatform(new Platform(700, 400, 200));
-			addPlatform(new Platform(900, 220, 85));
-			addPlatform(new Platform(1200, 600, 108));
-			addPlatform(new Platform(400, 600, 128));
+			addPlatform(new Platform(30, 400, 300));
+			addPlatform(new Platform(450, 300, 111));
+			addPlatform(new Platform(730, 200, 170));
+			addPlatform(new Platform(2000, 400, 200));
+			addPlatform(new Platform(1050, 220, 135));
+			addPlatform(new Platform(1600, 600, 108));
+			addPlatform(new Platform(530, 580, 128));
 			add(platforms);
 			
 			child = new Child(50, 300);

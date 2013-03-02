@@ -3,9 +3,11 @@ package daydream {
 	import org.flixel.FlxSprite;
 	
 	public class Child extends FlxSprite {
-		private static const RUN_SPEED:Number = 240;
-		private static const RUN_ACCEL:Number = RUN_SPEED * 3;
-		private static const X_DRAG:Number = 230;
+		private static const RUN_SPEED_CUTOFF:Number = 200;
+		private static const SPRINT_SPEED_CUTOFF:Number = 400;
+		private static const WALK_ACCEL:Number = 100;
+		private static const RUN_ACCEL:Number = 10;
+		private static const SPRINT_ACCEL:Number = 2;
 		private static const JUMP_STRENGTH:Number = 250;
 		private static const JUMP_LENGTH:Number = 1;
 		private static const JUMP_GRAVITY:Number = 300;
@@ -29,9 +31,9 @@ package daydream {
 			addAnimation("fall", [15]);
 			addAnimation("attack", [16, 17, 18, 19], 20, false);
 			
+			acceleration.x = WALK_ACCEL;
 			acceleration.y = GRAVITY;
-			drag.x = X_DRAG;
-			maxVelocity.x = RUN_SPEED;
+			maxVelocity.x = Number.POSITIVE_INFINITY;
 			maxVelocity.y = FALL_SPEED;
 		}
 		
@@ -44,18 +46,12 @@ package daydream {
 				return;
 			}
 			
-			if(FlxG.keys.LEFT) {
-				if(!FlxG.keys.RIGHT) {
-					facing = LEFT;
-					acceleration.x = -RUN_ACCEL;
-				} else {
-					acceleration.x = 0;
-				}
-			} else if(FlxG.keys.RIGHT) {
-				facing = RIGHT;
+			if(velocity.x < RUN_SPEED_CUTOFF) {
+				acceleration.x = WALK_ACCEL;
+			} else if(velocity.x < SPRINT_SPEED_CUTOFF) {
 				acceleration.x = RUN_ACCEL;
 			} else {
-				acceleration.x = 0;
+				acceleration.x = SPRINT_ACCEL;
 			}
 			
 			var onGround:Boolean = isTouching(FLOOR);
@@ -91,7 +87,7 @@ package daydream {
 			}
 			
 			if(onGround) {
-				if(velocity.x == 0) {
+				if(velocity.x < 30) {
 					play("idle");
 				} else {
 					play("run");
