@@ -1,4 +1,6 @@
-package daydream {
+package daydream.menu {
+	import daydream.game.GameState;
+	import daydream.Main;
 	import org.flixel.FlxButton;
 	import org.flixel.FlxG;
 	import org.flixel.FlxState;

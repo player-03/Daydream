@@ -1,5 +1,6 @@
-package daydream {
+package daydream.game {
 	import org.flixel.FlxG;
+	import org.flixel.FlxObject;
 	import org.flixel.FlxSprite;
 	
 	public class Child extends FlxSprite {
@@ -14,7 +15,7 @@ package daydream {
 		private static const FALL_SPEED:Number = 300;
 		private static const GRAVITY:Number = 470;
 		
-		[Embed(source = "../../lib/Child.png")] protected var ImgChild:Class;
+		[Embed(source = "../../../lib/Child.png")] protected var ImgChild:Class;
 		
 		private var deadTime:Number = 0;
 		private var jumpTime:Number = 0;
@@ -31,10 +32,33 @@ package daydream {
 			addAnimation("fall", [15]);
 			addAnimation("attack", [16, 17, 18, 19], 20, false);
 			
+			velocity.x = RUN_SPEED_CUTOFF / 4;
 			acceleration.x = WALK_ACCEL;
 			acceleration.y = GRAVITY;
 			maxVelocity.x = Number.POSITIVE_INFINITY;
 			maxVelocity.y = FALL_SPEED;
+		}
+		
+		public function onItemCollision(child:FlxObject, item:FlxObject):void {
+			if(child != this) {
+				//this probably won't happen
+				return;
+			}
+			
+			trace(item);
+			
+			//TODO
+		}
+		
+		public function onEnemyCollision(child:FlxObject, enemy:FlxObject):void {
+			if(child != this) {
+				//this probably won't happen
+				return;
+			}
+			
+			trace(enemy);
+			
+			//TODO
 		}
 		
 		public override function update():void {

@@ -1,4 +1,5 @@
 package daydream{
+	import daydream.menu.MenuState;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import org.flixel.FlxGame;
