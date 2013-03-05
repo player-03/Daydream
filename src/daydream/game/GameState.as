@@ -14,7 +14,13 @@ package daydream.game {
 		private var items:FlxGroup;
 		private var enemies:FlxGroup;
 		
+		//tiles group and number of tile types
+		private var tiles:FlxGroup;
+		private var num_tile_types:int;
+		
 		public override function create():void {
+			num_tile_types = 2;
+			
 			FlxG.bgColor = 0xFFCCDDFF;
 			
 			platforms = new FlxGroup();
@@ -87,11 +93,25 @@ package daydream.game {
 			enemies.add(enemy);
 		}
 		
+		//this will be reworked to incorporate the generateRandTile function
+		//	will be called once the last tile loaded is completely on the screen
+		public function addTile(tile:FlxBasic):void
+		{
+			tiles.add(tile);
+		}
+		
 		public override function destroy():void {
 			super.destroy();
 			
 			child = null;
 			platforms = null;
+		}
+		
+		
+		//This will give us a random number based on the number of available tile types
+		public function generateRandTile():int
+		{
+			return (Math.round(Math.random() * (num_tile_types - 1)));
 		}
 	}
 }
