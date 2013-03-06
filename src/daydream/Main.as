@@ -10,7 +10,7 @@ package daydream{
 		public static const STAGE_HEIGHT:int = 600;
 		
 		public function Main():void {
-			super(STAGE_WIDTH, STAGE_HEIGHT, MenuState, 1, 30, 30, true);
+			super(int(STAGE_WIDTH * 1.3), STAGE_HEIGHT, MenuState, 1, 30, 30, true);
 		}
 	}
 }

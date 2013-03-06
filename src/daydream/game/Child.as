@@ -62,7 +62,7 @@ package daydream.game {
 		}
 		
 		public override function update():void {
-			if(y > FlxG.worldBounds.bottom) {
+			if(y > FlxG.camera.bounds.bottom) {
 				deadTime += FlxG.elapsed;
 				if(deadTime > 0.25) {
 					FlxG.resetState();
