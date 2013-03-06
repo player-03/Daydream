@@ -6,7 +6,7 @@ package daydream.game {
 	import org.flixel.FlxSprite;
 	
 	public class Platform extends FlxSprite {
-		private static const TILE_WIDTH:int = 20;
+		public static const TILE_WIDTH:int = 20;
 		
 		[Embed(source = "../../../lib/PlatformLeft.png")] private static var LeftTiles:Class;
 		private static var leftTileSprite:FlxSprite;

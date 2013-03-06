@@ -14,6 +14,8 @@ package daydream.game {
 		private static const JUMP_GRAVITY:Number = 300;
 		private static const FALL_SPEED:Number = 300;
 		private static const GRAVITY:Number = 470;
+		public static const CHILD_HEIGHT:Number = 60;
+		public static const JUMP_HEIGHT:Number = 150;
 		
 		[Embed(source = "../../../lib/Child.png")] protected var ImgChild:Class;
 		
@@ -24,7 +26,7 @@ package daydream.game {
 		public function Child(x:Number, y:Number) {
 			super(x, y);
 			
-			loadGraphic(ImgChild, true, false /*true*/, 50, 60);
+			loadGraphic(ImgChild, true, false /*true*/, 50, CHILD_HEIGHT);
 			addAnimation("idle", [0, 1], 2);
 			addAnimation("run", [4, 5, 6, 7, 8, 9, 10, 11], 20);
 			addAnimation("jump", [12, 13, 14], 12, false);

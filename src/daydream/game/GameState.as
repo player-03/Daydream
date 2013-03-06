@@ -1,5 +1,8 @@
 package daydream.game {
 	import daydream.Main;
+	import daydream.game.Platform;
+	import daydream.game.Child;
+	import flash.events.TimerEvent;
 	import org.flixel.FlxBasic;
 	import org.flixel.FlxCamera;
 	import org.flixel.FlxG;
@@ -7,20 +10,18 @@ package daydream.game {
 	import org.flixel.FlxObject;
 	import org.flixel.FlxRect;
 	import org.flixel.FlxState;
+	import flash.utils.getTimer;
 	
 	public class GameState extends FlxState {
 		private var child:Child;
 		private var platforms:FlxGroup;
 		private var items:FlxGroup;
 		private var enemies:FlxGroup;
-		
-		//tiles group and number of tile types
-		private var tiles:FlxGroup;
-		private var num_tile_types:int;
+		private var first_time:int;
+		private var second_time:int;
 		
 		public override function create():void {
-			num_tile_types = 2;
-			
+			first_time = getTimer() * 0.001;
 			FlxG.bgColor = 0xFFCCDDFF;
 			
 			platforms = new FlxGroup();
@@ -32,7 +33,7 @@ package daydream.game {
 			addPlatform(new Platform(950, 520, 50));
 			addPlatform(new Platform(1600, 600, 108));
 			addPlatform(new Platform(530, 580, 128));
-			add(platforms);
+			add(platforms);			
 			
 			items = new FlxGroup();
 			add(items);
@@ -48,6 +49,7 @@ package daydream.game {
 			FlxG.camera.deadzone = new FlxRect(Main.STAGE_WIDTH * 0.16,
 										Main.STAGE_HEIGHT * 0.35,
 										0, Main.STAGE_HEIGHT * 0.2);
+										
 		}
 		
 		public override function update():void {
@@ -62,6 +64,15 @@ package daydream.game {
 			FlxG.collide(child, platforms);
 			FlxG.overlap(child, items, child.onItemCollision);
 			FlxG.overlap(child, enemies, child.onEnemyCollision);
+			
+			second_time = getTimer() * 0.001;
+			
+			if (second_time - first_time == 1)
+			{
+				platformGenerator();
+				platformGenerator();
+				first_time = second_time;
+			}
 			
 			removeOOBMembers(platforms, false);
 			removeOOBMembers(items, true);
@@ -93,11 +104,19 @@ package daydream.game {
 			enemies.add(enemy);
 		}
 		
-		//this will be reworked to incorporate the generateRandTile function
-		//	will be called once the last tile loaded is completely on the screen
-		public function addTile(tile:FlxBasic):void
+		public function platformGenerator():void
 		{
-			tiles.add(tile);
+			var gen_bounds:Number;
+			var bounds_max:Number;
+			var bounds_min:Number;
+			
+			//it seems like the camera bounds y is inverted
+			bounds_min = FlxG.camera.bounds.top - 100;
+			bounds_max = FlxG.camera.bounds.bottom - (Platform.TILE_WIDTH + Child.CHILD_HEIGHT + Child.JUMP_HEIGHT);
+			
+			gen_bounds = bounds_max - bounds_min;
+				
+			addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * gen_bounds), (Math.random() * 300) + 50));
 		}
 		
 		public override function destroy():void {
@@ -107,11 +126,5 @@ package daydream.game {
 			platforms = null;
 		}
 		
-		
-		//This will give us a random number based on the number of available tile types
-		public function generateRandTile():int
-		{
-			return (Math.round(Math.random() * (num_tile_types - 1)));
-		}
 	}
 }
