@@ -26,7 +26,7 @@ package daydream.game {
 		public function Child(x:Number, y:Number) {
 			super(x, y);
 			
-			loadGraphic(ImgChild, true, false /*true*/, 50, CHILD_HEIGHT);
+			loadGraphic(ImgChild, true, false, 50, CHILD_HEIGHT);
 			addAnimation("idle", [0, 1], 2);
 			addAnimation("run", [4, 5, 6, 7, 8, 9, 10, 11], 20);
 			addAnimation("jump", [12, 13, 14], 12, false);

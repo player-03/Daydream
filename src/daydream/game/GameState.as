@@ -84,8 +84,8 @@ package daydream.game {
 			
 			second_time = getTimer() * 0.01;
 			
-			//every 0.7 seconds, generate a platform
-			if (second_time - first_time == 7)
+			//every 2 seconds, generate a platform
+			if (second_time - first_time == 20)
 			{
 				platformGenerator();
 				//platformGenerator();
@@ -127,8 +127,8 @@ package daydream.game {
 		public function platformGenerator():void
 		{
 			//addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * gen_bounds), (Math.random() * 300) + 50));
-			addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * up_bounds), (Math.random() * 300) + 50));
-			addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * down_bounds), (Math.random() * 300) + 50));
+			addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * gen_bounds) + bounds_min, (Math.random() * 1000) + 300));
+			addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * bounds_mid), (Math.random() * 1000) + 300));
 		}
 		
 		public override function destroy():void {
