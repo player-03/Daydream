@@ -20,6 +20,14 @@ package daydream.game {
 		private var lastSpawnX:Number;
 		private var distanceBetweenSpawns:Number;
 		
+		//these are the platform generation variables
+		private var gen_bounds:Number;
+		private var bounds_max:Number;
+		private var bounds_min:Number;
+		private var bounds_mid:Number;
+		private var up_bounds:Number;
+		private var down_bounds:Number;
+		
 		public override function create():void {
 			FlxG.bgColor = 0xFFCCDDFF;
 			
@@ -52,6 +60,15 @@ package daydream.game {
 			addPlatform(new Platform(1000, FlxG.camera.bounds.bottom - 250, 170));
 			
 			child.y = FlxG.camera.bounds.bottom - 600;
+			
+			//set the platform generation variables
+			bounds_min = FlxG.camera.bounds.top;
+			bounds_max = FlxG.camera.bounds.bottom + (Platform.TILE_WIDTH + Child.CHILD_HEIGHT + Child.JUMP_HEIGHT);
+			gen_bounds = bounds_max - bounds_min;
+			
+			bounds_mid = gen_bounds / 2;
+			up_bounds = bounds_max + bounds_mid;
+			down_bounds = bounds_mid + bounds_min;
 		}
 		
 		public override function update():void {
@@ -67,9 +84,15 @@ package daydream.game {
 			FlxG.overlap(child, items, child.onItemCollision);
 			FlxG.overlap(child, enemies, child.onEnemyCollision);
 			
-			if(FlxG.camera.scroll.x >= lastSpawnX + distanceBetweenSpawns) {
+			second_time = getTimer() * 0.01;
+			
+			//every 0.7 seconds, generate a platform
+			if (second_time - first_time == 7)
+			{
 				platformGenerator();
-				lastSpawnX = FlxG.camera.scroll.x;
+				//platformGenerator();
+				first_time = second_time;
+				//trace("DUNK: " + child.y + "\n");
 			}
 			
 			removeOOBMembers(platforms, false);
@@ -102,17 +125,12 @@ package daydream.game {
 			enemies.add(enemy);
 		}
 		
+		//this generates 1 platform on the top half, 1 on bottom half
 		public function platformGenerator():void
 		{
-			var bounds_max:Number;
-			var bounds_min:Number;
-			
-			bounds_min = FlxG.camera.bounds.top + 100;
-			bounds_max = FlxG.camera.bounds.bottom - (Platform.TILE_WIDTH + Child.CHILD_HEIGHT + Child.JUMP_HEIGHT);
-			
-			addPlatform(new Platform(FlxG.camera.scroll.x + Main.STAGE_WIDTH,
-									(Math.random() * bounds_max - bounds_min) + bounds_min,
-									(Math.random() * 300) + 50));
+			//addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * gen_bounds), (Math.random() * 300) + 50));
+			addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * up_bounds), (Math.random() * 300) + 50));
+			addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * down_bounds), (Math.random() * 300) + 50));
 		}
 		
 		public override function destroy():void {
