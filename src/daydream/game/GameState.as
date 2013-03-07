@@ -17,22 +17,13 @@ package daydream.game {
 		private var platforms:FlxGroup;
 		private var items:FlxGroup;
 		private var enemies:FlxGroup;
-		private var first_time:int;
-		private var second_time:int;
+		private var lastSpawnX:Number;
+		private var distanceBetweenSpawns:Number;
 		
 		public override function create():void {
-			first_time = getTimer() * 0.001;
 			FlxG.bgColor = 0xFFCCDDFF;
 			
 			platforms = new FlxGroup();
-			addPlatform(new Platform(30, 400, 300));
-			addPlatform(new Platform(450, 300, 111));
-			addPlatform(new Platform(730, 200, 170));
-			addPlatform(new Platform(2000, 413, 200));
-			addPlatform(new Platform(1050, 220, 135));
-			addPlatform(new Platform(950, 520, 50));
-			addPlatform(new Platform(1600, 600, 108));
-			addPlatform(new Platform(530, 580, 128));
 			add(platforms);			
 			
 			items = new FlxGroup();
@@ -41,15 +32,26 @@ package daydream.game {
 			enemies = new FlxGroup();
 			add(enemies);
 			
-			child = new Child(50, 300);
+			child = new Child(50, 0);
 			add(child);
 			
-			FlxG.camera.setBounds(0, 0, Number.POSITIVE_INFINITY, Main.STAGE_HEIGHT * 1.3);
+			FlxG.camera.setBounds(0, 0, Number.POSITIVE_INFINITY,
+										Main.STAGE_HEIGHT * 5);
 			FlxG.camera.follow(child);
 			FlxG.camera.deadzone = new FlxRect(Main.STAGE_WIDTH * 0.16,
 										Main.STAGE_HEIGHT * 0.35,
 										0, Main.STAGE_HEIGHT * 0.2);
-										
+			
+			distanceBetweenSpawns = 200 * Main.STAGE_HEIGHT / FlxG.camera.bounds.height;
+			lastSpawnX = 0;
+			
+			addPlatform(new Platform(30, FlxG.camera.bounds.bottom - 500, 300));
+			addPlatform(new Platform(550, FlxG.camera.bounds.bottom - 650, 111));
+			addPlatform(new Platform(800, FlxG.camera.bounds.bottom - 600, 222));
+			addPlatform(new Platform(630, FlxG.camera.bounds.bottom - 250, 170));
+			addPlatform(new Platform(1000, FlxG.camera.bounds.bottom - 250, 170));
+			
+			child.y = FlxG.camera.bounds.bottom - 600;
 		}
 		
 		public override function update():void {
@@ -65,13 +67,9 @@ package daydream.game {
 			FlxG.overlap(child, items, child.onItemCollision);
 			FlxG.overlap(child, enemies, child.onEnemyCollision);
 			
-			second_time = getTimer() * 0.001;
-			
-			if (second_time - first_time == 1)
-			{
+			if(FlxG.camera.scroll.x >= lastSpawnX + distanceBetweenSpawns) {
 				platformGenerator();
-				platformGenerator();
-				first_time = second_time;
+				lastSpawnX = FlxG.camera.scroll.x;
 			}
 			
 			removeOOBMembers(platforms, false);
@@ -106,17 +104,15 @@ package daydream.game {
 		
 		public function platformGenerator():void
 		{
-			var gen_bounds:Number;
 			var bounds_max:Number;
 			var bounds_min:Number;
 			
-			//it seems like the camera bounds y is inverted
-			bounds_min = FlxG.camera.bounds.top - 100;
+			bounds_min = FlxG.camera.bounds.top + 100;
 			bounds_max = FlxG.camera.bounds.bottom - (Platform.TILE_WIDTH + Child.CHILD_HEIGHT + Child.JUMP_HEIGHT);
 			
-			gen_bounds = bounds_max - bounds_min;
-				
-			addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * gen_bounds), (Math.random() * 300) + 50));
+			addPlatform(new Platform(FlxG.camera.scroll.x + Main.STAGE_WIDTH,
+									(Math.random() * bounds_max - bounds_min) + bounds_min,
+									(Math.random() * 300) + 50));
 		}
 		
 		public override function destroy():void {
