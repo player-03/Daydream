@@ -2,6 +2,7 @@ package daydream.game {
 	import daydream.Main;
 	import daydream.game.Platform;
 	import daydream.game.Child;
+	import daydream.game.Horse_Head;
 	import flash.events.TimerEvent;
 	import org.flixel.FlxBasic;
 	import org.flixel.FlxCamera;
@@ -27,7 +28,7 @@ package daydream.game {
 		private var bounds_mid:Number;
 		private var up_bounds:Number;
 		private var down_bounds:Number;
-		
+				
 		public override function create():void {
 			first_time = getTimer() * 0.01;
 			FlxG.bgColor = 0xFFCCDDFF;
@@ -45,6 +46,8 @@ package daydream.game {
 			add(platforms);			
 			
 			items = new FlxGroup();
+			//addItem(new Horse_Head(200, 360));
+			addItem(new Straw(200, 360));
 			add(items);
 			
 			enemies = new FlxGroup();
