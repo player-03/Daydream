@@ -2,6 +2,7 @@ package daydream.game {
 	import daydream.Main;
 	import daydream.game.Platform;
 	import daydream.game.Child;
+	import daydream.utils.NumberInterval;
 	import flash.events.TimerEvent;
 	import org.flixel.FlxBasic;
 	import org.flixel.FlxCamera;
@@ -17,16 +18,6 @@ package daydream.game {
 		private var platforms:FlxGroup;
 		private var items:FlxGroup;
 		private var enemies:FlxGroup;
-		private var lastSpawnX:Number;
-		private var distanceBetweenSpawns:Number;
-		
-		//these are the platform generation variables
-		private var gen_bounds:Number;
-		private var bounds_max:Number;
-		private var bounds_min:Number;
-		private var bounds_mid:Number;
-		private var up_bounds:Number;
-		private var down_bounds:Number;
 		
 		public override function create():void {
 			FlxG.bgColor = 0xFFCCDDFF;
@@ -43,32 +34,37 @@ package daydream.game {
 			child = new Child(50, 0);
 			add(child);
 			
-			FlxG.camera.setBounds(0, 0, Number.POSITIVE_INFINITY,
-										Main.STAGE_HEIGHT * 5);
+			var worldHeight:Number = Main.STAGE_HEIGHT * 5;
+			
+			FlxG.camera.setBounds(0, 0, Number.POSITIVE_INFINITY, worldHeight);
 			FlxG.camera.follow(child);
 			FlxG.camera.deadzone = new FlxRect(Main.STAGE_WIDTH * 0.16,
 										Main.STAGE_HEIGHT * 0.35,
 										0, Main.STAGE_HEIGHT * 0.2);
 			
-			distanceBetweenSpawns = 200 * Main.STAGE_HEIGHT / FlxG.camera.bounds.height;
-			lastSpawnX = 0;
+			addPlatform(new Platform(30, worldHeight - 500, 300));
+			addPlatform(new Platform(550, worldHeight - 650, 111));
+			addPlatform(new Platform(630, worldHeight - 250, 170));
 			
-			addPlatform(new Platform(30, FlxG.camera.bounds.bottom - 500, 300));
-			addPlatform(new Platform(550, FlxG.camera.bounds.bottom - 650, 111));
-			addPlatform(new Platform(800, FlxG.camera.bounds.bottom - 600, 222));
-			addPlatform(new Platform(630, FlxG.camera.bounds.bottom - 250, 170));
-			addPlatform(new Platform(1000, FlxG.camera.bounds.bottom - 250, 170));
+			var jumpDistInterval:NumberInterval = new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE * 2);
+			add(new PlatformSpawner(this, 630,
+					new NumberInterval(worldHeight - 320, worldHeight - 10 - Platform.TILE_WIDTH),
+					new NumberInterval(300, 600),
+					new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE)));
+			add(new PlatformSpawner(this, 550,
+					new NumberInterval(worldHeight - 700, worldHeight - 340),
+					new NumberInterval(280, 550),
+					jumpDistInterval));
+			add(new PlatformSpawner(this, 5000,
+					new NumberInterval(worldHeight - 1100, worldHeight - 720),
+					new NumberInterval(230, 500),
+					jumpDistInterval));
+			add(new PlatformSpawner(this, 15000,
+					new NumberInterval(worldHeight - 1900, worldHeight - 1130),
+					new NumberInterval(200, 470),
+					jumpDistInterval));
 			
 			child.y = FlxG.camera.bounds.bottom - 600;
-			
-			//set the platform generation variables
-			bounds_min = FlxG.camera.bounds.top;
-			bounds_max = FlxG.camera.bounds.bottom + (Platform.TILE_WIDTH + Child.CHILD_HEIGHT + Child.JUMP_HEIGHT);
-			gen_bounds = bounds_max - bounds_min;
-			
-			bounds_mid = gen_bounds / 2;
-			up_bounds = bounds_max + bounds_mid;
-			down_bounds = bounds_mid + bounds_min;
 		}
 		
 		public override function update():void {
@@ -84,17 +80,6 @@ package daydream.game {
 			FlxG.overlap(child, items, child.onItemCollision);
 			FlxG.overlap(child, enemies, child.onEnemyCollision);
 			
-			second_time = getTimer() * 0.01;
-			
-			//every 0.7 seconds, generate a platform
-			if (second_time - first_time == 7)
-			{
-				platformGenerator();
-				//platformGenerator();
-				first_time = second_time;
-				//trace("DUNK: " + child.y + "\n");
-			}
-			
 			removeOOBMembers(platforms, false);
 			removeOOBMembers(items, true);
 			removeOOBMembers(enemies, true);
@@ -108,7 +93,9 @@ package daydream.game {
 					if(recycle) {
 						member.kill();
 					} else {
-						group.remove(member, true);
+						//if the second parameter is false, the target
+						//group will become unordered
+						group.remove(member, false);
 						member.destroy();
 					}
 				}
@@ -123,14 +110,6 @@ package daydream.game {
 		}
 		public function addEnemy(enemy:FlxBasic):void {
 			enemies.add(enemy);
-		}
-		
-		//this generates 1 platform on the top half, 1 on bottom half
-		public function platformGenerator():void
-		{
-			//addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * gen_bounds), (Math.random() * 300) + 50));
-			addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * up_bounds), (Math.random() * 300) + 50));
-			addPlatform(new Platform(FlxG.worldBounds.right, (Math.random() * down_bounds), (Math.random() * 300) + 50));
 		}
 		
 		public override function destroy():void {

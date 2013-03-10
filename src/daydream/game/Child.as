@@ -15,7 +15,15 @@ package daydream.game {
 		private static const FALL_SPEED:Number = 300;
 		private static const GRAVITY:Number = 470;
 		public static const CHILD_HEIGHT:Number = 60;
-		public static const JUMP_HEIGHT:Number = 150;
+		
+		/**
+		 * Estimated distance the child can cover by the apex of his jump.
+		 */
+		public static const JUMP_DISTANCE:Number = 400;
+		/**
+		 * Estimated distance the child can reasonably jump.
+		 */
+		public static const JUMP_HEIGHT:Number = 200;
 		
 		[Embed(source = "../../../lib/Child.png")] protected var ImgChild:Class;
 		
