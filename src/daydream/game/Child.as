@@ -32,7 +32,8 @@ package daydream.game {
 		private var second_time:int;
 		//just for horse
 		private var prev_vel:Number;
-		//just for straw
+		//just for umbrella (rain check)
+		private var rain:Boolean;
 		
 		public function Child(x:Number, y:Number) {
 			super(x, y);
@@ -69,6 +70,11 @@ package daydream.game {
 			if (item.toString() == "Straw")
 			{
 				currentItem = "Straw";
+			}
+			
+			if (item.toString() == "Umbrella")
+			{
+				currentItem = "Umbrella";
 			}
 			
 			//Game breaks when I try to destroy the item here
@@ -114,7 +120,12 @@ package daydream.game {
 				
 				if(!usedMidairJump) {
 					if(FlxG.keys.justPressed("UP") || FlxG.keys.justPressed("SPACE")) {
-						velocity.y = -JUMP_STRENGTH;
+						//rain condition
+						if(rain && itemInUse != "Umbrella")
+							velocity.y = -JUMP_STRENGTH * 0.75;
+						if (!rain || (rain && itemInUse == "Umbrella"))
+							velocity.y = -JUMP_STRENGTH;
+						
 						jumpTime = 0;
 						
 						if(onGround) {
@@ -155,7 +166,7 @@ package daydream.game {
 			{
 				//the movement can be refined as needed (with accel and velocity)
 				//	I just wanted to make sure this worked
-				trace("USING: " + itemInUse + " for " + second_time);
+				//trace("USING: " + itemInUse + " for " + second_time);
 				if (FlxG.keys.UP || FlxG.keys.SPACE)
 				{
 					this.y -= 5;
@@ -172,6 +183,19 @@ package daydream.game {
 					acceleration.y = GRAVITY;
 					itemInUse = "";
 				}
+			}
+			
+			//Toggles rain for the time being
+			if (FlxG.keys.R && !rain)
+			{
+				rain = true;
+				trace("RAIN ON\n");
+			}
+			
+			if (FlxG.keys.E && rain)
+			{
+				rain = false;
+				trace("RAIN OFF\n");
 			}
 			
 			//ITEM HANDLING START
@@ -199,6 +223,16 @@ package daydream.game {
 						velocity.y = 0;
 					}
 				}
+				
+				if (currentItem == "Umbrella")
+				{
+					if (FlxG.keys.F || FlxG.keys.SHIFT)
+					{
+						currentItem = "";
+						itemInUse = "Umbrella";
+						first_time = getTimer() * 0.001;
+					}
+				}
 			}
 			
 			if (itemInUse == "Horse_Head")
@@ -207,13 +241,25 @@ package daydream.game {
 				
 				second_time = getTimer() * 0.001;
 				
-				trace("USING: " + itemInUse + " for " + second_time);
+				//trace("USING: " + itemInUse + " for " + second_time);
 				if (second_time - first_time == 10)
 				{
 					itemInUse = "";
 					velocity.x = prev_vel;
 				}
 			}
+			
+			if (itemInUse == "Umbrella")
+			{
+				second_time = getTimer() * 0.001;
+				
+				if (second_time - first_time == 10)
+				{
+					itemInUse = "";
+				}
+			}
+			
+			
 			//ITEM HANDLING END
 		}
 	}

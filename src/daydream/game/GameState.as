@@ -47,7 +47,8 @@ package daydream.game {
 			
 			items = new FlxGroup();
 			//addItem(new Horse_Head(200, 360));
-			addItem(new Straw(200, 360));
+			//addItem(new Straw(200, 360));
+			addItem(new Umbrella(200, 360));
 			add(items);
 			
 			enemies = new FlxGroup();
