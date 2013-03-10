@@ -3,6 +3,7 @@ package daydream.game {
 	import daydream.game.Platform;
 	import daydream.game.Child;
 	import daydream.utils.NumberInterval;
+	import daydream.game.Horse_Head;
 	import flash.events.TimerEvent;
 	import org.flixel.FlxBasic;
 	import org.flixel.FlxCamera;
@@ -26,6 +27,9 @@ package daydream.game {
 			add(platforms);			
 			
 			items = new FlxGroup();
+			//addItem(new Horse_Head(200, 360));
+			//addItem(new Straw(200, 360));
+			addItem(new Umbrella(200, 360));
 			add(items);
 			
 			enemies = new FlxGroup();
