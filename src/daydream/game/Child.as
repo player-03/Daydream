@@ -27,7 +27,6 @@ package daydream.game {
 		public static const JUMP_HEIGHT:Number = 200;
 		
 		[Embed(source = "../../../lib/Child.png")] protected var ImgChild:Class;
-		[Embed(source = "../../../lib/horse_head.png")] protected var imgHorse:Class;
 		
 		private var gameState:GameState;
 		
@@ -41,6 +40,17 @@ package daydream.game {
 		private var itemTimeLeft:Number;
 		//just for horse
 		private var prev_vel:Number;
+		
+		//for attacking
+		/*currently, the attack starts immediately and the player
+		 * 	can damage for 0.3 seconds. it then is vulnerable until
+		 * 	attackTimer reaches the cooldown then attackTimer is
+		 * 	set back to -1 so attacking is available again.
+		 */
+		private var attackTimer:Number = -1;
+		private static const ATTACK_START:Number = 0;
+		private static const ATTACK_END:Number = 0.3;
+		private static const ATTACK_COOLDOWN:Number = 1.5;
 		
 		public function Child(gameState:GameState, x:Number, y:Number) {
 			super(x, y);
@@ -86,9 +96,15 @@ package daydream.game {
 			}
 			
 			if(itemInUse is Horse_Head) {
-				trace("Attacking " + enemy);
+				trace("Attacking " + enemy + " on horse\n");
 			} else {
-				trace("Attacked by " + enemy);
+				if (attackTimer >= ATTACK_START && attackTimer <= ATTACK_END)
+				{
+					trace("Attacking " + enemy + "\n");
+					enemy.kill();
+				}
+				else
+					trace("Attacked by " + enemy + "\n");
 			}
 		}
 		
@@ -179,8 +195,26 @@ package daydream.game {
 				}
 			}
 			
+			//ATTACK TIMER HANDLING START
+			//**NOTE: i switched item use to 'd' and made this 'f'
+			if (attackTimer == -1 && FlxG.keys.justPressed("F"))
+			{
+				attackTimer = 0;
+				trace("ATTACK STARTED\n");
+			}
+			
+			if (attackTimer >= 0)
+				attackTimer += FlxG.elapsed;
+			
+			if (attackTimer >= ATTACK_COOLDOWN)
+			{
+				attackTimer = -1;
+				trace("ATTACK ENDED\n");
+			}
+			//ATTACK TIMER HANDLING END
+			
 			//ITEM HANDLING START
-			if (currentItem != null && (FlxG.keys.F || FlxG.keys.SHIFT))
+			if (currentItem != null && (FlxG.keys.D || FlxG.keys.SHIFT))
 			{
 				itemInUse = currentItem;
 				currentItem = null;
