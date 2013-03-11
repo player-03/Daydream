@@ -1,10 +1,7 @@
 package daydream.game 
 {
 	import org.flixel.FlxSprite;
-	/**
-	 * ...
-	 * @author Alex Devik
-	 */
+	
 	public class Straw extends FlxSprite
 	{
 		[Embed(source = "../../../lib/straw.png")] protected var strawImg:Class;

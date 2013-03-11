@@ -6,10 +6,7 @@
 package daydream.game 
 {
 	import org.flixel.FlxSprite;
-	/**
-	 * ...
-	 * @author Alex Devik
-	 */
+	
 	public class Horse_Head extends FlxSprite
 	{
 		[Embed(source = "../../../lib/horse_head.png")] protected var horse_head_img:Class;

@@ -53,7 +53,6 @@ package daydream.game
 			else
 				img = loadGraphic(emptyImg, false, false, 40, 40);
 			
-			
 		}
 		
 	}
