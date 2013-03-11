@@ -6,7 +6,7 @@ package daydream.game {
 	public class Child extends FlxSprite {
 		private static const RUN_SPEED_CUTOFF:Number = 200;
 		private static const SPRINT_SPEED_CUTOFF:Number = 400;
-		private static const HORSE_SPEED:Number = 600;
+		private static const HORSE_MULTIPLIER:Number = 2;
 		private static const WALK_ACCEL:Number = 100;
 		private static const RUN_ACCEL:Number = 10;
 		private static const SPRINT_ACCEL:Number = 2;
@@ -38,8 +38,12 @@ package daydream.game {
 		public var currentItem:FlxObject = null;
 		public var itemInUse:FlxObject = null;
 		private var itemTimeLeft:Number;
-		//just for horse
-		private var prev_vel:Number;
+		
+		/**
+		 * The run speed, unless the child is on a horse, in which case
+		 * this is a fraction of the run speed.
+		 */
+		private var baseXVelocity:Number;
 		
 		//for attacking
 		/*currently, the attack starts immediately and the player
@@ -48,9 +52,9 @@ package daydream.game {
 		 * 	set back to -1 so attacking is available again.
 		 */
 		private var attackTimer:Number = -1;
-		private static const ATTACK_START:Number = 0;
-		private static const ATTACK_END:Number = 0.3;
-		private static const ATTACK_COOLDOWN:Number = 1.5;
+		private static const ATTACK_DAMAGE_START:Number = 0;
+		private static const ATTACK_DAMAGE_END:Number = 0.25;
+		private static const ATTACK_END:Number = 0.6;
 		
 		public function Child(gameState:GameState, x:Number, y:Number) {
 			super(x, y);
@@ -65,10 +69,8 @@ package daydream.game {
 			addAnimation("fall", [15]);
 			addAnimation("attack", [16, 17, 18, 19], 20, false);
 			
-			velocity.x = RUN_SPEED_CUTOFF / 4;
-			acceleration.x = WALK_ACCEL;
+			baseXVelocity = RUN_SPEED_CUTOFF / 4;
 			acceleration.y = GRAVITY;
-			maxVelocity.x = Number.POSITIVE_INFINITY;
 			maxVelocity.y = FALL_SPEED;
 		}
 		
@@ -95,16 +97,18 @@ package daydream.game {
 				return;
 			}
 			
-			if(itemInUse is Horse_Head) {
-				trace("Attacking " + enemy + " on horse\n");
-			} else {
-				if (attackTimer >= ATTACK_START && attackTimer <= ATTACK_END)
-				{
-					trace("Attacking " + enemy + "\n");
-					enemy.kill();
-				}
-				else
-					trace("Attacked by " + enemy + "\n");
+			if(itemInUse is Horse_Head)
+			{
+				trace("Attacking " + enemy + " on horse");
+			}
+			else if(attackTimer >= ATTACK_DAMAGE_START && attackTimer <= ATTACK_DAMAGE_END)
+			{
+				trace("Attacking " + enemy);
+				enemy.kill();
+			}
+			else
+			{
+				trace("Attacked by " + enemy);
 			}
 		}
 		
@@ -117,14 +121,12 @@ package daydream.game {
 				return;
 			}
 			
-			if(!(itemInUse is Horse_Head)) {
-				if(velocity.x < RUN_SPEED_CUTOFF) {
-					acceleration.x = WALK_ACCEL;
-				} else if(velocity.x < SPRINT_SPEED_CUTOFF) {
-					acceleration.x = RUN_ACCEL;
-				} else {
-					acceleration.x = SPRINT_ACCEL;
-				}
+			if(baseXVelocity < RUN_SPEED_CUTOFF) {
+				baseXVelocity += WALK_ACCEL * FlxG.elapsed;
+			} else if(velocity.x < SPRINT_SPEED_CUTOFF) {
+				baseXVelocity += RUN_ACCEL * FlxG.elapsed;
+			} else {
+				baseXVelocity += SPRINT_ACCEL * FlxG.elapsed;
 			}
 			
 			if (!(itemInUse is Straw))
@@ -134,13 +136,29 @@ package daydream.game {
 					usedMidairJump = false;
 				}
 				
+				//uncomment this once PogoStick is added (or whatever the
+				//class name is)
+				/*if(onGround && (itemInUse is PogoStick)) {
+					onGround = false;
+					usedMidairJump = true;
+					play("jump");
+					velocity.y = -JUMP_STRENGTH * 1.6;
+					if(gameState.raining) {
+						velocity.y *= 0.9;
+					}
+				}*/
+				
 				if(!usedMidairJump) {
 					if(FlxG.keys.justPressed("UP") || FlxG.keys.justPressed("SPACE")) {
-						//rain condition
+						//start with JUMP_STRENGTH, and then reduce that
+						//based on certain conditions
+						velocity.y = -JUMP_STRENGTH;
+						
 						if(gameState.raining && !(itemInUse is Umbrella)) {
-							velocity.y = -JUMP_STRENGTH * 0.82;
-						} else {
-							velocity.y = -JUMP_STRENGTH;
+							velocity.y *= 0.82;
+						}
+						if(attackTimer >= 0) {
+							velocity.y *= 0.9;
 						}
 						
 						jumpTime = 0;
@@ -167,7 +185,9 @@ package daydream.game {
 					acceleration.y = GRAVITY;
 				}
 				
-				if(onGround) {
+				if(attackTimer >= 0) {
+					play("attack");
+				} else if(onGround) {
 					if(velocity.x < 30) {
 						play("idle");
 					} else {
@@ -181,9 +201,6 @@ package daydream.game {
 			}
 			else
 			{
-				//the movement can be refined as needed (with accel and velocity)
-				//	I just wanted to make sure this worked
-				//trace("USING: " + itemInUse + " for " + second_time);
 				if (FlxG.keys.UP || FlxG.keys.SPACE)
 				{
 					this.y -= 5;
@@ -195,36 +212,26 @@ package daydream.game {
 				}
 			}
 			
-			//ATTACK TIMER HANDLING START
-			//**NOTE: i switched item use to 'd' and made this 'f'
-			if (attackTimer == -1 && FlxG.keys.justPressed("F"))
+			if (attackTimer >= 0)
+			{
+				attackTimer += FlxG.elapsed;
+				
+				if (attackTimer >= ATTACK_END)
+				{
+					attackTimer = -1;
+				}
+			}
+			else if (attackTimer < 0 && FlxG.keys.justPressed("F"))
 			{
 				attackTimer = 0;
-				trace("ATTACK STARTED\n");
 			}
 			
-			if (attackTimer >= 0)
-				attackTimer += FlxG.elapsed;
-			
-			if (attackTimer >= ATTACK_COOLDOWN)
-			{
-				attackTimer = -1;
-				trace("ATTACK ENDED\n");
-			}
-			//ATTACK TIMER HANDLING END
-			
-			//ITEM HANDLING START
 			if (currentItem != null && (FlxG.keys.D || FlxG.keys.SHIFT))
 			{
 				itemInUse = currentItem;
 				currentItem = null;
 				
 				itemTimeLeft = 10;
-				
-				if (itemInUse is Horse_Head)
-				{
-					prev_vel = velocity.x;
-				}
 				
 				if (itemInUse is Straw)
 				{
@@ -235,22 +242,19 @@ package daydream.game {
 			
 			if (itemInUse is Horse_Head)
 			{
-				if(itemTimeLeft > 0.5) {
-					velocity.x = HORSE_SPEED;
+				if(itemTimeLeft > 1.2) {
+					velocity.x = baseXVelocity * HORSE_MULTIPLIER;
 				} else {
-					velocity.x = prev_vel + (itemTimeLeft / 0.5) * (HORSE_SPEED - prev_vel);
+					velocity.x = baseXVelocity * (1 + (itemTimeLeft / 1.2) * (HORSE_MULTIPLIER - 1));
 				}
+			} else {
+				velocity.x = baseXVelocity;
 			}
 			
 			if (itemInUse != null)
 			{
 				itemTimeLeft -= FlxG.elapsed;
 				if(itemTimeLeft <= 0) {
-					if (itemInUse is Horse_Head)
-					{
-						velocity.x = prev_vel;
-					}
-					
 					if (itemInUse is Straw)
 					{
 						acceleration.y = GRAVITY;
@@ -259,8 +263,6 @@ package daydream.game {
 					itemInUse = null;
 				}
 			}
-			
-			//ITEM HANDLING END
 		}
 	}
 }

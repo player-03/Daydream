@@ -77,8 +77,8 @@ package daydream.game {
 			var jumpDistInterval:NumberInterval = new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE * 2);
 			add(new PlatformSpawner(this, 630,
 					new NumberInterval(worldHeight - 320, worldHeight - 10 - Platform.TILE_WIDTH),
-					new NumberInterval(300, 600),
-					new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE)));
+					new NumberInterval(340, 600),
+					new NumberInterval(Child.JUMP_DISTANCE / 3, Child.JUMP_DISTANCE)));
 			add(new PlatformSpawner(this, 550,
 					new NumberInterval(worldHeight - 700, worldHeight - 340),
 					new NumberInterval(280, 550),
