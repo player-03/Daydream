@@ -37,9 +37,6 @@ package daydream.game {
 			add(platforms);
 			
 			items = new FlxGroup();
-			//addItem(new Horse_Head(200, 360));
-			//addItem(new Straw(200, 360));
-			addItem(new Umbrella(200, 360));
 			add(items);
 			
 			enemies = new FlxGroup();
@@ -66,6 +63,10 @@ package daydream.game {
 			addPlatform(new Platform(30, worldHeight - 500, 300));
 			addPlatform(new Platform(550, worldHeight - 650, 111));
 			addPlatform(new Platform(630, worldHeight - 250, 170));
+			
+			addItem(new Horse_Head(590, worldHeight - 700));
+			//addItem(new Straw(200, 360));
+			addItem(new Umbrella(700, worldHeight - 300));
 			
 			var jumpDistInterval:NumberInterval = new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE * 2);
 			add(new PlatformSpawner(this, 630,

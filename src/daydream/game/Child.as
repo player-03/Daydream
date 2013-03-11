@@ -2,11 +2,11 @@ package daydream.game {
 	import org.flixel.FlxG;
 	import org.flixel.FlxObject;
 	import org.flixel.FlxSprite;
-	import flash.utils.getTimer;
 	
 	public class Child extends FlxSprite {
 		private static const RUN_SPEED_CUTOFF:Number = 200;
 		private static const SPRINT_SPEED_CUTOFF:Number = 400;
+		private static const HORSE_SPEED:Number = 600;
 		private static const WALK_ACCEL:Number = 100;
 		private static const RUN_ACCEL:Number = 10;
 		private static const SPRINT_ACCEL:Number = 2;
@@ -36,10 +36,9 @@ package daydream.game {
 		private var usedMidairJump:Boolean = true;
 		
 		//Item variables
-		public var currentItem:String = "";
-		public var itemInUse:String = "";
-		private var first_time:int;
-		private var second_time:int;
+		public var currentItem:FlxObject = null;
+		public var itemInUse:FlxObject = null;
+		private var itemTimeLeft:Number;
 		//just for horse
 		private var prev_vel:Number;
 		
@@ -69,28 +68,15 @@ package daydream.game {
 				return;
 			}
 			
-			trace(item);
-			
 			//check the item picked up
-			if (item.toString() == "Horse_Head")
+			if (item is Horse_Head
+				|| item is Straw
+				|| item is Umbrella)
 			{
-				currentItem = "Horse_Head";
+				currentItem = item;
 			}
 			
-			if (item.toString() == "Straw")
-			{
-				currentItem = "Straw";
-			}
-			
-			if (item.toString() == "Umbrella")
-			{
-				currentItem = "Umbrella";
-			}
-			
-			//Game breaks when I try to destroy the item here
-			//item.destroy();
-			
-			//TODO
+			item.kill();
 		}
 		
 		public function onEnemyCollision(child:FlxObject, enemy:FlxObject):void {
@@ -99,9 +85,11 @@ package daydream.game {
 				return;
 			}
 			
-			trace(enemy);
-			
-			//TODO
+			if(itemInUse is Horse_Head) {
+				trace("Attacking " + enemy);
+			} else {
+				trace("Attacked by " + enemy);
+			}
 		}
 		
 		public override function update():void {
@@ -113,15 +101,17 @@ package daydream.game {
 				return;
 			}
 			
-			if(velocity.x < RUN_SPEED_CUTOFF) {
-				acceleration.x = WALK_ACCEL;
-			} else if(velocity.x < SPRINT_SPEED_CUTOFF) {
-				acceleration.x = RUN_ACCEL;
-			} else {
-				acceleration.x = SPRINT_ACCEL;
+			if(!(itemInUse is Horse_Head)) {
+				if(velocity.x < RUN_SPEED_CUTOFF) {
+					acceleration.x = WALK_ACCEL;
+				} else if(velocity.x < SPRINT_SPEED_CUTOFF) {
+					acceleration.x = RUN_ACCEL;
+				} else {
+					acceleration.x = SPRINT_ACCEL;
+				}
 			}
 			
-			if (itemInUse != "Straw")
+			if (!(itemInUse is Straw))
 			{
 				var onGround:Boolean = isTouching(FLOOR);
 				if(onGround) {
@@ -131,7 +121,7 @@ package daydream.game {
 				if(!usedMidairJump) {
 					if(FlxG.keys.justPressed("UP") || FlxG.keys.justPressed("SPACE")) {
 						//rain condition
-						if(gameState.raining && itemInUse != "Umbrella") {
+						if(gameState.raining && !(itemInUse is Umbrella)) {
 							velocity.y = -JUMP_STRENGTH * 0.82;
 						} else {
 							velocity.y = -JUMP_STRENGTH;
@@ -187,76 +177,54 @@ package daydream.game {
 				{
 					this.y += 5;
 				}
-				
-				second_time = getTimer() * 0.001;
-				if(second_time - first_time == 7)
-				{
-					acceleration.y = GRAVITY;
-					itemInUse = "";
-				}
 			}
 			
 			//ITEM HANDLING START
-			if (currentItem != "")
+			if (currentItem != null && (FlxG.keys.F || FlxG.keys.SHIFT))
 			{
-				if (currentItem == "Horse_Head")
+				itemInUse = currentItem;
+				currentItem = null;
+				
+				itemTimeLeft = 10;
+				
+				if (itemInUse is Horse_Head)
 				{
-					if (FlxG.keys.F || FlxG.keys.SHIFT)
-					{
-						currentItem = "";
-						itemInUse = "Horse_Head";
-						first_time = getTimer() * 0.001;
-						prev_vel = velocity.x;
-					}
+					prev_vel = velocity.x;
 				}
 				
-				if (currentItem == "Straw")
+				if (itemInUse is Straw)
 				{
-					if (FlxG.keys.F || FlxG.keys.SHIFT)
-					{
-						currentItem = "";
-						itemInUse = "Straw";
-						first_time = getTimer() * 0.001;
-						acceleration.y = 0;
-						velocity.y = 0;
-					}
-				}
-				
-				if (currentItem == "Umbrella")
-				{
-					if (FlxG.keys.F || FlxG.keys.SHIFT)
-					{
-						currentItem = "";
-						itemInUse = "Umbrella";
-						first_time = getTimer() * 0.001;
-					}
+					acceleration.y = 0;
+					velocity.y = 0;
 				}
 			}
 			
-			if (itemInUse == "Horse_Head")
+			if (itemInUse is Horse_Head)
 			{
-				velocity.x = 500;
-				
-				second_time = getTimer() * 0.001;
-				
-				//trace("USING: " + itemInUse + " for " + second_time);
-				if (second_time - first_time == 10)
-				{
-					itemInUse = "";
-					velocity.x = prev_vel;
+				if(itemTimeLeft > 0.5) {
+					velocity.x = HORSE_SPEED;
+				} else {
+					velocity.x = prev_vel + (itemTimeLeft / 0.5) * (HORSE_SPEED - prev_vel);
 				}
 			}
 			
-			if (itemInUse == "Umbrella")
+			if (itemInUse != null)
 			{
-				second_time = getTimer() * 0.001;
-				
-				if (second_time - first_time == 10)
-				{
-					itemInUse = "";
+				itemTimeLeft -= FlxG.elapsed;
+				if(itemTimeLeft <= 0) {
+					if (itemInUse is Horse_Head)
+					{
+						velocity.x = prev_vel;
+					}
+					
+					if (itemInUse is Straw)
+					{
+						acceleration.y = GRAVITY;
+					}
+					
+					itemInUse = null;
 				}
 			}
-			
 			
 			//ITEM HANDLING END
 		}
