@@ -11,20 +11,30 @@ package daydream.game {
 	import org.flixel.FlxGroup;
 	import org.flixel.FlxObject;
 	import org.flixel.FlxRect;
+	import org.flixel.FlxSprite;
 	import org.flixel.FlxState;
 	import flash.utils.getTimer;
 	
 	public class GameState extends FlxState {
+		public var raining:Boolean;
+		private var rain:Rain;
+		
 		private var child:Child;
 		private var platforms:FlxGroup;
 		private var items:FlxGroup;
 		private var enemies:FlxGroup;
 		
+		private var background:FlxGroup;
+		private var foreground:FlxGroup;
+		
 		public override function create():void {
 			FlxG.bgColor = 0xFFCCDDFF;
 			
+			background = new FlxGroup();
+			add(background);
+			
 			platforms = new FlxGroup();
-			add(platforms);			
+			add(platforms);
 			
 			items = new FlxGroup();
 			//addItem(new Horse_Head(200, 360));
@@ -35,8 +45,15 @@ package daydream.game {
 			enemies = new FlxGroup();
 			add(enemies);
 			
-			child = new Child(50, 0);
+			child = new Child(this, 50, 0);
 			add(child);
+			
+			foreground = new FlxGroup();
+			add(foreground);
+			
+			raining = false;
+			rain = new Rain(this);
+			foreground.add(rain);
 			
 			var worldHeight:Number = Main.STAGE_HEIGHT * 5;
 			
@@ -72,6 +89,10 @@ package daydream.game {
 		}
 		
 		public override function update():void {
+			if(FlxG.keys.justPressed("R")) {
+				raining = !raining;
+			}
+			
 			super.update();
 			
 			//the world bounds define the area where collisions will be

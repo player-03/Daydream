@@ -29,6 +29,8 @@ package daydream.game {
 		[Embed(source = "../../../lib/Child.png")] protected var ImgChild:Class;
 		[Embed(source = "../../../lib/horse_head.png")] protected var imgHorse:Class;
 		
+		private var gameState:GameState;
+		
 		private var deadTime:Number = 0;
 		private var jumpTime:Number = 0;
 		private var usedMidairJump:Boolean = true;
@@ -40,11 +42,11 @@ package daydream.game {
 		private var second_time:int;
 		//just for horse
 		private var prev_vel:Number;
-		//just for umbrella (rain check)
-		private var rain:Boolean;
 		
-		public function Child(x:Number, y:Number) {
+		public function Child(gameState:GameState, x:Number, y:Number) {
 			super(x, y);
+			
+			this.gameState = gameState;
 			
 			loadGraphic(ImgChild, true, false, 50, CHILD_HEIGHT);
 			addAnimation("idle", [0, 1], 2);
@@ -129,10 +131,11 @@ package daydream.game {
 				if(!usedMidairJump) {
 					if(FlxG.keys.justPressed("UP") || FlxG.keys.justPressed("SPACE")) {
 						//rain condition
-						if(rain && itemInUse != "Umbrella")
-							velocity.y = -JUMP_STRENGTH * 0.75;
-						if (!rain || (rain && itemInUse == "Umbrella"))
+						if(gameState.raining && itemInUse != "Umbrella") {
+							velocity.y = -JUMP_STRENGTH * 0.82;
+						} else {
 							velocity.y = -JUMP_STRENGTH;
+						}
 						
 						jumpTime = 0;
 						
@@ -191,19 +194,6 @@ package daydream.game {
 					acceleration.y = GRAVITY;
 					itemInUse = "";
 				}
-			}
-			
-			//Toggles rain for the time being
-			if (FlxG.keys.R && !rain)
-			{
-				rain = true;
-				trace("RAIN ON\n");
-			}
-			
-			if (FlxG.keys.E && rain)
-			{
-				rain = false;
-				trace("RAIN OFF\n");
 			}
 			
 			//ITEM HANDLING START
