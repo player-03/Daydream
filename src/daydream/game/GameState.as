@@ -3,6 +3,7 @@ package daydream.game {
 	import daydream.game.Platform;
 	import daydream.game.Child;
 	import daydream.utils.NumberInterval;
+	import daydream.game.ItemQueue;
 	import daydream.game.Horse_Head;
 	import flash.events.TimerEvent;
 	import org.flixel.FlxBasic;
@@ -27,6 +28,8 @@ package daydream.game {
 		private var background:FlxGroup;
 		private var foreground:FlxGroup;
 		
+		private var item_queue:ItemQueue;
+		
 		public override function create():void {
 			FlxG.bgColor = 0xFFCCDDFF;
 			
@@ -44,6 +47,9 @@ package daydream.game {
 			
 			child = new Child(this, 50, 0);
 			add(child);
+			
+			item_queue = new ItemQueue(child, 10, 10);
+			add(item_queue);
 			
 			foreground = new FlxGroup();
 			add(foreground);
