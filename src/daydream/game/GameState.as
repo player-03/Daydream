@@ -72,7 +72,8 @@ package daydream.game {
 			
 			addItem(new Horse_Head(590, worldHeight - 700));
 			//addItem(new Straw(200, 360));
-			addItem(new Umbrella(700, worldHeight - 300));
+			//addItem(new Umbrella(700, worldHeight - 300));
+			addEnemy(new Enemy(700, worldHeight - 340, 0));
 			
 			var jumpDistInterval:NumberInterval = new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE * 2);
 			add(new PlatformSpawner(this, 630,

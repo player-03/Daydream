@@ -46,15 +46,14 @@ package daydream.game {
 		private var baseXVelocity:Number;
 		
 		//for attacking
-		/*currently, the attack starts immediately and the player
-		 * 	can damage for 0.3 seconds. it then is vulnerable until
-		 * 	attackTimer reaches the cooldown then attackTimer is
-		 * 	set back to -1 so attacking is available again.
-		 */
 		private var attackTimer:Number = -1;
 		private static const ATTACK_DAMAGE_START:Number = 0;
 		private static const ATTACK_DAMAGE_END:Number = 0.25;
 		private static const ATTACK_END:Number = 0.6;
+		
+		//Getting hit variables
+		private var hitTimer:Number = -1;
+		private static const HIT_TIMER_END:Number = 0.5;
 		
 		public function Child(gameState:GameState, x:Number, y:Number) {
 			super(x, y);
@@ -100,6 +99,7 @@ package daydream.game {
 			if(itemInUse is Horse_Head)
 			{
 				trace("Attacking " + enemy + " on horse");
+				enemy.kill();
 			}
 			else if(attackTimer >= ATTACK_DAMAGE_START && attackTimer <= ATTACK_DAMAGE_END)
 			{
@@ -108,7 +108,11 @@ package daydream.game {
 			}
 			else
 			{
-				trace("Attacked by " + enemy);
+				if (hitTimer == -1)
+				{
+					trace("Attacked by " + enemy);
+					hitTimer = 0;
+				}
 			}
 		}
 		
@@ -228,6 +232,14 @@ package daydream.game {
 				if(velocity.y > 0) {
 					velocity.y *= 0.3;
 				}
+			}
+			
+			if (hitTimer >= 0)
+			{
+				hitTimer += FlxG.elapsed;
+				
+				if (hitTimer >= HIT_TIMER_END)
+					hitTimer = -1;
 			}
 			
 			if (currentItem != null && (FlxG.keys.D || FlxG.keys.SHIFT))
