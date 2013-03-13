@@ -52,6 +52,7 @@ package daydream.game {
 		private static const ATTACK_END:Number = 0.6;
 		
 		//Getting hit variables
+		//**we can use the timer activation to also cancel any items that need to be cancelled on hit
 		private var hitTimer:Number = -1;
 		private static const HIT_TIMER_END:Number = 0.5;
 		
@@ -237,10 +238,21 @@ package daydream.game {
 			
 			if (hitTimer >= 0)
 			{
+				//I'm meaning for this to have the player pass through the floor when hitTimer != -1
+				//	It currently doesn't do what I meant for it to but I'm not sure why
+				if (isTouching(FLOOR))
+				{
+					//trace("Should be falling: " + this.y + "\n");
+					this.y += 3;
+				}
+					
 				hitTimer += FlxG.elapsed;
 				
 				if (hitTimer >= HIT_TIMER_END)
+				{
+					//trace("Recovery end\n");
 					hitTimer = -1;
+				}
 			}
 			
 			if (currentItem != null && (FlxG.keys.D || FlxG.keys.SHIFT))
