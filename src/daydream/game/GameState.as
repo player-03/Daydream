@@ -70,7 +70,8 @@ package daydream.game {
 			addPlatform(new Platform(550, worldHeight - 650, 111));
 			addPlatform(new Platform(630, worldHeight - 250, 170));
 			
-			addItem(new Horse_Head(590, worldHeight - 700));
+			//addItem(new Horse_Head(590, worldHeight - 700));
+			addItem(new PogoStick(590, worldHeight - 700));
 			//addItem(new Straw(200, 360));
 			//addItem(new Umbrella(700, worldHeight - 300));
 			addEnemy(new Enemy(700, worldHeight - 340, 0));

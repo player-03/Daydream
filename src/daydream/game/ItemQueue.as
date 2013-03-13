@@ -22,6 +22,7 @@ package daydream.game
 		[Embed(source="../../../lib/horse_head.png")] protected var horseImg:Class;
 		[Embed(source = "../../../lib/umbrella.png")] protected var umbImg:Class;
 		[Embed(source = "../../../lib/Child.png")] protected var emptyImg:Class;
+		[Embed(source = "../../../lib/pogo_stick.png")] protected var pogoImg:Class;
 		
 		public function ItemQueue(child:Child, x:Number, y:Number) 
 		{
@@ -49,6 +50,10 @@ package daydream.game
 			else if (the_child.currentItem is Umbrella)
 			{
 				img = loadGraphic(umbImg, false, false, 40, 40);
+			}
+			else if (the_child.currentItem is PogoStick)
+			{
+				img = loadGraphic(pogoImg, false, false, 40, 40);
 			}
 			else
 				img = loadGraphic(emptyImg, false, false, 40, 40);

@@ -82,7 +82,8 @@ package daydream.game {
 			//check the item picked up
 			if (item is Horse_Head
 				|| item is Straw
-				|| item is Umbrella)
+				|| item is Umbrella
+				|| item is PogoStick)
 			{
 				currentItem = item;
 			}
@@ -142,7 +143,7 @@ package daydream.game {
 				
 				//uncomment this once PogoStick is added (or whatever the
 				//class name is)
-				/*if(onGround && (itemInUse is PogoStick)) {
+				if(onGround && (itemInUse is PogoStick)) {
 					onGround = false;
 					usedMidairJump = true;
 					play("jump");
@@ -150,7 +151,7 @@ package daydream.game {
 					if(gameState.raining) {
 						velocity.y *= 0.9;
 					}
-				}*/
+				}
 				
 				if(!usedMidairJump) {
 					if(FlxG.keys.justPressed("UP") || FlxG.keys.justPressed("SPACE")) {
