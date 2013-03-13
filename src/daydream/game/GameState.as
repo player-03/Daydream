@@ -78,15 +78,18 @@ package daydream.game {
 			add(new PlatformSpawner(this, 630,
 					new NumberInterval(worldHeight - 320, worldHeight - 10 - Platform.TILE_WIDTH),
 					new NumberInterval(340, 600),
-					new NumberInterval(Child.JUMP_DISTANCE / 3, Child.JUMP_DISTANCE)));
+					new NumberInterval(Child.JUMP_DISTANCE / 3, Child.JUMP_DISTANCE),
+					[Horse_Head], [0.1]));
 			add(new PlatformSpawner(this, 550,
 					new NumberInterval(worldHeight - 700, worldHeight - 340),
 					new NumberInterval(280, 550),
-					jumpDistInterval));
+					jumpDistInterval,
+					[Horse_Head], [0.04]));
 			add(new PlatformSpawner(this, 5000,
 					new NumberInterval(worldHeight - 1100, worldHeight - 720),
 					new NumberInterval(230, 500),
-					jumpDistInterval));
+					jumpDistInterval,
+					[Horse_Head, Straw], [0.05, 0.05]));
 			add(new PlatformSpawner(this, 15000,
 					new NumberInterval(worldHeight - 1900, worldHeight - 1130),
 					new NumberInterval(200, 470),
@@ -135,13 +138,19 @@ package daydream.game {
 		}
 		
 		public function addPlatform(platform:FlxBasic):void {
-			platforms.add(platform);
+			if(platform != null) {
+				platforms.add(platform);
+			}
 		}
 		public function addItem(item:FlxBasic):void {
-			items.add(item);
+			if(item != null) {
+				items.add(item);
+			}
 		}
 		public function addEnemy(enemy:FlxBasic):void {
-			enemies.add(enemy);
+			if(enemy != null) {
+				enemies.add(enemy);
+			}
 		}
 		
 		public override function destroy():void {

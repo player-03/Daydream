@@ -199,7 +199,7 @@ package daydream.game {
 					}
 				}
 			}
-			else
+			else //itemInUse is Straw
 			{
 				if (FlxG.keys.UP || FlxG.keys.SPACE)
 				{
@@ -224,6 +224,10 @@ package daydream.game {
 			else if (attackTimer < 0 && FlxG.keys.justPressed("F"))
 			{
 				attackTimer = 0;
+				//attacking slows the child's fall significantly
+				if(velocity.y > 0) {
+					velocity.y *= 0.3;
+				}
 			}
 			
 			if (currentItem != null && (FlxG.keys.D || FlxG.keys.SHIFT))

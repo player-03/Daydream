@@ -45,14 +45,16 @@ package daydream.game {
 		private var lastPlatformY:Number;
 		private var lastPlatformWidth:Number;
 		
-		private var minDistBetweenPlatforms:Number;
-		private var maxDistBetweenPlatforms:Number;
+		private var itemTypes:Vector.<Class>;
+		private var itemFrequencies:Vector.<Number>;
+		private var spawnUmbrellaNext:Boolean;
 		
 		public function PlatformSpawner(gameState:GameState,
 									firstPlatformX:Number,
 									yInterval:NumberInterval,
 									platformWidthInterval:NumberInterval,
-									distanceBetweenPlatformsInterval:NumberInterval) {
+									distanceBetweenPlatformsInterval:NumberInterval,
+									itemTypes:Array = null, itemFrequencies:Array = null) {
 			super();
 			
 			this.gameState = gameState;
@@ -64,6 +66,17 @@ package daydream.game {
 			lastPlatformX = firstPlatformX;
 			lastPlatformY = (yInterval.min + yInterval.max) / 2;
 			lastPlatformWidth = platformWidthInterval.min;
+			
+			if(itemTypes != null) {
+				this.itemTypes = Vector.<Class>(itemTypes);
+			} else {
+				this.itemTypes = new Vector.<Class>();
+			}
+			if(itemFrequencies != null) {
+				this.itemFrequencies = Vector.<Number>(itemFrequencies);
+			} else
+			this.itemFrequencies = new Vector.<Number>();
+			spawnUmbrellaNext = false;
 		}
 		
 		public override function update():void {
@@ -87,6 +100,35 @@ package daydream.game {
 			lastPlatformWidth = platformWidthInterval.randomValue();
 			
 			gameState.addPlatform(new Platform(lastPlatformX, lastPlatformY, lastPlatformWidth));
+			
+			//now see if an item should be spawned as well
+			if(spawnUmbrellaNext) {
+				spawnUmbrellaNext = false;
+				gameState.addItem(new Umbrella(lastPlatformX + lastPlatformWidth - 60, lastPlatformY - 60));
+			} else {
+				var itemRandValue:Number = Math.random();
+				for(var i:int = 0; i < itemFrequencies.length; i++) {
+					//for a frequency array containing [0.2, 0.3],
+					//the first item should be spawned if itemRandValue < 0.2,
+					//and the second should be if 0.2 <= itemRandValue < 0.5
+					if(itemRandValue < itemFrequencies[i]) {
+						var itemType:Class = itemTypes[i];
+						gameState.addItem(new itemType(lastPlatformX + lastPlatformWidth - 60, lastPlatformY - 60) as FlxBasic);
+					} else {
+						itemRandValue -= itemFrequencies[i];
+					}
+				}
+			}
+		}
+		
+		/**
+		 * @param	chance The absolute chance of spawning the item. This
+		 * is not independant from the other values; in fact, two 50%
+		 * chance items result in one item being on every platform.
+		 */
+		public function addItemToSpawn(itemType:Class, chance:Number):void {
+			itemTypes.push(itemType);
+			itemFrequencies.push(chance);
 		}
 	}
 }
