@@ -50,7 +50,7 @@ package daydream.game {
 		private var spawnUmbrellaNext:Boolean;
 		
 		//This handles spawning umbrella;
-		private static const CHANCE_FOR_UMB:Number = 0.3;
+		private static const CHANCE_FOR_UMB:Number = 1;
 		private var umbrellaSpawned:Boolean;
 		
 		public function PlatformSpawner(gameState:GameState,
@@ -91,7 +91,7 @@ package daydream.game {
 			 */
 			if (gameState.rainCooldown >= 0)
 			{
-				if (Math.random() <= CHANCE_FOR_UMB && umbrellaSpawned = false)
+				if (Math.random() <= CHANCE_FOR_UMB && umbrellaSpawned == false)
 				{
 					spawnUmbrellaNext = true;
 					umbrellaSpawned = true;
