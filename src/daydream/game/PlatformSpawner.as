@@ -49,6 +49,10 @@ package daydream.game {
 		private var itemFrequencies:Vector.<Number>;
 		private var spawnUmbrellaNext:Boolean;
 		
+		//This handles spawning umbrella;
+		private static const CHANCE_FOR_UMB:Number = 0.3;
+		private var umbrellaSpawned:Boolean;
+		
 		public function PlatformSpawner(gameState:GameState,
 									firstPlatformX:Number,
 									yInterval:NumberInterval,
@@ -80,6 +84,27 @@ package daydream.game {
 		}
 		
 		public override function update():void {
+			/*The logic seems ok to me on this, but take a second look at it if you get a chance.
+			 *	It should work by checking that the rain cooldown is in effect
+			 * 	and then checking to see if an umbrella has been spawned recently.
+			 * 	If it hasn't, it should spawn one. The check is reset when rain occurs.
+			 */
+			if (gameState.rainCooldown >= 0)
+			{
+				if (Math.random() <= CHANCE_FOR_UMB && umbrellaSpawned = false)
+				{
+					spawnUmbrellaNext = true;
+					umbrellaSpawned = true;
+				}
+				else
+					spawnUmbrellaNext = false;
+			}
+			else if (gameState.rainDurationTimer >= 0)
+			{
+				umbrellaSpawned = false;
+			}
+				
+			
 			if(FlxG.camera.scroll.x + Main.STAGE_WIDTH >=
 					lastPlatformX + lastPlatformWidth + distanceBetweenPlatformsInterval.min) {
 				spawnPlatform();
