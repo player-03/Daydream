@@ -30,7 +30,16 @@ package daydream.game {
 		
 		private var item_queue:ItemQueue;
 		
+		//For rain
+		public var rainDurationTimer:Number = -1;
+		public static const RAIN_MAX:Number = 10;
+		public static const RAIN_CHANCE:Number = 0.1;
+		public var rainCooldown:Number = -1;
+		public static const RAIN_COOLDOWN_MAX:Number = 20;
+		
 		public override function create():void {
+			rainCooldown = 0;
+			
 			FlxG.bgColor = 0xFFCCDDFF;
 			
 			background = new FlxGroup();
@@ -71,9 +80,9 @@ package daydream.game {
 			addPlatform(new Platform(630, worldHeight - 250, 170));
 			
 			//addItem(new Horse_Head(590, worldHeight - 700));
-			addItem(new PogoStick(590, worldHeight - 700));
+			//addItem(new PogoStick(590, worldHeight - 700));
 			//addItem(new Straw(200, 360));
-			//addItem(new Umbrella(700, worldHeight - 300));
+			addItem(new Umbrella(590, worldHeight - 700));
 			addEnemy(new Enemy(700, worldHeight - 340, 0));
 			
 			var jumpDistInterval:NumberInterval = new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE * 2);
@@ -101,8 +110,31 @@ package daydream.game {
 		}
 		
 		public override function update():void {
-			if(FlxG.keys.justPressed("R")) {
-				raining = !raining;
+			if(Math.random() < RAIN_CHANCE && rainDurationTimer == -1 && rainCooldown == -1) {
+				rainDurationTimer = 0;
+				raining = true;
+			}
+			
+			if (rainDurationTimer >= 0)
+			{
+				rainDurationTimer += FlxG.elapsed;
+				
+				if (rainDurationTimer >= RAIN_MAX)
+				{
+					raining = false;
+					rainDurationTimer = -1;
+					rainCooldown = 0;
+				}
+			}
+			
+			if (rainCooldown >= 0)
+			{
+				rainCooldown += FlxG.elapsed;
+				
+				if (rainCooldown >= RAIN_COOLDOWN_MAX)
+				{
+					rainCooldown = -1;
+				}
 			}
 			
 			super.update();

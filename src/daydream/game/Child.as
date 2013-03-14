@@ -135,7 +135,7 @@ package daydream.game {
 				baseXVelocity += SPRINT_ACCEL * FlxG.elapsed;
 			}
 			
-			if (!(itemInUse is Straw))
+			if (!(itemInUse is Straw) && hitTimer == -1)
 			{
 				var onGround:Boolean = isTouching(FLOOR);
 				if(onGround) {
@@ -238,19 +238,12 @@ package daydream.game {
 			
 			if (hitTimer >= 0)
 			{
-				//I'm meaning for this to have the player pass through the floor when hitTimer != -1
-				//	It currently doesn't do what I meant for it to but I'm not sure why
-				if (isTouching(FLOOR))
-				{
-					//trace("Should be falling: " + this.y + "\n");
-					this.y += 3;
-				}
 					
 				hitTimer += FlxG.elapsed;
 				
 				if (hitTimer >= HIT_TIMER_END)
 				{
-					//trace("Recovery end\n");
+					trace("Recovery end\n");
 					hitTimer = -1;
 				}
 			}
