@@ -77,8 +77,9 @@ package daydream.game {
 			}
 			if(itemFrequencies != null) {
 				this.itemFrequencies = Vector.<Number>(itemFrequencies);
-			} else
-			this.itemFrequencies = new Vector.<Number>();
+			} else {
+				this.itemFrequencies = new Vector.<Number>();
+			}
 			spawnUmbrellaNext = false;
 		}
 		
@@ -109,19 +110,21 @@ package daydream.game {
 				percentOfJump = getRandJumpPercentage();
 			} while(!yInterval.contains(lastPlatformY
 					+ jumpHeightInterval.getPercentageOfRange(percentOfJump)));
-			lastPlatformY += jumpHeightInterval.getPercentageOfRange(percentOfJump);
 			
-			lastPlatformX = lastPlatformX + lastPlatformWidth
-					+ distanceBetweenPlatformsInterval.getPercentageOfRange(percentOfJump);
+			lastPlatformX += lastPlatformWidth
+						+ distanceBetweenPlatformsInterval.getPercentageOfRange(percentOfJump);
+			lastPlatformY += jumpHeightInterval.getPercentageOfRange(percentOfJump);
 			
 			lastPlatformWidth = platformWidthInterval.randomValue();
 			
 			gameState.addPlatform(new Platform(lastPlatformX, lastPlatformY, lastPlatformWidth));
 			
 			//now see if an item should be spawned as well
+			var itemX:Number = lastPlatformX + 5 + Math.random() * lastPlatformWidth * 1.8;
+			var itemY:Number = lastPlatformY + 30 - Math.random() * 120;
 			if(spawnUmbrellaNext) {
 				spawnUmbrellaNext = false;
-				gameState.addItem(new Umbrella(lastPlatformX + lastPlatformWidth - 60, lastPlatformY - 60));
+				gameState.addItem(new Umbrella(itemX, itemY));
 			} else {
 				var itemRandValue:Number = Math.random();
 				for(var i:int = 0; i < itemFrequencies.length; i++) {
@@ -130,7 +133,7 @@ package daydream.game {
 					//and the second should be if 0.2 <= itemRandValue < 0.5
 					if(itemRandValue < itemFrequencies[i]) {
 						var itemType:Class = itemTypes[i];
-						gameState.addItem(new itemType(lastPlatformX + lastPlatformWidth - 60, lastPlatformY - 60) as FlxBasic);
+						gameState.addItem(new itemType(itemX, itemY) as FlxBasic);
 					} else {
 						itemRandValue -= itemFrequencies[i];
 					}

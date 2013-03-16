@@ -245,8 +245,9 @@ package daydream.game {
 							play("horse fall");
 						} else if(itemInUse is PogoStick) {
 							play("pogo fall");
+						} else {
+							play("fall");
 						}
-						play("fall");
 					}
 				}
 			}
@@ -340,7 +341,12 @@ package daydream.game {
 			
 			if (itemInUse != null)
 			{
-				itemTimeLeft -= FlxG.elapsed;
+				//the pogo stick does not time out until after a set number of bounces
+				if(itemInUse is PogoStick && pogoStickBounces < 6) {
+					itemTimeLeft = 3;
+				} else {
+					itemTimeLeft -= FlxG.elapsed;
+				}
 				if(itemTimeLeft <= 0) {
 					if (itemInUse is Straw)
 					{
