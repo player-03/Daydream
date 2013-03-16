@@ -17,9 +17,6 @@ package daydream.game {
 	import flash.utils.getTimer;
 	
 	public class GameState extends FlxState {
-		public var raining:Boolean;
-		private var rain:Rain;
-		
 		private var child:Child;
 		private var platforms:FlxGroup;
 		private var items:FlxGroup;
@@ -30,16 +27,9 @@ package daydream.game {
 		
 		private var item_queue:ItemQueue;
 		
-		//For rain
-		public var rainDurationTimer:Number = -1;
-		public static const RAIN_MAX:Number = 10;
-		public static const RAIN_CHANCE:Number = 0.1;
-		public var rainCooldown:Number = -1;
-		public static const RAIN_COOLDOWN_MAX:Number = 20;
+		private var rain:Rain;
 		
 		public override function create():void {
-			rainCooldown = 0;
-			
 			FlxG.bgColor = 0xFFCCDDFF;
 			
 			background = new FlxGroup();
@@ -63,8 +53,7 @@ package daydream.game {
 			foreground = new FlxGroup();
 			add(foreground);
 			
-			raining = false;
-			rain = new Rain(this);
+			rain = new Rain(this, 30, 10, 3, 5);
 			foreground.add(rain);
 			
 			var worldHeight:Number = Main.STAGE_HEIGHT * 5;
@@ -79,10 +68,7 @@ package daydream.game {
 			addPlatform(new Platform(550, worldHeight - 650, 111));
 			addPlatform(new Platform(630, worldHeight - 250, 170));
 			
-			//addItem(new Horse_Head(590, worldHeight - 700));
-			//addItem(new PogoStick(590, worldHeight - 700));
-			//addItem(new Straw(200, 360));
-			addItem(new Umbrella(590, worldHeight - 700));
+			addItem(new PogoStick(590, worldHeight - 700));
 			addEnemy(new Enemy(700, worldHeight - 340, 0));
 			
 			var jumpDistInterval:NumberInterval = new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE * 2);
@@ -95,12 +81,12 @@ package daydream.game {
 					new NumberInterval(worldHeight - 700, worldHeight - 340),
 					new NumberInterval(280, 550),
 					jumpDistInterval,
-					[Horse_Head], [0.04]));
+					[Horse_Head, PogoStick], [0.04, 0.03]));
 			add(new PlatformSpawner(this, 5000,
 					new NumberInterval(worldHeight - 1100, worldHeight - 720),
 					new NumberInterval(230, 500),
 					jumpDistInterval,
-					[Horse_Head, Straw], [0.05, 0.05]));
+					[Horse_Head, PogoStick, Straw], [0.02, 0.05, 0.05]));
 			add(new PlatformSpawner(this, 15000,
 					new NumberInterval(worldHeight - 1900, worldHeight - 1130),
 					new NumberInterval(200, 470),
@@ -110,33 +96,6 @@ package daydream.game {
 		}
 		
 		public override function update():void {
-			if(Math.random() < RAIN_CHANCE && rainDurationTimer == -1 && rainCooldown == -1) {
-				rainDurationTimer = 0;
-				raining = true;
-			}
-			
-			if (rainDurationTimer >= 0)
-			{
-				rainDurationTimer += FlxG.elapsed;
-				
-				if (rainDurationTimer >= RAIN_MAX)
-				{
-					raining = false;
-					rainDurationTimer = -1;
-					rainCooldown = 0;
-				}
-			}
-			
-			if (rainCooldown >= 0)
-			{
-				rainCooldown += FlxG.elapsed;
-				
-				if (rainCooldown >= RAIN_COOLDOWN_MAX)
-				{
-					rainCooldown = -1;
-				}
-			}
-			
 			super.update();
 			
 			//the world bounds define the area where collisions will be
@@ -148,6 +107,7 @@ package daydream.game {
 			FlxG.collide(child, platforms);
 			FlxG.overlap(child, items, child.onItemCollision);
 			FlxG.overlap(child, enemies, child.onEnemyCollision);
+			FlxG.collide(enemies, platforms);
 			
 			removeOOBMembers(platforms, false);
 			removeOOBMembers(items, true);
@@ -194,5 +154,8 @@ package daydream.game {
 			platforms = null;
 		}
 		
+		public function isRaining():Boolean {
+			return rain.visible;
+		}
 	}
 }
