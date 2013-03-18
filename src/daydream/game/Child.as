@@ -1,6 +1,7 @@
 package daydream.game {
 	import org.flixel.FlxG;
 	import org.flixel.FlxObject;
+	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
 	
 	public class Child extends FlxSprite {
@@ -10,11 +11,11 @@ package daydream.game {
 		private static const WALK_ACCEL:Number = 100;
 		private static const RUN_ACCEL:Number = 10;
 		private static const SPRINT_ACCEL:Number = 2;
-		private static const JUMP_STRENGTH:Number = 250;
+		private static const JUMP_STRENGTH:Number = 300;
 		private static const JUMP_LENGTH:Number = 1;
-		private static const JUMP_GRAVITY:Number = 300;
-		private static const FALL_SPEED:Number = 300;
-		private static const GRAVITY:Number = 470;
+		private static const JUMP_GRAVITY:Number = 350;
+		private static const FALL_SPEED:Number = 400;
+		private static const GRAVITY:Number = 650;
 		public static const CHILD_HEIGHT:Number = 60;
 		
 		/**
@@ -40,6 +41,8 @@ package daydream.game {
 		public var currentItem:FlxObject = null;
 		public var itemInUse:FlxObject = null;
 		private var itemTimeLeft:Number;
+		
+		private var previousVelocity:FlxPoint = new FlxPoint();
 		
 		private var pogoStickBounces:int;
 		
@@ -103,10 +106,6 @@ package daydream.game {
 				currentItem = item;
 			}
 			
-			if(item is PogoStick) {
-				pogoStickBounces = 0;
-			}
-			
 			item.kill();
 		}
 		
@@ -167,7 +166,8 @@ package daydream.game {
 					jumpReplenish = 0;
 					play("pogo jump");
 					
-					velocity.y = -JUMP_STRENGTH * (0.5 + 0.5 * pogoStickBounces);
+					velocity.y = -JUMP_STRENGTH * (0.5 + 0.25 * pogoStickBounces)
+							- previousVelocity.y * 0.7;
 					
 					if(affectedByRain()) {
 						velocity.y *= 0.8;
@@ -183,7 +183,7 @@ package daydream.game {
 						velocity.y = -JUMP_STRENGTH;
 						
 						if(affectedByRain()) {
-							velocity.y *= 0.82;
+							velocity.y *= 0.8;
 						}
 						if(attackTimer >= 0) {
 							velocity.y *= 0.9;
@@ -294,7 +294,6 @@ package daydream.game {
 							acceleration.y += GRAVITY * FlxG.elapsed;
 						}
 					}
-					
 				}
 				else
 				{
@@ -354,6 +353,10 @@ package daydream.game {
 					acceleration.y = 0;
 					velocity.y = 0;
 				}
+				
+				if(itemInUse is PogoStick) {
+					pogoStickBounces = 0;
+				}
 			}
 			
 			//x velocity
@@ -393,9 +396,10 @@ package daydream.game {
 				}
 			}
 			
-			if(velocity.y > FALL_SPEED) {
+			if(velocity.y > FALL_SPEED && !(itemInUse is PogoStick)) {
 				velocity.y = FALL_SPEED;
 			}
+			previousVelocity.copyFrom(velocity);
 		}
 		
 		public function affectedByRain():Boolean {

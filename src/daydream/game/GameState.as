@@ -83,7 +83,7 @@ package daydream.game {
 					new NumberInterval(worldHeight - 320, worldHeight - 10 - Platform.TILE_WIDTH),
 					new NumberInterval(340, 600),
 					new NumberInterval(Child.JUMP_DISTANCE / 3, Child.JUMP_DISTANCE),
-					[Horse_Head, PogoStick], [0.1, 0.07]));
+					[Horse_Head], [0.17]));
 			add(new PlatformSpawner(this, 550,
 					new NumberInterval(worldHeight - 700, worldHeight - 340),
 					new NumberInterval(280, 550),
