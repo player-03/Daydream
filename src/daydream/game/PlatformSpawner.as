@@ -52,12 +52,17 @@ package daydream.game {
 		private static const CHANCE_FOR_UMBRELLA:Number = 0.8;
 		private var wasRaining:Boolean;
 		
+		private var child:Child;
+		private var childSpeedMultiplier:Number;
+		
 		public function PlatformSpawner(gameState:GameState,
 									firstPlatformX:Number,
 									yInterval:NumberInterval,
 									platformWidthInterval:NumberInterval,
 									distanceBetweenPlatformsInterval:NumberInterval,
-									itemTypes:Array = null, itemFrequencies:Array = null) {
+									child:Child,
+									itemTypes:Array = null, itemFrequencies:Array = null,
+									childSpeedMultiplier:Number = 0.001) {
 			super();
 			
 			this.gameState = gameState;
@@ -65,6 +70,9 @@ package daydream.game {
 			this.yInterval = yInterval;
 			this.platformWidthInterval = platformWidthInterval;
 			this.distanceBetweenPlatformsInterval = distanceBetweenPlatformsInterval;
+			
+			this.child = child;
+			this.childSpeedMultiplier = childSpeedMultiplier;
 			
 			lastPlatformX = firstPlatformX;
 			lastPlatformY = (yInterval.min + yInterval.max) / 2;
@@ -96,10 +104,11 @@ package daydream.game {
 			{
 				wasRaining = false;
 			}
-				
 			
 			if(FlxG.camera.scroll.x + Main.STAGE_WIDTH >=
-					lastPlatformX + lastPlatformWidth + distanceBetweenPlatformsInterval.min) {
+					lastPlatformX + lastPlatformWidth
+					+ distanceBetweenPlatformsInterval.min
+					* xMultiplier()) {
 				spawnPlatform();
 			}
 		}
@@ -112,10 +121,11 @@ package daydream.game {
 					+ jumpHeightInterval.getPercentageOfRange(percentOfJump)));
 			
 			lastPlatformX += lastPlatformWidth
-						+ distanceBetweenPlatformsInterval.getPercentageOfRange(percentOfJump);
+						+ distanceBetweenPlatformsInterval.getPercentageOfRange(percentOfJump)
+						* xMultiplier();
 			lastPlatformY += jumpHeightInterval.getPercentageOfRange(percentOfJump);
 			
-			lastPlatformWidth = platformWidthInterval.randomValue();
+			lastPlatformWidth = platformWidthInterval.randomValue() * xMultiplier();
 			
 			gameState.addPlatform(new Platform(lastPlatformX, lastPlatformY, lastPlatformWidth));
 			
@@ -139,6 +149,13 @@ package daydream.game {
 					}
 				}
 			}
+		}
+		
+		private function xMultiplier():Number {
+			if(child.baseXVelocity < Child.SPRINT_SPEED_CUTOFF) {
+				return 1;
+			}
+			return 1 + (child.baseXVelocity - Child.SPRINT_SPEED_CUTOFF) * childSpeedMultiplier;
 		}
 		
 		/**

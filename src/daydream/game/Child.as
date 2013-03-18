@@ -5,8 +5,8 @@ package daydream.game {
 	import org.flixel.FlxSprite;
 	
 	public class Child extends FlxSprite {
-		private static const RUN_SPEED_CUTOFF:Number = 300;
-		private static const SPRINT_SPEED_CUTOFF:Number = 500;
+		public static const RUN_SPEED_CUTOFF:Number = 300;
+		public static const SPRINT_SPEED_CUTOFF:Number = 500;
 		private static const HORSE_MULTIPLIER:Number = 2;
 		private static const WALK_ACCEL:Number = 100;
 		private static const RUN_ACCEL:Number = 10;
@@ -50,7 +50,7 @@ package daydream.game {
 		 * The run speed, unless the child is on a horse, in which case
 		 * this is a fraction of the run speed.
 		 */
-		private var baseXVelocity:Number;
+		public var baseXVelocity:Number;
 		
 		//for attacking
 		private var attackTimer:Number = -1;

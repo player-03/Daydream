@@ -83,32 +83,32 @@ package daydream.game {
 					new NumberInterval(worldHeight - 320, worldHeight - 10 - Platform.TILE_WIDTH),
 					new NumberInterval(340, 600),
 					new NumberInterval(Child.JUMP_DISTANCE / 3, Child.JUMP_DISTANCE),
-					[Horse_Head], [0.17]));
+					child, [Horse_Head], [0.17], 0));
 			add(new PlatformSpawner(this, 550,
 					new NumberInterval(worldHeight - 700, worldHeight - 340),
 					new NumberInterval(280, 550),
-					jumpDistInterval,
+					jumpDistInterval, child,
 					[Horse_Head, PogoStick], [0.04, 0.03]));
 			add(new PlatformSpawner(this, 2500,
 					new NumberInterval(worldHeight - 1100, worldHeight - 720),
 					new NumberInterval(270, 500),
-					jumpDistInterval,
+					jumpDistInterval, child,
 					[Horse_Head, PogoStick], [0.05, 0.03]));
 			add(new PlatformSpawner(this, 5000,
 					new NumberInterval(worldHeight - 1900, worldHeight - 1130),
-					new NumberInterval(230, 600),
-					jumpDistInterval,
+					new NumberInterval(270, 600),
+					jumpDistInterval, child,
 					[PogoStick], [0.03]));
 			add(new PlatformSpawner(this, 7500,
 					new NumberInterval(worldHeight - 2400, worldHeight - 1920),
 					new NumberInterval(280, 450),
-					jumpDistInterval,
-					[Straw], [0.08]));
+					jumpDistInterval, child,
+					[Straw], [0.08], 0.0005));
 			add(new PlatformSpawner(this, 10000,
 					new NumberInterval(0, worldHeight - 2420),
 					new NumberInterval(300, 350),
-					jumpDistInterval,
-					[Horse_Head], [0.2]));
+					jumpDistInterval, child,
+					[Horse_Head], [0.2], 0.0005));
 			
 			child.y = FlxG.camera.bounds.bottom - 600;
 		}
