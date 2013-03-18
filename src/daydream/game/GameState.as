@@ -28,12 +28,20 @@ package daydream.game {
 		private var item_queue:ItemQueue;
 		
 		private var rain:Rain;
+		private var rainbow:Rainbow;
 		
 		public override function create():void {
 			FlxG.bgColor = 0xFFCCDDFF;
 			
+			//because some objects refer to this in their constructor
+			var worldHeight:Number = Main.STAGE_HEIGHT * 5;
+			FlxG.camera.setBounds(0, 0, Number.POSITIVE_INFINITY, worldHeight);
+			
 			background = new FlxGroup();
 			add(background);
+			
+			rainbow = new Rainbow();
+			background.add(rainbow);
 			
 			platforms = new FlxGroup();
 			add(platforms);
@@ -44,21 +52,20 @@ package daydream.game {
 			enemies = new FlxGroup();
 			add(enemies);
 			
-			child = new Child(this, 50, 0);
+			child = new Child(this, rainbow, 50, 0);
 			add(child);
-			
-			item_queue = new ItemQueue(child, 10, 10);
-			add(item_queue);
 			
 			foreground = new FlxGroup();
 			add(foreground);
 			
-			rain = new Rain(this, 30, 10, 3, 5);
+			rain = new Rain(this, rainbow, 30, 10, 3, 5);
 			foreground.add(rain);
 			
-			var worldHeight:Number = Main.STAGE_HEIGHT * 5;
+			item_queue = new ItemQueue(child, 10, 10);
+			foreground.add(item_queue);
 			
-			FlxG.camera.setBounds(0, 0, Number.POSITIVE_INFINITY, worldHeight);
+			foreground.add(new JumpReplenishIndicator(child, 55, 18));
+			
 			FlxG.camera.follow(child);
 			FlxG.camera.deadzone = new FlxRect(Main.STAGE_WIDTH * 0.16,
 										Main.STAGE_HEIGHT * 0.35,
@@ -76,21 +83,32 @@ package daydream.game {
 					new NumberInterval(worldHeight - 320, worldHeight - 10 - Platform.TILE_WIDTH),
 					new NumberInterval(340, 600),
 					new NumberInterval(Child.JUMP_DISTANCE / 3, Child.JUMP_DISTANCE),
-					[Horse_Head], [0.1]));
+					[Horse_Head, PogoStick], [0.1, 0.07]));
 			add(new PlatformSpawner(this, 550,
 					new NumberInterval(worldHeight - 700, worldHeight - 340),
 					new NumberInterval(280, 550),
 					jumpDistInterval,
 					[Horse_Head, PogoStick], [0.04, 0.03]));
-			add(new PlatformSpawner(this, 3000,
+			add(new PlatformSpawner(this, 2500,
 					new NumberInterval(worldHeight - 1100, worldHeight - 720),
-					new NumberInterval(230, 500),
+					new NumberInterval(270, 500),
 					jumpDistInterval,
-					[Horse_Head, PogoStick, Straw], [0.02, 0.05, 0.05]));
-			add(new PlatformSpawner(this, 7000,
+					[Horse_Head, PogoStick], [0.05, 0.03]));
+			add(new PlatformSpawner(this, 5000,
 					new NumberInterval(worldHeight - 1900, worldHeight - 1130),
-					new NumberInterval(200, 470),
-					jumpDistInterval));
+					new NumberInterval(230, 600),
+					jumpDistInterval,
+					[PogoStick], [0.03]));
+			add(new PlatformSpawner(this, 7500,
+					new NumberInterval(worldHeight - 2400, worldHeight - 1920),
+					new NumberInterval(280, 450),
+					jumpDistInterval,
+					[Straw], [0.08]));
+			add(new PlatformSpawner(this, 10000,
+					new NumberInterval(0, worldHeight - 2420),
+					new NumberInterval(300, 350),
+					jumpDistInterval,
+					[Horse_Head], [0.2]));
 			
 			child.y = FlxG.camera.bounds.bottom - 600;
 		}

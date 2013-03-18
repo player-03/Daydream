@@ -4,8 +4,8 @@ package daydream.game {
 	import org.flixel.FlxSprite;
 	
 	public class Child extends FlxSprite {
-		private static const RUN_SPEED_CUTOFF:Number = 200;
-		private static const SPRINT_SPEED_CUTOFF:Number = 400;
+		private static const RUN_SPEED_CUTOFF:Number = 300;
+		private static const SPRINT_SPEED_CUTOFF:Number = 500;
 		private static const HORSE_MULTIPLIER:Number = 2;
 		private static const WALK_ACCEL:Number = 100;
 		private static const RUN_ACCEL:Number = 10;
@@ -29,9 +29,11 @@ package daydream.game {
 		[Embed(source = "../../../lib/Child.png")] protected var ImgChild:Class;
 		
 		private var gameState:GameState;
+		private var rainbow:Rainbow;
 		
 		private var deadTime:Number = 0;
 		private var jumpTime:Number = 0;
+		private var jumpReplenish:Number = 0;
 		private var usedMidairJump:Boolean = true;
 		
 		//Item variables
@@ -58,10 +60,11 @@ package daydream.game {
 		private var hitTimer:Number = -1;
 		private static const HIT_TIMER_END:Number = 1;
 		
-		public function Child(gameState:GameState, x:Number, y:Number) {
+		public function Child(gameState:GameState, rainbow:Rainbow, x:Number, y:Number) {
 			super(x, y);
 			
 			this.gameState = gameState;
+			this.rainbow = rainbow;
 			
 			loadGraphic(ImgChild, true, false, 50, CHILD_HEIGHT);
 			addAnimation("idle", [0, 1], 2);
@@ -153,30 +156,33 @@ package daydream.game {
 				var onGround:Boolean = isTouching(FLOOR);
 				if(onGround) {
 					usedMidairJump = false;
+					jumpReplenish = 1;
 				}
 				
 				//always jump immediately when using the pogo stick
 				if(onGround && (itemInUse is PogoStick)) {
 					onGround = false;
+					usedMidairJump = false;
 					jumpTime = JUMP_LENGTH;
+					jumpReplenish = 0;
 					play("pogo jump");
 					
 					velocity.y = -JUMP_STRENGTH * (0.5 + 0.5 * pogoStickBounces);
 					
-					if(gameState.isRaining()) {
+					if(affectedByRain()) {
 						velocity.y *= 0.8;
 					}
 					
 					pogoStickBounces++;
 				}
 				
-				if(!usedMidairJump) {
+				if(jumpReplenish == 1) {
 					if(jumpJustPressed()) {
 						//start with JUMP_STRENGTH, and then reduce that
 						//based on certain conditions
 						velocity.y = -JUMP_STRENGTH;
 						
-						if(gameState.isRaining() && !(itemInUse is Umbrella)) {
+						if(affectedByRain()) {
 							velocity.y *= 0.82;
 						}
 						if(attackTimer >= 0) {
@@ -193,6 +199,7 @@ package daydream.game {
 						}
 						
 						jumpTime = 0;
+						jumpReplenish = 0;
 						
 						if(itemInUse is Horse_Head) {
 							play("horse jump");
@@ -209,24 +216,20 @@ package daydream.game {
 					}
 				}
 				
+				//jumping
 				if(jumpTime < JUMP_LENGTH) {
+					jumpTime += FlxG.elapsed;
+					
 					if(jumpHeld()) {
-						jumpTime += FlxG.elapsed;
 						acceleration.y = JUMP_GRAVITY;
 					} else {
-						jumpTime += FlxG.elapsed;
 						acceleration.y = GRAVITY;
 					}
 				} else {
-					jumpTime += FlxG.elapsed;
 					acceleration.y = GRAVITY;
-					
-					//the child gets another midair jump back after long enough
-					if(jumpTime >= JUMP_LENGTH * 2.5 && !(itemInUse is PogoStick)) {
-						usedMidairJump = false;
-					}
 				}
 				
+				//animations
 				if(hitTimer >= 0) {
 					play("damaged");
 				} else if(attackTimer >= 0) {
@@ -252,24 +255,46 @@ package daydream.game {
 				}
 			}
 			
+			if(jumpReplenish < 1) {
+				//the jump replenish rate should be a lot faster
+				//when in contact with the rainbow or before the
+				//first midair jump, and it should be a little
+				//slower when in the rain, and a lot slower if
+				//the player is extending the jump
+				if(!usedMidairJump || rainbow.visible && rainbow.withinRainbow(this)) {
+					jumpReplenish += FlxG.elapsed * 7;
+				} else if(acceleration.y == JUMP_GRAVITY) {
+					jumpReplenish += FlxG.elapsed * 0.3;
+				} else if(affectedByRain()) {
+					jumpReplenish += FlxG.elapsed * 0.42;
+				} else {
+					jumpReplenish += FlxG.elapsed * 0.5;
+				}
+				
+				if(jumpReplenish > 1) {
+					jumpReplenish = 1;
+				}
+			}
+			
+			//flying
 			if(itemInUse is Straw)
 			{
 				if (jumpHeld() && hitTimer == -1)
 				{
-					//while raining, the player must tap space to go up
-					if(gameState.isRaining()) {
-						if(jumpJustPressed()) {
-							acceleration.y = -GRAVITY * 0.8;
-						} else {
-							acceleration.y += GRAVITY * FlxG.elapsed;
-						}
-						
-						if(velocity.y <= -FALL_SPEED * 0.5) {
-							velocity.y = -FALL_SPEED * 0.5;
+					if(jumpJustPressed()) {
+						acceleration.y = -GRAVITY * 0.8;
+						//while raining, the player gets less of a boost from tapping space
+						if(affectedByRain()) {
+							acceleration.y *= 0.5 + 0.5 * Math.random();
 						}
 					} else {
-						acceleration.y = -GRAVITY * 0.8;
+						//while raining, the player loses lift quickly,
+						//making them tap space frequently to keep going up
+						if(affectedByRain()) {
+							acceleration.y += GRAVITY * FlxG.elapsed;
+						}
 					}
+					
 				}
 				else
 				{
@@ -283,13 +308,14 @@ package daydream.game {
 				}
 				
 				//limit velocity in both directions
-				if(velocity.y <= -FALL_SPEED) {
-					velocity.y = -FALL_SPEED;
+				if(velocity.y <= -FALL_SPEED * 0.7) {
+					velocity.y = -FALL_SPEED * 0.7;
 				} else if(velocity.y >= FALL_SPEED) {
 					velocity.y = FALL_SPEED;
 				}
 			}
 			
+			//attacking
 			if (attackTimer >= 0)
 			{
 				attackTimer += FlxG.elapsed;
@@ -304,6 +330,7 @@ package daydream.game {
 				attackTimer = 0;
 			}
 			
+			//recovering from damage
 			if (hitTimer >= 0)
 			{
 				hitTimer += FlxG.elapsed;
@@ -314,6 +341,7 @@ package daydream.game {
 				}
 			}
 			
+			//using held items
 			if (currentItem != null && (FlxG.keys.D || FlxG.keys.SHIFT))
 			{
 				itemInUse = currentItem;
@@ -328,6 +356,7 @@ package daydream.game {
 				}
 			}
 			
+			//x velocity
 			if (itemInUse is Horse_Head)
 			{
 				if(itemTimeLeft > 1.2) {
@@ -339,11 +368,14 @@ package daydream.game {
 				velocity.x = baseXVelocity;
 			}
 			
+			//item timing
 			if (itemInUse != null)
 			{
 				//the pogo stick does not time out until after a set number of bounces
-				if(itemInUse is PogoStick && pogoStickBounces < 6) {
-					itemTimeLeft = 3;
+				if(itemInUse is PogoStick) {
+					if(pogoStickBounces >= 6) {
+						itemTimeLeft = 0;
+					}
 				} else {
 					itemTimeLeft -= FlxG.elapsed;
 				}
@@ -354,12 +386,31 @@ package daydream.game {
 					}
 					
 					itemInUse = null;
+					
+					if(velocity.y < 0) {
+						play("fall");
+					}
 				}
 			}
 			
 			if(velocity.y > FALL_SPEED) {
 				velocity.y = FALL_SPEED;
 			}
+		}
+		
+		public function affectedByRain():Boolean {
+			return gameState.isRaining() && !(itemInUse is Umbrella);
+		}
+		
+		public function jumpReplenishPercent():Number {
+			/*if(itemInUse is PogoStick && pogoStickBounces == 0) {
+				return 0;
+			}
+			if(!usedMidairJump) {
+				return 1;
+			}
+			return Math.max(0, Math.min(1, (jumpTime - JUMP_LENGTH) / JUMP_LENGTH * 1.5));*/
+			return jumpReplenish;
 		}
 		
 		private function jumpJustPressed():Boolean {

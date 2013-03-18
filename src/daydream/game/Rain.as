@@ -8,17 +8,22 @@ package daydream.game {
 		[Embed(source = "../../../lib/Rain.png")] private static var RainImage:Class;
 		
 		private var gameState:GameState;
+		private var rainbow:Rainbow;
+		
 		private var dryTime:Number;
 		private var rainTime:Number;
 		private var dryTimeIncrease:Number;
 		private var rainTimeIncrease:Number;
 		private var timeRemaining:Number;
 		
-		public function Rain(gameState:GameState, dryTime:Number, rainTime:Number,
+		public function Rain(gameState:GameState, rainbow:Rainbow,
+								dryTime:Number, rainTime:Number,
 								dryTimeIncrease:Number = 0, rainTimeIncrease:Number = 0) {
 			super(0, 0, null);
 			
 			this.gameState = gameState;
+			this.rainbow = rainbow;
+			
 			this.dryTime = dryTime;
 			this.rainTime = rainTime;
 			this.dryTimeIncrease = dryTimeIncrease;
@@ -48,6 +53,7 @@ package daydream.game {
 				} else {
 					timeRemaining = dryTime;
 					dryTime += dryTimeIncrease;
+					rainbow.show();
 				}
 			}
 		}
