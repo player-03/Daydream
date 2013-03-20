@@ -25,7 +25,7 @@ package daydream.game
 			
 			this.text = points.toString();
 			
-			trace("POINTS: " + points + "\n");
+			//trace("POINTS: " + points + "\n");
 		}
 		
 	}
