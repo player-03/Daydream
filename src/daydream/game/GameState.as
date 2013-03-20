@@ -30,7 +30,7 @@ package daydream.game {
 		private var rain:Rain;
 		private var rainbow:Rainbow;
 		
-		private var points:int;
+		private var scoreKeeper:ScoreKeeper;
 		
 		public override function create():void {
 			FlxG.bgColor = 0xFFCCDDFF;
@@ -65,6 +65,9 @@ package daydream.game {
 			
 			item_queue = new ItemQueue(child, 10, 10);
 			foreground.add(item_queue);
+			
+			scoreKeeper = new ScoreKeeper(child, 100, 10);
+			foreground.add(scoreKeeper);
 			
 			foreground.add(new JumpReplenishIndicator(child, 55, 18));
 			
@@ -117,9 +120,6 @@ package daydream.game {
 		
 		public override function update():void {
 			super.update();
-			
-			points = child.x - 50;
-			trace("POINTS: " + points + "\n");
 			
 			//the world bounds define the area where collisions will be
 			//checked (and it uses a quad tree, so it isn't possible to
