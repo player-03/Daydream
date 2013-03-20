@@ -150,14 +150,14 @@ package daydream.game {
 				baseXVelocity += SPRINT_ACCEL * FlxG.elapsed;
 			}
 			
+			var onGround:Boolean = isTouching(FLOOR);
+			if(onGround) {
+				usedMidairJump = false;
+				jumpReplenish = 1;
+			}
+			
 			if (!(itemInUse is Straw) && hitTimer == -1)
 			{
-				var onGround:Boolean = isTouching(FLOOR);
-				if(onGround) {
-					usedMidairJump = false;
-					jumpReplenish = 1;
-				}
-				
 				//always jump immediately when using the pogo stick
 				if(onGround && (itemInUse is PogoStick)) {
 					onGround = false;
@@ -187,6 +187,9 @@ package daydream.game {
 						}
 						if(attackTimer >= 0) {
 							velocity.y *= 0.9;
+						}
+						if(itemInUse is Horse_Head) {
+							velocity.y *= 1.3;
 						}
 						
 						//the child gets an extra boost from jumping off the
@@ -279,7 +282,11 @@ package daydream.game {
 			//flying
 			if(itemInUse is Straw)
 			{
-				if (jumpHeld() && hitTimer == -1)
+				if(onGround)
+				{
+					itemTimeLeft = 0;
+				}
+				else if (jumpHeld() && hitTimer == -1)
 				{
 					if(jumpJustPressed()) {
 						acceleration.y = -GRAVITY * 0.8;
@@ -351,7 +358,7 @@ package daydream.game {
 				if (itemInUse is Straw)
 				{
 					acceleration.y = 0;
-					velocity.y = 0;
+					velocity.y = -100;
 				}
 				
 				if(itemInUse is PogoStick) {
