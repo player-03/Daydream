@@ -3,6 +3,7 @@ package daydream.game {
 	import daydream.utils.NumberInterval;
 	import org.flixel.FlxBasic;
 	import org.flixel.FlxG;
+	import org.flixel.FlxObject;
 	
 	public class PlatformSpawner extends FlxBasic {
 		/**
@@ -127,14 +128,16 @@ package daydream.game {
 			
 			lastPlatformWidth = platformWidthInterval.randomValue() * xMultiplier();
 			
-			gameState.addPlatform(new Platform(lastPlatformX, lastPlatformY, lastPlatformWidth));
+			var platform:Platform = new Platform(lastPlatformX, lastPlatformY, lastPlatformWidth);
+			gameState.addPlatform(platform);
 			
 			//now see if an item should be spawned as well
 			var itemX:Number = lastPlatformX + 5 + Math.random() * lastPlatformWidth * 1.8;
 			var itemY:Number = lastPlatformY + 30 - Math.random() * 120;
+			var item:FlxObject;
 			if(spawnUmbrellaNext) {
 				spawnUmbrellaNext = false;
-				gameState.addItem(new Umbrella(itemX, itemY));
+				item = new Umbrella(itemX, itemY);
 			} else {
 				var itemRandValue:Number = Math.random();
 				for(var i:int = 0; i < itemFrequencies.length; i++) {
@@ -143,11 +146,19 @@ package daydream.game {
 					//and the second should be if 0.2 <= itemRandValue < 0.5
 					if(itemRandValue < itemFrequencies[i]) {
 						var itemType:Class = itemTypes[i];
-						gameState.addItem(new itemType(itemX, itemY) as FlxBasic);
+						item = new itemType(itemX, itemY) as FlxObject;
+						break;
 					} else {
 						itemRandValue -= itemFrequencies[i];
 					}
 				}
+			}
+			
+			if(item != null) {
+				if(item.y + item.height >= platform.y) {
+					item.y += platform.height + item.height;
+				}
+				gameState.addItem(item);
 			}
 		}
 		
