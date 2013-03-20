@@ -43,10 +43,10 @@ package daydream.game {
 			background = new FlxGroup();
 			add(background);
 			
+			background.add(new LoopingBackground());
+			
 			rainbow = new Rainbow();
 			background.add(rainbow);
-			
-			background.add(new LoopingBackground());
 			
 			platforms = new FlxGroup();
 			add(platforms);
@@ -122,6 +122,14 @@ package daydream.game {
 		}
 		
 		public override function update():void {
+			if(FlxG.keys.justPressed("P") || FlxG.keys.justPressed("ESCAPE")) {
+				FlxG.paused = !FlxG.paused;
+				Main.getInstance().updatePauseScreen();
+			}
+			if(FlxG.paused) {
+				return;
+			}
+			
 			super.update();
 			
 			//the world bounds define the area where collisions will be
