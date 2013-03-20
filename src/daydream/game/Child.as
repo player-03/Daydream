@@ -192,10 +192,8 @@ package daydream.game {
 							velocity.y *= 1.3;
 						}
 						
-						//the child gets an extra boost from jumping off the
-						//pogo stick
+						//jumping from the pogo stick loses the item
 						if(itemInUse is PogoStick) {
-							velocity.y *= 1 + pogoStickBounces * 0.1;
 							itemInUse = null;
 							itemTimeLeft = 0;
 						}
@@ -218,7 +216,7 @@ package daydream.game {
 					}
 				}
 				
-				//jumping (decreased gravity)
+				//jumping (in midair -> decreased gravity)
 				if(jumpTime < JUMP_LENGTH) {
 					jumpTime += FlxG.elapsed;
 					
@@ -331,6 +329,7 @@ package daydream.game {
 				
 				if(itemInUse is PogoStick) {
 					pogoStickBounces = 0;
+					usedMidairJump = false;
 				}
 			}
 			
