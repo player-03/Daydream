@@ -9,7 +9,7 @@ package daydream.game
 		
 		public function ScoreKeeper(child:Child, x:Number, y:Number) 
 		{
-			super(x, y, 200, points.toString());
+			super(x, y, 300, points.toString());
 			
 			this.scrollFactor.x = 0;
 			this.scrollFactor.y = 0;
@@ -23,7 +23,7 @@ package daydream.game
 		{
 			points = the_child.x - 50;
 			
-			this.text = points.toString();
+			this.text = "Score: " + points.toString();
 			
 			//trace("POINTS: " + points + "\n");
 		}
