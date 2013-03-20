@@ -324,7 +324,7 @@ package daydream.game {
 					attackTimer = -1;
 				}
 			}
-			else if (attackTimer < 0 && FlxG.keys.justPressed("F") && currentItem == null)
+			else if (attackTimer < 0 && FlxG.keys.justPressed("F") && itemInUse == null)
 			{
 				attackTimer = 0;
 			}
