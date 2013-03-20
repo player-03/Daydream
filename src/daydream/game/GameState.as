@@ -45,6 +45,8 @@ package daydream.game {
 			rainbow = new Rainbow();
 			background.add(rainbow);
 			
+			background.add(new LoopingBackground());
+			
 			platforms = new FlxGroup();
 			add(platforms);
 			
