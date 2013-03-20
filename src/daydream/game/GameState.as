@@ -17,6 +17,8 @@ package daydream.game {
 	import flash.utils.getTimer;
 	
 	public class GameState extends FlxState {
+		private static const WORLD_HEIGHT:Number = 3400;
+		
 		private var child:Child;
 		private var platforms:FlxGroup;
 		private var items:FlxGroup;
@@ -36,8 +38,7 @@ package daydream.game {
 			FlxG.bgColor = 0xFFCCDDFF;
 			
 			//because some objects refer to this in their constructor
-			var worldHeight:Number = Main.STAGE_HEIGHT * 5;
-			FlxG.camera.setBounds(0, 0, Number.POSITIVE_INFINITY, worldHeight);
+			FlxG.camera.setBounds(0, 0, Number.POSITIVE_INFINITY, WORLD_HEIGHT);
 			
 			background = new FlxGroup();
 			add(background);
@@ -78,41 +79,41 @@ package daydream.game {
 										Main.STAGE_HEIGHT * 0.35,
 										0, Main.STAGE_HEIGHT * 0.2);
 			
-			addPlatform(new Platform(30, worldHeight - 500, 300));
-			addPlatform(new Platform(550, worldHeight - 650, 111));
-			addPlatform(new Platform(630, worldHeight - 250, 170));
+			addPlatform(new Platform(30, WORLD_HEIGHT - 500, 300));
+			addPlatform(new Platform(550, WORLD_HEIGHT - 650, 111));
+			addPlatform(new Platform(630, WORLD_HEIGHT - 250, 170));
 			
-			addItem(new PogoStick(590, worldHeight - 700));
-			addEnemy(new Enemy(700, worldHeight - 340, 0));
+			addItem(new PogoStick(590, WORLD_HEIGHT - 700));
+			addEnemy(new Enemy(700, WORLD_HEIGHT - 340, 0));
 			
 			var jumpDistInterval:NumberInterval = new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE * 2);
 			add(new PlatformSpawner(this, 630,
-					new NumberInterval(worldHeight - 320, worldHeight - 10 - Platform.TILE_WIDTH),
+					new NumberInterval(WORLD_HEIGHT - 320, WORLD_HEIGHT - 10 - Platform.TILE_WIDTH),
 					new NumberInterval(340, 600),
 					new NumberInterval(Child.JUMP_DISTANCE / 3, Child.JUMP_DISTANCE),
 					child, [Horse_Head], [0.17], 0));
 			add(new PlatformSpawner(this, 550,
-					new NumberInterval(worldHeight - 700, worldHeight - 340),
+					new NumberInterval(WORLD_HEIGHT - 700, WORLD_HEIGHT - 340),
 					new NumberInterval(280, 550),
 					jumpDistInterval, child,
 					[Horse_Head, PogoStick], [0.04, 0.03]));
 			add(new PlatformSpawner(this, 2500,
-					new NumberInterval(worldHeight - 1100, worldHeight - 720),
+					new NumberInterval(WORLD_HEIGHT - 1100, WORLD_HEIGHT - 720),
 					new NumberInterval(270, 500),
 					jumpDistInterval, child,
 					[Horse_Head, PogoStick], [0.05, 0.03]));
 			add(new PlatformSpawner(this, 5000,
-					new NumberInterval(worldHeight - 1900, worldHeight - 1130),
+					new NumberInterval(WORLD_HEIGHT - 1900, WORLD_HEIGHT - 1130),
 					new NumberInterval(270, 600),
 					jumpDistInterval, child,
 					[PogoStick], [0.03]));
 			add(new PlatformSpawner(this, 7500,
-					new NumberInterval(worldHeight - 2400, worldHeight - 1920),
+					new NumberInterval(WORLD_HEIGHT - 2400, WORLD_HEIGHT - 1920),
 					new NumberInterval(280, 450),
 					jumpDistInterval, child,
 					[Straw], [0.08], 0.0005));
 			add(new PlatformSpawner(this, 10000,
-					new NumberInterval(0, worldHeight - 2420),
+					new NumberInterval(0, WORLD_HEIGHT - 2420),
 					new NumberInterval(300, 350),
 					jumpDistInterval, child,
 					[Horse_Head], [0.2], 0.0005));
