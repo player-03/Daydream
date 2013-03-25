@@ -1,5 +1,6 @@
 package daydream.utils {
 	import flash.display.BitmapData;
+	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import org.flixel.FlxSprite;
@@ -9,7 +10,8 @@ package daydream.utils {
 		
 		/**
 		 * Fills an area of a sprite with randomly-selected tiles taken
-		 * from the given source sprite.
+		 * from the given source sprite. Remember to call drawFrame(true)
+		 * after calling this!
 		 * @param	startX The left edge of the area to draw onto.
 		 * @param	startY The top edge of the area to draw onto.
 		 * @param	endX The right edge of the area to draw onto.
@@ -20,7 +22,8 @@ package daydream.utils {
 		 * frames from this sprite will be used as the tiles to draw.
 		 */
 		public static function fillAreaWithTiles(startX:Number, startY:Number, endX:Number, endY:Number,
-												drawTarget:FlxSprite, drawSource:FlxSprite):void {
+												drawTarget:FlxSprite, drawSource:FlxSprite,
+												color:ColorTransform = null):void {
 			var tileWidth:Number = drawSource.width;
 			var tileHeight:Number = drawSource.height;
 			var frameCount:uint = drawSource.frames;
@@ -54,8 +57,6 @@ package daydream.utils {
 					drawTarget.pixels.copyPixels(bitmapData, sourceRect, destination, null, null, true);
 				}
 			}
-			
-			drawTarget.drawFrame(true);
 		}
 	}
 }

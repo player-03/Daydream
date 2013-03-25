@@ -1,23 +1,19 @@
 package daydream.game {
-	import daydream.Main;
-	import daydream.game.Platform;
 	import daydream.game.Child;
-	import daydream.utils.NumberInterval;
-	import daydream.game.ItemQueue;
 	import daydream.game.Horse_Head;
-	import flash.events.TimerEvent;
+	import daydream.game.ItemQueue;
+	import daydream.game.Platform;
+	import daydream.Main;
+	import daydream.utils.NumberInterval;
 	import org.flixel.FlxBasic;
-	import org.flixel.FlxCamera;
 	import org.flixel.FlxG;
 	import org.flixel.FlxGroup;
 	import org.flixel.FlxObject;
 	import org.flixel.FlxRect;
-	import org.flixel.FlxSprite;
 	import org.flixel.FlxState;
-	import flash.utils.getTimer;
 	
 	public class GameState extends FlxState {
-		private static const WORLD_HEIGHT:Number = 3400;
+		private static const WORLD_HEIGHT:Number = 2800;
 		
 		private var child:Child;
 		private var platforms:FlxGroup;
@@ -35,7 +31,7 @@ package daydream.game {
 		private var scoreKeeper:ScoreKeeper;
 		
 		public override function create():void {
-			FlxG.bgColor = 0xFFCCDDFF;
+			//FlxG.bgColor = 0xFFCCDDFF;
 			
 			//because some objects refer to this in their constructor
 			FlxG.camera.setBounds(0, 0, Number.POSITIVE_INFINITY, WORLD_HEIGHT);
@@ -43,7 +39,10 @@ package daydream.game {
 			background = new FlxGroup();
 			add(background);
 			
-			background.add(new LoopingBackground());
+			background.add(new Background(Background.background)); //background!
+			background.add(new Background(Background.clouds1, 150, WORLD_HEIGHT / 5 - 150));
+			background.add(new Background(Background.clouds2, 350, WORLD_HEIGHT / 3.5 - 350));
+			background.add(new Background(Background.ocean, WORLD_HEIGHT - 130, -40));
 			
 			rainbow = new Rainbow();
 			background.add(rainbow);
@@ -62,6 +61,8 @@ package daydream.game {
 			
 			foreground = new FlxGroup();
 			add(foreground);
+			
+			foreground.add(new Background(Background.ocean, WORLD_HEIGHT, -80));
 			
 			rain = new Rain(this, rainbow, 30, 10, 3, 5);
 			foreground.add(rain);
@@ -83,7 +84,7 @@ package daydream.game {
 			addPlatform(new Platform(550, WORLD_HEIGHT - 650, 111));
 			addPlatform(new Platform(630, WORLD_HEIGHT - 250, 170));
 			
-			addItem(new PogoStick(590, WORLD_HEIGHT - 700));
+			addItem(new Straw(590, WORLD_HEIGHT - 700));
 			addEnemy(new Enemy(700, WORLD_HEIGHT - 340, 0));
 			
 			var jumpDistInterval:NumberInterval = new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE * 2);

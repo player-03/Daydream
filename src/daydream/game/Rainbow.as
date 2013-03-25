@@ -15,8 +15,8 @@ package daydream.game {
 		public function Rainbow() {
 			super(0, 0, rainbowImage);
 			
-			scrollFactor.x = 0.5;
-			scrollFactor.y = 0.5;
+			scrollFactor.x = 0.65;
+			scrollFactor.y = 0.65;
 			
 			y = (FlxG.camera.bounds.bottom - height) * scrollFactor.y;
 			

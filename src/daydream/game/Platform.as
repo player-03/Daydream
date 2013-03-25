@@ -1,12 +1,21 @@
 package daydream.game {
 	import daydream.utils.FlxSpriteUtils;
 	import flash.display.BitmapData;
+	import flash.geom.ColorTransform;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import org.flixel.FlxSprite;
 	
 	public class Platform extends FlxSprite {
 		public static const TILE_WIDTH:int = 20;
+		
+		public static var PASTELS:Vector.<ColorTransform> = Vector.<ColorTransform>([
+							new ColorTransform(1, 0.4, 0.4), //red
+							new ColorTransform(0.5, 0.5, 1), //blue
+							new ColorTransform(0.3, 0.92, 0.92), //cyan
+							new ColorTransform(0.4, 0.95, 0.4), //green
+							new ColorTransform(1, 1, 0.4), //yellow
+							new ColorTransform(1, 0.5, 0.97)]); //pink
 		
 		[Embed(source = "../../../lib/PlatformLeft.png")] private static var LeftTiles:Class;
 		private static var leftTileSprite:FlxSprite;
@@ -31,6 +40,7 @@ package daydream.game {
 			height = TILE_WIDTH;
 			
 			pixels = new BitmapData(int(width), TILE_WIDTH, true, 0x00000000);
+			pixels.lock();
 			
 			if(centerTileSprite == null) {
 				staticInit();
@@ -39,6 +49,13 @@ package daydream.game {
 			FlxSpriteUtils.fillAreaWithTiles(0, 0, TILE_WIDTH, TILE_WIDTH, this, leftTileSprite);
 			FlxSpriteUtils.fillAreaWithTiles(leftTileSprite.width, 0, width - rightTileSprite.width, TILE_WIDTH, this, centerTileSprite);
 			FlxSpriteUtils.fillAreaWithTiles(width - rightTileSprite.width, 0, width, TILE_WIDTH, this, rightTileSprite);
+			
+			pixels.colorTransform(new Rectangle(0, 0, pixels.width, pixels.height),
+					PASTELS[int(Math.random() * PASTELS.length)]);
+			
+			pixels.unlock();
+			
+			drawFrame(true);
 			
 			active = false;
 			immovable = true;
