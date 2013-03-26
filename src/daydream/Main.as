@@ -8,7 +8,7 @@ package daydream{
 
 	[Frame(factoryClass="daydream.Preloader")]
 	public class Main extends FlxGame {
-		public static const STAGE_WIDTH:int = 800;
+		public static const STAGE_WIDTH:int = 1200;
 		public static const STAGE_HEIGHT:int = 600;
 		
 		private static var instance:Main;
