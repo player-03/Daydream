@@ -16,9 +16,12 @@ package daydream.game {
 		private var rainTimeIncrease:Number;
 		private var timeRemaining:Number;
 		
+		private var alphaSet:Boolean;
+		
 		public function Rain(gameState:GameState, rainbow:Rainbow,
 								dryTime:Number, rainTime:Number,
 								dryTimeIncrease:Number = 0, rainTimeIncrease:Number = 0) {
+
 			super(0, 0, null);
 			
 			this.gameState = gameState;
@@ -33,7 +36,7 @@ package daydream.game {
 			visible = false;
 			
 			timeRemaining = dryTime;
-			//timeRemaining = 2; //for quick testing
+			timeRemaining = 2; //for quick testing
 			
 			scrollFactor.x = 0;
 			scrollFactor.y = 0;
@@ -58,6 +61,29 @@ package daydream.game {
 					timeRemaining = dryTime;
 					dryTime += dryTimeIncrease;
 					rainbow.show();
+					alphaSet = false;
+				}
+			}
+			
+			//this is supposed to fade the rain in/out (keywords: supposed to)
+			if (timeRemaining > 3 && visible)
+			{
+				if (!alphaSet)
+				{
+					this.alpha = 0.1;
+					alphaSet = true;
+				}
+				
+				if (this.alpha < 1)
+				{
+					this.alpha += 0.01;
+				}
+			}
+			else if (timeRemaining <= 3 && visible)
+			{
+				if (this.alpha > 0)
+				{
+					this.alpha -= 0.01;
 				}
 			}
 		}
