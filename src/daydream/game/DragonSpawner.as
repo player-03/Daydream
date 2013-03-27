@@ -10,7 +10,7 @@ package daydream.game {
 			super();
 			
 			this.timeBetweenDragons = timeBetweenDragons;
-			timeUntilNext = timeBetweenDragons;
+			timeUntilNext = timeBetweenDragons / 3;
 		}
 		
 		public override function update():void {
@@ -20,7 +20,7 @@ package daydream.game {
 				timeUntilNext = timeBetweenDragons;
 				
 				(FlxG.state as GameState).addEnemy(
-						new Enemy(0, 300 + Math.random() * 600, Enemy.FLYING));
+						new Enemy(0, (FlxG.state as GameState).getChild().y + 100/*100 + Math.random() * 600*/, Enemy.DRAGON));
 			}
 		}
 	}

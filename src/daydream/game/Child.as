@@ -7,7 +7,7 @@ package daydream.game {
 	
 	public class Child extends FlxSprite {
 		public static const RUN_SPEED_CUTOFF:Number = 400;
-		public static const SPRINT_SPEED_CUTOFF:Number = 600;
+		public static const SPRINT_SPEED_CUTOFF:Number = 1000;
 		public static const HORSE_MULTIPLIER:Number = 2;
 		public static const WALK_ACCEL:Number = 100;
 		public static const RUN_ACCEL:Number = 10;
@@ -26,7 +26,7 @@ package daydream.game {
 		/**
 		 * Estimated distance the child can reasonably jump.
 		 */
-		public static const JUMP_HEIGHT:Number = 200;
+		public static const JUMP_HEIGHT:Number = 195;
 		
 		[Embed(source = "../../../lib/Child.png")] protected var ImgChild:Class;
 		
@@ -47,6 +47,8 @@ package daydream.game {
 		
 		private var pogoStickBounces:int;
 		
+		private var dragonSprite:DragonRideSprite;
+		
 		/**
 		 * The run speed, unless the child is on a horse, in which case
 		 * this is a fraction of the run speed.
@@ -60,21 +62,28 @@ package daydream.game {
 		private static const ATTACK_END:Number = 0.6;
 		private static const ENEMY_KILL_POINTS:int = 1000;
 		
+		private static const DRAGON_RIDE_POINTS:int = 5000;
+		private static const DRAGON_SPEED_MULTIPLIER:Number = 4;
+		
 		//Getting hit variables
 		//**we can use the timer activation to also cancel any items that need to be cancelled on hit
 		private var hitTimer:Number = -1;
 		private static const HIT_TIMER_END:Number = 1;
 		
-		private static const DISTANCE_COVERED_TO_POINTS_MULTIPLIER:Number = 0.4;
-		private var prevX:Number;
-		public var score:int = 0;
+		/**
+		 * The number of points earned per pixel travelled.
+		 */
+		private static const DISTANCE_MULTIPLIER:Number = 0.4;
+		private var score:int = 0;
 		
 		public function Child(gameState:GameState, rainbow:Rainbow, x:Number, y:Number) {
 			super(x, y);
-			prevX = x;
 			
 			this.gameState = gameState;
 			this.rainbow = rainbow;
+			
+			dragonSprite = new DragonRideSprite(this);
+			FlxG.state.add(dragonSprite);
 			
 			loadGraphic(ImgChild, true, false, 72, 72);
 			addAnimation("idle", [0, 1], 2);
@@ -92,7 +101,7 @@ package daydream.game {
 			addAnimation("horse jump", [36, 37, 38], 12, false);
 			addAnimation("horse fall", [39]);
 			
-			FlxSpriteUtils.applyInset(this, 0, 0, 0, 2);
+			FlxSpriteUtils.applyInset(this, 15, 10, 15, 2);
 			
 			baseXVelocity = RUN_SPEED_CUTOFF / 4;
 			acceleration.y = GRAVITY;
@@ -124,31 +133,83 @@ package daydream.game {
 				return;
 			}
 			
-			if(itemInUse is HorseHead || rainbow.visible && rainbow.withinRainbow(this)
+			//kill everything while riding a dragon
+			if(dragonSprite.visible) {
+				enemy.kill();
+				
+				score += ENEMY_KILL_POINTS;
+				
+				return;
+			}
+			
+			//the hit timer doesn't start counting until the child
+			//leaves contact with the enemy
+			if(hitTimer >= 0)
+			{
+				hitTimer = 0;
+				flicker(HIT_TIMER_END);
+			}
+			else if((enemy as Enemy).isDragon())
+			{
+				var enemyOffset:FlxPoint = (enemy as Enemy).offset;
+				//check if the child landed on the dragon's neck (not too
+				//far forward, not too far back, and not from below)
+				if(x + offset.x + width < enemy.x + enemyOffset.x + enemy.width - 80
+					&& x + offset.x > enemy.x + enemyOffset.x + enemy.width - 360
+					&& y + offset.y + height < enemy.y + enemyOffset.y + 10)
+				{
+					enemy.kill();
+					
+					score += DRAGON_RIDE_POINTS;
+					
+					dragonSprite.activate();
+					visible = false;
+					
+					acceleration.y = -10;
+					velocity.y = 20;
+					maxVelocity.y = 60;
+					
+					itemInUse = null;
+				} else {
+					hitTimer = 0;
+					flicker(HIT_TIMER_END);
+					velocity.y *= 0.6;
+					itemTimeLeft = 0;
+					pogoStickBounces = 10;
+				}
+			}
+			else if(itemInUse is HorseHead || rainbow.visible && rainbow.withinRainbow(this)
 				|| attackTimer >= ATTACK_DAMAGE_START && attackTimer <= ATTACK_DAMAGE_END)
 			{
 				enemy.kill();
 				
 				score += ENEMY_KILL_POINTS;
 			}
-			else
+			else if(hitTimer < 0)
 			{
-				if (hitTimer == -1)
-				{
-					hitTimer = 0;
-					//play("damaged");
-					flicker(HIT_TIMER_END);
-					
-					velocity.y *= 0.6;
-					
-					if(!(itemInUse is PogoStick)) {
-						itemTimeLeft = 0;
-					}
+				hitTimer = 0;
+				flicker(HIT_TIMER_END);
+				velocity.y *= 0.6;
+				
+				if(!(itemInUse is PogoStick)) {
+					itemTimeLeft = 0;
 				}
 			}
 		}
 		
 		public override function update():void {
+			if(visible == dragonSprite.visible) {
+				visible = !dragonSprite.visible;
+				if(visible) {
+					acceleration.y = GRAVITY;
+					velocity.y = -JUMP_STRENGTH;
+					jumpReplenish = 0;
+					usedMidairJump = false;
+					maxVelocity.y = 10000; //magic number meaning "infinity"
+					play("jump");
+				}
+			}
+			
 			if(y > FlxG.camera.bounds.bottom) {
 				deadTime += FlxG.elapsed;
 				if(deadTime > 0.25) {
@@ -191,7 +252,7 @@ package daydream.game {
 				pogoStickBounces++;
 			}
 			
-			if (!(itemInUse is Straw) && hitTimer == -1)
+			if (!(itemInUse is Straw) && hitTimer == -1 && !dragonSprite.visible)
 			{
 				//jumping (takeoff)
 				if(jumpReplenish == 1) {
@@ -342,7 +403,9 @@ package daydream.game {
 				if (itemInUse is Straw)
 				{
 					acceleration.y = 0;
-					velocity.y -= 100;
+					if(onGround) {
+						velocity.y = -100;
+					}
 				}
 				
 				if(itemInUse is PogoStick) {
@@ -352,15 +415,27 @@ package daydream.game {
 			}
 			
 			//x velocity
-			if (itemInUse is HorseHead)
-			{
-				if(itemTimeLeft > 1.2) {
-					velocity.x = baseXVelocity * HORSE_MULTIPLIER;
-				} else {
-					velocity.x = baseXVelocity * (1 + (itemTimeLeft / 1.2) * (HORSE_MULTIPLIER - 1));
+			var targetXVelocity:Number = baseXVelocity;
+			if (itemInUse is HorseHead) {
+				targetXVelocity = baseXVelocity * HORSE_MULTIPLIER;
+			} else if(dragonSprite.visible) {
+				targetXVelocity = baseXVelocity * DRAGON_SPEED_MULTIPLIER;
+			}
+			
+			if(velocity.x < targetXVelocity) {
+				//this formula makes velocity.x approach the target more
+				//quickly the farther apart the values are
+				velocity.x += (targetXVelocity - velocity.x) * FlxG.elapsed * 5
+							+ 4 * FlxG.elapsed;
+				if(velocity.x > targetXVelocity) {
+					velocity.x = targetXVelocity;
 				}
-			} else {
-				velocity.x = baseXVelocity;
+			} else if(velocity.x > targetXVelocity) {
+				velocity.x += (targetXVelocity - velocity.x) * FlxG.elapsed * 6
+							+ 5 * FlxG.elapsed;
+				if(velocity.x < targetXVelocity) {
+					velocity.x = targetXVelocity;
+				}
 			}
 			
 			//item timing
@@ -414,20 +489,26 @@ package daydream.game {
 					play("run");
 				}
 			} else {
-				if(velocity.y >= 0) {
+				//the pogo stick fall animation starts almost immediately
+				if(itemInUse is PogoStick) {
+					if(jumpReplenish == 1) {
+						play("pogo fall");
+					}
+				}
+				
+				//in most cases, the fall animation starts after the apex
+				else if(velocity.y >= 0) {
 					if(itemInUse is HorseHead) {
 						play("horse fall");
-					} else if(itemInUse is PogoStick) {
-						play("pogo fall");
 					} else {
 						play("fall");
 					}
 				}
 			}
-			
-			//increment the score
-			score += int((x - prevX) * DISTANCE_COVERED_TO_POINTS_MULTIPLIER);
-			prevX = x;
+		}
+		
+		public function getScore():Number {
+			return score + x * DISTANCE_MULTIPLIER;
 		}
 		
 		public function affectedByRain():Boolean {
@@ -435,13 +516,6 @@ package daydream.game {
 		}
 		
 		public function jumpReplenishPercent():Number {
-			/*if(itemInUse is PogoStick && pogoStickBounces == 0) {
-				return 0;
-			}
-			if(!usedMidairJump) {
-				return 1;
-			}
-			return Math.max(0, Math.min(1, (jumpTime - JUMP_LENGTH) / JUMP_LENGTH * 1.5));*/
 			return jumpReplenish;
 		}
 		

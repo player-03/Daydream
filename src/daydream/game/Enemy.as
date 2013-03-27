@@ -7,8 +7,9 @@ package daydream.game
 	
 	public class Enemy extends FlxSprite
 	{
-		public static const STANDING:int = 0;
-		public static const FLYING:int = 1;
+		public static const SOLDIER:int = 0;
+		public static const DRAGON:int = 1;
+		public static const LEGO:int = 2;
 		
 		[Embed(source = "../../../lib/ArmyMan.png")] private static var standingImg:Class;
 		[Embed(source = "../../../lib/Dragon.png")] private static var flyingImg:Class;
@@ -34,7 +35,7 @@ package daydream.game
 			var fWidth:int = 0;
 			var fHeight:int = 0;
 			
-			if(type == FLYING) {
+			if(type == DRAGON) {
 				animated = true;
 				fWidth = 542;
 				fHeight = 234;
@@ -42,17 +43,13 @@ package daydream.game
 			
 			loadGraphic(typeImages[type], animated, false, fWidth, fHeight);
 			
-			if(type == STANDING) {
+			if(type == SOLDIER) {
 				FlxSpriteUtils.applyInset(this, 30, 0, 0, 5);
-			} else if(type == FLYING) {
+			} else if(type == DRAGON) {
 				addAnimation("fly", [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13], 24);
 				play("fly");
-				scale.x = 0.8;
-				scale.y = 0.8;
-				this.x = FlxG.camera.scroll.x - fWidth * scale.x;
-				width *= scale.x;
-				height *= scale.y;
-				FlxSpriteUtils.applyInset(this, 90, 80, 0, 60);
+				this.x = FlxG.camera.scroll.x - fWidth;
+				FlxSpriteUtils.applyInset(this, 140, 90, 0, 10);
 			} else {
 				//...
 			}
@@ -61,16 +58,16 @@ package daydream.game
 		public override function update():void {
 			timeAlive += FlxG.elapsed;
 			
-			if(type == STANDING) {
+			if(type == SOLDIER) {
 				//don't apply gravity until it gets nearly onscreen
 				if(acceleration.y == 0 &&
 						x < FlxG.camera.scroll.x + Main.STAGE_WIDTH
 						+ GameState.PHYSICS_BOUNDS_X_OFFSET / 2) {
 					acceleration.y = Child.GRAVITY;
 				}
-			} else if(type == FLYING) {
+			} else if(type == DRAGON) {
 				velocity.x = (FlxG.state as GameState).getChild().velocity.x
-							+ 350 + 130 * timeAlive;
+							+ 200 + 150 * timeAlive;
 				
 				if(x > FlxG.camera.scroll.x + Main.STAGE_WIDTH) {
 					//this will make GameState clean this up
@@ -82,6 +79,10 @@ package daydream.game
 			} else {
 				//...
 			}
+		}
+		
+		public function isDragon():Boolean {
+			return type == DRAGON;
 		}
 	}
 }

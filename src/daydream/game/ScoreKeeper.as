@@ -21,10 +21,11 @@ package daydream.game
 		
 		public override function update():void
 		{
-			if(child.score > highscore) {
-				highscore = child.score;
+			var score:int = int(child.getScore());
+			if(score > highscore) {
+				highscore = score;
 			}
-			text = "Score: " + child.score + "\nBest: " + highscore;
+			text = "Score: " + score + "\nBest: " + highscore;
 		}
 		
 	}
