@@ -5,7 +5,7 @@ package daydream.game {
 	import org.flixel.FlxSprite;
 	
 	public class Rain extends FlxSprite {
-		[Embed(source = "../../../lib/Rain.png")] private static var RainImage:Class;
+		[Embed(source = "../../../lib/Rain.jpg")] private static var RainImage:Class;
 		
 		private var gameState:GameState;
 		private var rainbow:Rainbow;
@@ -38,8 +38,10 @@ package daydream.game {
 			scrollFactor.y = 0;
 			
 			loadGraphic(RainImage, true, false, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
-			addAnimation("rain", [0, 1, 2], 8);
+			addAnimation("rain", [0, 1, 2, 3, 4], 8);
 			play("rain");
+			
+			blend = "screen";
 		}
 		
 		public override function update():void {

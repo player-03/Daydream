@@ -1,8 +1,3 @@
-/*This and the straw class are just here in case we 
- * 	need the separate classes. They just load the sprites
- * 	for now.
- */
-
 package daydream.game 
 {
 	import org.flixel.FlxSprite;
@@ -17,7 +12,5 @@ package daydream.game
 			
 			loadGraphic(horse_head_img);
 		}
-		
 	}
-
 }

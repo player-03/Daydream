@@ -10,7 +10,7 @@ package daydream.game
 		
 		[Embed(source = "../../../lib/Straw.png")] protected var strawImg:Class;
 		[Embed(source="../../../lib/HorseHead.png")] protected var horseImg:Class;
-		[Embed(source = "../../../lib/UprightUmbrella.png")] protected var umbrellaImg:Class;
+		[Embed(source = "../../../lib/Umbrella.png")] protected var umbrellaImg:Class;
 		[Embed(source = "../../../lib/Spring.png")] protected var pogoImg:Class;
 		
 		public function ItemQueue(child:Child, x:Number, y:Number) 

@@ -10,12 +10,12 @@ package daydream.game {
 		public static const TILE_WIDTH:int = 20;
 		
 		public static var PASTELS:Vector.<ColorTransform> = Vector.<ColorTransform>([
-							new ColorTransform(1, 0.4, 0.4), //red
-							new ColorTransform(0.5, 0.5, 1), //blue
-							new ColorTransform(0.3, 0.92, 0.92), //cyan
-							new ColorTransform(0.4, 0.95, 0.4), //green
-							new ColorTransform(1, 1, 0.4), //yellow
-							new ColorTransform(1, 0.5, 0.97)]); //pink
+							new ColorTransform(0.95, 0.2, 0.2), //red
+							new ColorTransform(0.4, 0.4, 0.95), //blue
+							new ColorTransform(0.2, 0.85, 0.85), //cyan
+							new ColorTransform(0.3, 0.9, 0.3), //green
+							new ColorTransform(0.85, 0.85, 0.2), //yellow
+							new ColorTransform(0.95, 0.4, 0.92)]); //pink
 		
 		[Embed(source = "../../../lib/PlatformLeft.png")] private static var LeftTiles:Class;
 		private static var leftTileSprite:FlxSprite;
