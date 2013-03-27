@@ -1,44 +1,54 @@
 package daydream.game 
 {
+	import daydream.Main;
+	import daydream.utils.FlxSpriteUtils;
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxG;
 	
 	public class Enemy extends FlxSprite
 	{
-		private var enemy_type:int;
-		private var img:FlxSprite;
+		public static const STANDING:int = 0;
+		public static const FLYING:int = 1;
 		
-		[Embed(source = "../../../lib/enemy.png")] protected var enemyImg:Class;
+		[Embed(source = "../../../lib/ArmyMan.png")] private static var standingImg:Class;
+		[Embed(source = "../../../lib/FlyingEnemy.png")] private static var flyingImg:Class;
 		
-		/*type denotes an integer value that determines the type of enemy
-		 *		: 0 is a stationary enemy
-		 * 		: 1 is a flying enemy
+		private static var typeImages:Vector.<Class> = Vector.<Class>([
+					standingImg, flyingImg]);
+		
+		private var type:int;
+		
+		/**
+		 * @param	type The type of enemy to create. This should be one
+		 * of the constants defined in this class.
 		 */
-		
 		public function Enemy(x:Number, y:Number, type:int) 
 		{
-			if (type == 1)
-				x = FlxG.worldBounds.right;
-			
 			super(x, y);
 			
-			enemy_type = type;
+			this.type = type;
+			
+			loadGraphic(typeImages[type]);
+			
+			if(type == STANDING) {
+				FlxSpriteUtils.applyInset(this, 30, 0, 0, 5);
+			}
 		}
 		
 		public override function update():void
 		{
-			if (enemy_type == 0)
-			{
-				img = loadGraphic(enemyImg, false, false, 40, 80);
-			}
-			if (enemy_type == 1)
-			{
-				img = loadGraphic(enemyImg, false, false, 40, 40);
+			if(type == STANDING) {
+				//don't apply gravity until it gets nearly onscreen
+				if(acceleration.y == 0 &&
+						x < FlxG.camera.scroll.x + Main.STAGE_WIDTH
+						+ GameState.PHYSICS_BOUNDS_X_OFFSET / 2) {
+					acceleration.y = Child.GRAVITY;
+				}
+			} else if(type == FLYING) {
 				
-				this.x -= 5;
+			} else {
+				//for later
 			}
 		}
-		
 	}
-
 }

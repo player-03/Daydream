@@ -49,6 +49,8 @@ package daydream.game {
 		private var itemTypes:Vector.<Class>;
 		private var itemFrequencies:Vector.<Number>;
 		
+		private var enemyFrequency:Number;
+		
 		private var spawnUmbrellaNext:Boolean;
 		private static const CHANCE_FOR_UMBRELLA:Number = 0.8;
 		private var wasRaining:Boolean;
@@ -61,7 +63,7 @@ package daydream.game {
 									yInterval:NumberInterval,
 									platformWidthInterval:NumberInterval,
 									distanceBetweenPlatformsInterval:NumberInterval,
-									child:Child,
+									child:Child, enemyFrequency:Number,
 									itemTypes:Array = null, itemFrequencies:Array = null,
 									childSpeedMultiplier:Number = 0.001) {
 			super();
@@ -74,6 +76,7 @@ package daydream.game {
 			
 			this.child = child;
 			this.childSpeedMultiplier = childSpeedMultiplier;
+			this.enemyFrequency = enemyFrequency;
 			
 			lastPlatformX = firstPlatformX;
 			lastPlatformY = (yInterval.min + yInterval.max) / 2;
@@ -133,7 +136,7 @@ package daydream.game {
 			
 			//now see if an item should be spawned as well
 			var itemX:Number = lastPlatformX + 5 + Math.random() * lastPlatformWidth * 1.8;
-			var itemY:Number = lastPlatformY + 30 - Math.random() * 120;
+			var itemY:Number = lastPlatformY + 5 - Math.random() * 120;
 			var item:FlxObject;
 			if(spawnUmbrellaNext) {
 				spawnUmbrellaNext = false;
@@ -159,6 +162,14 @@ package daydream.game {
 					item.y += platform.height + item.height;
 				}
 				gameState.addItem(item);
+			}
+			
+			//also spawn a standing enemy if appropriate
+			if(Math.random() < enemyFrequency) {
+				gameState.addEnemy(new Enemy(
+							lastPlatformX + 3
+									+ Math.random() * (lastPlatformWidth - 63),
+							lastPlatformY - 97, Enemy.STANDING));
 			}
 		}
 		

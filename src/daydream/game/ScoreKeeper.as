@@ -4,28 +4,27 @@ package daydream.game
 	
 	public class ScoreKeeper extends FlxText
 	{
-		private var the_child:Child;
-		private var points:int;
+		private var child:Child;
+		private static var highscore:int;
 		
 		public function ScoreKeeper(child:Child, x:Number, y:Number) 
 		{
-			super(x, y, 300, points.toString());
+			super(x, y, 300);
 			
-			this.scrollFactor.x = 0;
-			this.scrollFactor.y = 0;
+			scrollFactor.x = 0;
+			scrollFactor.y = 0;
 			
-			this.color = 0x00000000;
+			color = 0x00000000;
 			
-			the_child = child;
+			this.child = child;
 		}
 		
 		public override function update():void
 		{
-			points = the_child.x - 50;
-			
-			this.text = "Score: " + points.toString();
-			
-			//trace("POINTS: " + points + "\n");
+			if(child.score > highscore) {
+				highscore = child.score;
+			}
+			text = "Score: " + child.score + "\nBest: " + highscore;
 		}
 		
 	}

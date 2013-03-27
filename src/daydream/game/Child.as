@@ -1,21 +1,22 @@
 package daydream.game {
+	import daydream.utils.FlxSpriteUtils;
 	import org.flixel.FlxG;
 	import org.flixel.FlxObject;
 	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
 	
 	public class Child extends FlxSprite {
-		public static const RUN_SPEED_CUTOFF:Number = 300;
-		public static const SPRINT_SPEED_CUTOFF:Number = 500;
-		private static const HORSE_MULTIPLIER:Number = 2;
-		private static const WALK_ACCEL:Number = 100;
-		private static const RUN_ACCEL:Number = 10;
-		private static const SPRINT_ACCEL:Number = 2;
-		private static const JUMP_STRENGTH:Number = 300;
-		private static const JUMP_LENGTH:Number = 1;
-		private static const JUMP_GRAVITY:Number = 350;
-		private static const FALL_SPEED:Number = 400;
-		private static const GRAVITY:Number = 650;
+		public static const RUN_SPEED_CUTOFF:Number = 400;
+		public static const SPRINT_SPEED_CUTOFF:Number = 600;
+		public static const HORSE_MULTIPLIER:Number = 2;
+		public static const WALK_ACCEL:Number = 100;
+		public static const RUN_ACCEL:Number = 10;
+		public static const SPRINT_ACCEL:Number = 2;
+		public static const JUMP_STRENGTH:Number = 300;
+		public static const JUMP_LENGTH:Number = 1;
+		public static const JUMP_GRAVITY:Number = 350;
+		public static const FALL_SPEED:Number = 400;
+		public static const GRAVITY:Number = 650;
 		public static const CHILD_HEIGHT:Number = 60;
 		
 		/**
@@ -57,21 +58,27 @@ package daydream.game {
 		private static const ATTACK_DAMAGE_START:Number = 0;
 		private static const ATTACK_DAMAGE_END:Number = 0.25;
 		private static const ATTACK_END:Number = 0.6;
+		private static const ENEMY_KILL_POINTS:int = 1000;
 		
 		//Getting hit variables
 		//**we can use the timer activation to also cancel any items that need to be cancelled on hit
 		private var hitTimer:Number = -1;
 		private static const HIT_TIMER_END:Number = 1;
 		
+		private static const DISTANCE_COVERED_TO_POINTS_MULTIPLIER:Number = 0.4;
+		private var prevX:Number;
+		public var score:int = 0;
+		
 		public function Child(gameState:GameState, rainbow:Rainbow, x:Number, y:Number) {
 			super(x, y);
+			prevX = x;
 			
 			this.gameState = gameState;
 			this.rainbow = rainbow;
 			
-			loadGraphic(ImgChild, true, false, 50, CHILD_HEIGHT);
+			loadGraphic(ImgChild, true, false, 72, 72);
 			addAnimation("idle", [0, 1], 2);
-			addAnimation("run", [4, 5, 6, 7, 8, 9, 10, 11], 20);
+			addAnimation("run", [2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 20);
 			addAnimation("jump", [12, 13, 14], 12, false);
 			addAnimation("midair jump", [20, 21, 22, 23], 12, false);
 			addAnimation("fall", [15]);
@@ -84,6 +91,8 @@ package daydream.game {
 			addAnimation("horse run", [30, 31, 32, 33, 34, 35], 20);
 			addAnimation("horse jump", [36, 37, 38], 12, false);
 			addAnimation("horse fall", [39]);
+			
+			FlxSpriteUtils.applyInset(this, 0, 0, 0, 2);
 			
 			baseXVelocity = RUN_SPEED_CUTOFF / 4;
 			acceleration.y = GRAVITY;
@@ -98,7 +107,7 @@ package daydream.game {
 			}
 			
 			//check the item picked up
-			if (item is Horse_Head
+			if (item is HorseHead
 				|| item is Straw
 				|| item is Umbrella
 				|| item is PogoStick)
@@ -115,13 +124,12 @@ package daydream.game {
 				return;
 			}
 			
-			if(itemInUse is Horse_Head)
+			if(itemInUse is HorseHead || rainbow.visible && rainbow.withinRainbow(this)
+				|| attackTimer >= ATTACK_DAMAGE_START && attackTimer <= ATTACK_DAMAGE_END)
 			{
 				enemy.kill();
-			}
-			else if(attackTimer >= ATTACK_DAMAGE_START && attackTimer <= ATTACK_DAMAGE_END)
-			{
-				enemy.kill();
+				
+				score += ENEMY_KILL_POINTS;
 			}
 			else
 			{
@@ -188,7 +196,7 @@ package daydream.game {
 						if(attackTimer >= 0) {
 							velocity.y *= 0.9;
 						}
-						if(itemInUse is Horse_Head) {
+						if(itemInUse is HorseHead) {
 							velocity.y *= 1.3;
 						}
 						
@@ -201,7 +209,7 @@ package daydream.game {
 						jumpTime = 0;
 						jumpReplenish = 0;
 						
-						if(itemInUse is Horse_Head) {
+						if(itemInUse is HorseHead) {
 							play("horse jump");
 						} else if(onGround) {
 							play("jump");
@@ -297,7 +305,7 @@ package daydream.game {
 					attackTimer = -1;
 				}
 			}
-			else if (attackTimer < 0 && FlxG.keys.justPressed("F") && itemInUse == null)
+			else if (attackTimer < 0 && attackJustPressed() && itemInUse == null)
 			{
 				attackTimer = 0;
 			}
@@ -314,7 +322,7 @@ package daydream.game {
 			}
 			
 			//using held items
-			if (currentItem != null && (FlxG.keys.D || FlxG.keys.SHIFT))
+			if (currentItem != null && useItemJustPressed())
 			{
 				itemInUse = currentItem;
 				currentItem = null;
@@ -324,7 +332,7 @@ package daydream.game {
 				if (itemInUse is Straw)
 				{
 					acceleration.y = 0;
-					velocity.y = -100;
+					velocity.y -= 100;
 				}
 				
 				if(itemInUse is PogoStick) {
@@ -334,7 +342,7 @@ package daydream.game {
 			}
 			
 			//x velocity
-			if (itemInUse is Horse_Head)
+			if (itemInUse is HorseHead)
 			{
 				if(itemTimeLeft > 1.2) {
 					velocity.x = baseXVelocity * HORSE_MULTIPLIER;
@@ -387,7 +395,7 @@ package daydream.game {
 			} else if(attackTimer >= 0) {
 				play("attack");
 			} else if(onGround) {
-				if(itemInUse is Horse_Head) {
+				if(itemInUse is HorseHead) {
 					play("horse run");
 				} else if(velocity.x < 30) {
 					play("idle");
@@ -396,7 +404,7 @@ package daydream.game {
 				}
 			} else {
 				if(velocity.y >= 0) {
-					if(itemInUse is Horse_Head) {
+					if(itemInUse is HorseHead) {
 						play("horse fall");
 					} else if(itemInUse is PogoStick) {
 						play("pogo fall");
@@ -405,6 +413,10 @@ package daydream.game {
 					}
 				}
 			}
+			
+			//increment the score
+			score += int((x - prevX) * DISTANCE_COVERED_TO_POINTS_MULTIPLIER);
+			prevX = x;
 		}
 		
 		public function affectedByRain():Boolean {
@@ -423,10 +435,18 @@ package daydream.game {
 		}
 		
 		private function jumpJustPressed():Boolean {
-			return FlxG.keys.justPressed("UP") || FlxG.keys.justPressed("SPACE");
+			return FlxG.keys.justPressed("Z") || FlxG.keys.justPressed("A") || FlxG.keys.justPressed("UP") || FlxG.keys.justPressed("SPACE");
 		}
 		private function jumpHeld():Boolean {
-			return FlxG.keys.UP || FlxG.keys.SPACE;
+			return FlxG.keys.Z || FlxG.keys.A || FlxG.keys.UP || FlxG.keys.SPACE;
+		}
+		
+		private function useItemJustPressed():Boolean {
+			return FlxG.keys.justPressed("S") || FlxG.keys.justPressed("X") || FlxG.keys.justPressed("SHIFT");
+		}
+		
+		private function attackJustPressed():Boolean {
+			return FlxG.keys.justPressed("D") || FlxG.keys.justPressed("C");
 		}
 	}
 }

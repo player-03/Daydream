@@ -8,10 +8,10 @@ package daydream.game
 		private var item:FlxObject;
 		private var the_child:Child;
 		
-		[Embed(source = "../../../lib/straw.png")] protected var strawImg:Class;
-		[Embed(source="../../../lib/horse_head.png")] protected var horseImg:Class;
-		[Embed(source = "../../../lib/umbrella.png")] protected var umbImg:Class;
-		[Embed(source = "../../../lib/pogo_stick.png")] protected var pogoImg:Class;
+		[Embed(source = "../../../lib/Straw.png")] protected var strawImg:Class;
+		[Embed(source="../../../lib/HorseHead.png")] protected var horseImg:Class;
+		[Embed(source = "../../../lib/UprightUmbrella.png")] protected var umbrellaImg:Class;
+		[Embed(source = "../../../lib/Spring.png")] protected var pogoImg:Class;
 		
 		public function ItemQueue(child:Child, x:Number, y:Number) 
 		{
@@ -31,21 +31,21 @@ package daydream.game
 		{
 			//this is not as inefficient as it seems, because Flixel
 			//caches the BitmapData objects
-			if (the_child.currentItem is Horse_Head)
+			if (the_child.currentItem is HorseHead)
 			{
-				loadGraphic(horseImg, false, false, 40, 40);
+				loadGraphic(horseImg);
 			}
 			else if (the_child.currentItem is Straw)
 			{
-				loadGraphic(strawImg, false, false, 40, 40);
+				loadGraphic(strawImg);
 			}
 			else if (the_child.currentItem is Umbrella)
 			{
-				loadGraphic(umbImg, false, false, 40, 40);
+				loadGraphic(umbrellaImg);
 			}
 			else if (the_child.currentItem is PogoStick)
 			{
-				loadGraphic(pogoImg, false, false, 40, 40);
+				loadGraphic(pogoImg);
 			}
 			
 			visible = the_child.currentItem != null;

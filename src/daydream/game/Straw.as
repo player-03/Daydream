@@ -4,12 +4,12 @@ package daydream.game
 	
 	public class Straw extends FlxSprite
 	{
-		[Embed(source = "../../../lib/straw.png")] protected var strawImg:Class;
+		[Embed(source = "../../../lib/Straw.png")] protected var strawImg:Class;
 		public function Straw(x:Number, y:Number) 
 		{
 			super(x, y);
 			
-			loadGraphic(strawImg, false, false, 40, 40);
+			loadGraphic(strawImg);
 		}
 		
 	}

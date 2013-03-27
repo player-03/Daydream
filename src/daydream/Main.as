@@ -17,7 +17,7 @@ package daydream{
 		}
 		
 		public function Main():void {
-			super(int(STAGE_WIDTH * 1.3), STAGE_HEIGHT, MenuState, 1, 30, 30, true);
+			super(STAGE_WIDTH, STAGE_HEIGHT, MenuState, 1, 30, 30, true);
 			instance = this;
 			_focus.addEventListener(MouseEvent.CLICK, onPauseScreenClicked);
 		}

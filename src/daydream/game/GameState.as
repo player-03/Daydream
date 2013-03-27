@@ -1,6 +1,6 @@
 package daydream.game {
 	import daydream.game.Child;
-	import daydream.game.Horse_Head;
+	import daydream.game.HorseHead;
 	import daydream.game.ItemQueue;
 	import daydream.game.Platform;
 	import daydream.Main;
@@ -14,6 +14,8 @@ package daydream.game {
 	
 	public class GameState extends FlxState {
 		private static const WORLD_HEIGHT:Number = 2800;
+		public static const PHYSICS_BOUNDS_X_OFFSET:Number = 100;
+		public static const PHYSICS_BOUNDS_Y_OFFSET:Number = WORLD_HEIGHT - Main.STAGE_HEIGHT;
 		
 		private var child:Child;
 		private var platforms:FlxGroup;
@@ -32,6 +34,9 @@ package daydream.game {
 		
 		public override function create():void {
 			//FlxG.bgColor = 0xFFCCDDFF;
+			
+			FlxG.worldBounds.width = Main.STAGE_WIDTH + 2 * PHYSICS_BOUNDS_X_OFFSET;
+			FlxG.worldBounds.height = Main.STAGE_HEIGHT + 2 * PHYSICS_BOUNDS_Y_OFFSET;
 			
 			//because some objects refer to this in their constructor
 			FlxG.camera.setBounds(0, 0, Number.POSITIVE_INFINITY, WORLD_HEIGHT);
@@ -67,13 +72,13 @@ package daydream.game {
 			rain = new Rain(this, rainbow, 30, 10, 3, 5);
 			foreground.add(rain);
 			
-			item_queue = new ItemQueue(child, 10, 10);
+			item_queue = new ItemQueue(child, 10, 40);
 			foreground.add(item_queue);
 			
-			scoreKeeper = new ScoreKeeper(child, 100, 10);
+			scoreKeeper = new ScoreKeeper(child, 10, 10);
 			foreground.add(scoreKeeper);
 			
-			foreground.add(new JumpReplenishIndicator(child, 55, 18));
+			foreground.add(new JumpReplenishIndicator(child, 90, 10));
 			
 			FlxG.camera.follow(child);
 			FlxG.camera.deadzone = new FlxRect(Main.STAGE_WIDTH * 0.16,
@@ -85,39 +90,38 @@ package daydream.game {
 			addPlatform(new Platform(630, WORLD_HEIGHT - 250, 170));
 			
 			addItem(new Straw(590, WORLD_HEIGHT - 700));
-			addEnemy(new Enemy(700, WORLD_HEIGHT - 340, 0));
 			
 			var jumpDistInterval:NumberInterval = new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE * 2);
 			add(new PlatformSpawner(this, 630,
 					new NumberInterval(WORLD_HEIGHT - 320, WORLD_HEIGHT - 10 - Platform.TILE_WIDTH),
-					new NumberInterval(340, 600),
+					new NumberInterval(370, 650),
 					new NumberInterval(Child.JUMP_DISTANCE / 3, Child.JUMP_DISTANCE),
-					child, [Horse_Head], [0.17], 0));
+					child, 0, [HorseHead], [0.17], 0));
 			add(new PlatformSpawner(this, 550,
 					new NumberInterval(WORLD_HEIGHT - 700, WORLD_HEIGHT - 340),
 					new NumberInterval(280, 550),
-					jumpDistInterval, child,
-					[Horse_Head, PogoStick], [0.04, 0.03]));
+					jumpDistInterval, child, 0.1,
+					[HorseHead, PogoStick], [0.04, 0.03]));
 			add(new PlatformSpawner(this, 2500,
 					new NumberInterval(WORLD_HEIGHT - 1100, WORLD_HEIGHT - 720),
 					new NumberInterval(270, 500),
-					jumpDistInterval, child,
-					[Horse_Head, PogoStick], [0.05, 0.03]));
+					jumpDistInterval, child, 0.05,
+					[HorseHead, PogoStick], [0.05, 0.03]));
 			add(new PlatformSpawner(this, 5000,
 					new NumberInterval(WORLD_HEIGHT - 1900, WORLD_HEIGHT - 1130),
-					new NumberInterval(270, 600),
-					jumpDistInterval, child,
+					new NumberInterval(370, 550),
+					jumpDistInterval, child, 0,
 					[PogoStick], [0.03]));
 			add(new PlatformSpawner(this, 7500,
 					new NumberInterval(WORLD_HEIGHT - 2400, WORLD_HEIGHT - 1920),
 					new NumberInterval(280, 450),
-					jumpDistInterval, child,
+					jumpDistInterval, child, 0.07,
 					[Straw], [0.08], 0.0005));
 			add(new PlatformSpawner(this, 10000,
 					new NumberInterval(0, WORLD_HEIGHT - 2420),
 					new NumberInterval(300, 350),
-					jumpDistInterval, child,
-					[Horse_Head], [0.2], 0.0005));
+					jumpDistInterval, child, 0.2,
+					[HorseHead], [0.2], 0.0005));
 			
 			child.y = FlxG.camera.bounds.bottom - 600;
 		}
@@ -136,8 +140,8 @@ package daydream.game {
 			//the world bounds define the area where collisions will be
 			//checked (and it uses a quad tree, so it isn't possible to
 			//set the width to infinity)
-			FlxG.worldBounds.x = FlxG.camera.scroll.x;
-			FlxG.worldBounds.y = FlxG.camera.scroll.y;
+			FlxG.worldBounds.x = FlxG.camera.scroll.x - PHYSICS_BOUNDS_X_OFFSET;
+			FlxG.worldBounds.y = FlxG.camera.scroll.y - PHYSICS_BOUNDS_Y_OFFSET;
 			
 			FlxG.collide(child, platforms);
 			FlxG.overlap(child, items, child.onItemCollision);

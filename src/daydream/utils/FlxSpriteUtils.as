@@ -58,5 +58,17 @@ package daydream.utils {
 				}
 			}
 		}
+		
+		/**
+		 * Insets the given sprite's hitbox by the given amounts. For
+		 * example, if left is 2, the sprite's left edge will be pushed
+		 * in by 2 pixels.
+		 */
+		public static function applyInset(sprite:FlxSprite, left:Number, top:Number, right:Number, bottom:Number):void {
+			sprite.width -= left + right;
+			sprite.height -= top + bottom;
+			sprite.offset.x += left;
+			sprite.offset.y += top;
+		}
 	}
 }

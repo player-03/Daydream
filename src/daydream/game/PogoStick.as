@@ -5,13 +5,13 @@ package daydream.game
 	public class PogoStick extends FlxSprite
 	{
 		
-		[Embed(source = "../../../lib/pogo_stick.png")] protected var pogoImg:Class;
+		[Embed(source = "../../../lib/Spring.png")] protected var pogoImg:Class;
 		
 		public function PogoStick(x:Number, y:Number) 
 		{
 			super(x, y);
 			
-			loadGraphic(pogoImg, false, false, 40, 40);
+			loadGraphic(pogoImg);
 		}
 		
 	}
