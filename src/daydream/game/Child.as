@@ -136,9 +136,14 @@ package daydream.game {
 				if (hitTimer == -1)
 				{
 					hitTimer = 0;
-					play("damaged");
+					//play("damaged");
+					flicker(HIT_TIMER_END);
 					
-					itemTimeLeft = 0;
+					velocity.y *= 0.6;
+					
+					if(!(itemInUse is PogoStick)) {
+						itemTimeLeft = 0;
+					}
 				}
 			}
 		}
@@ -173,8 +178,11 @@ package daydream.game {
 				jumpReplenish = 0;
 				play("pogo jump");
 				
-				velocity.y = -JUMP_STRENGTH * (0.5 + 0.25 * pogoStickBounces)
+				velocity.y = -JUMP_STRENGTH * 0.5
 						- previousVelocity.y * 0.7;
+				if(hitTimer < 0) {
+					velocity.y -= JUMP_STRENGTH * 0.3 * pogoStickBounces;
+				}
 				
 				if(affectedByRain()) {
 					velocity.y *= 0.8;
@@ -362,20 +370,21 @@ package daydream.game {
 				if(itemInUse is PogoStick) {
 					if(pogoStickBounces >= 6) {
 						itemTimeLeft = 0;
+						itemInUse = null;
+						play("jump");
 					}
 				} else {
 					itemTimeLeft -= FlxG.elapsed;
-				}
-				if(itemTimeLeft <= 0) {
-					if (itemInUse is Straw)
-					{
-						acceleration.y = GRAVITY;
-					}
-					
-					itemInUse = null;
-					
-					if(velocity.y < 0) {
-						play("fall");
+					if(itemTimeLeft <= 0) {
+						if (itemInUse is Straw) {
+							acceleration.y = GRAVITY;
+						}
+						
+						if(velocity.y < 0) {
+							play("fall");
+						}
+						
+						itemInUse = null;
 					}
 				}
 			}
@@ -392,9 +401,9 @@ package daydream.game {
 				} else {
 					play("fly down");
 				}
-			} else if(hitTimer >= 0) {
+			} /*else if(hitTimer >= 0) {
 				play("damaged");
-			} else if(attackTimer >= 0) {
+			} */else if(attackTimer >= 0) {
 				play("attack");
 			} else if(onGround) {
 				if(itemInUse is HorseHead) {

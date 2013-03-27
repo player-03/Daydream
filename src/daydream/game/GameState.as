@@ -123,6 +123,8 @@ package daydream.game {
 					jumpDistInterval, child, 0.2,
 					[HorseHead], [0.2], 0.0005));
 			
+			add(new DragonSpawner(20));
+			
 			child.y = FlxG.camera.bounds.bottom - 600;
 		}
 		
@@ -157,7 +159,7 @@ package daydream.game {
 			var member:FlxObject;
 			for(var i:int = group.members.length - 1; i >= 0; i--) {
 				member = group.members[i] as FlxObject;
-				if(member != null && member.exists && member.x + member.width < FlxG.worldBounds.x) {
+				if(member != null && member.exists && member.x + member.width < FlxG.camera.scroll.x - PHYSICS_BOUNDS_X_OFFSET) {
 					if(recycle) {
 						member.kill();
 					} else {
@@ -195,6 +197,10 @@ package daydream.game {
 		
 		public function isRaining():Boolean {
 			return rain.visible;
+		}
+		
+		public function getChild():Child {
+			return child;
 		}
 	}
 }

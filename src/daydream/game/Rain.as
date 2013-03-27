@@ -33,13 +33,14 @@ package daydream.game {
 			visible = false;
 			
 			timeRemaining = dryTime;
-			timeRemaining = 2;
+			//timeRemaining = 2; //for quick testing
 			
 			scrollFactor.x = 0;
 			scrollFactor.y = 0;
 			
 			loadGraphic(RainImage, true, false, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
-			addAnimation("rain", [0, 1, 2, 3, 4], 8);
+			addAnimation("rain", [0, 1, 2, 3, 4/*, 5, 6, 7, 8, 9, 10, 11,
+								12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24*/], 24);
 			play("rain");
 			
 			blend = "screen";
