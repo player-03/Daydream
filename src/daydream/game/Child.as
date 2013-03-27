@@ -80,7 +80,7 @@ package daydream.game {
 			addAnimation("idle", [0, 1], 2);
 			addAnimation("run", [2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 20);
 			addAnimation("jump", [12, 13, 14], 12, false);
-			addAnimation("midair jump", [20, 21, 22, 23], 12, false);
+			addAnimation("midair jump", [12, 13, 14], 12, false);//[20, 21, 22, 23], 12, false);
 			addAnimation("fall", [15]);
 			addAnimation("attack", [16, 17, 18, 19], 20, false);
 			addAnimation("damaged", [24, 25], 12);
@@ -137,6 +137,8 @@ package daydream.game {
 				{
 					hitTimer = 0;
 					play("damaged");
+					
+					itemTimeLeft = 0;
 				}
 			}
 		}

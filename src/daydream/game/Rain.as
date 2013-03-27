@@ -33,6 +33,7 @@ package daydream.game {
 			visible = false;
 			
 			timeRemaining = dryTime;
+			timeRemaining = 2;
 			
 			scrollFactor.x = 0;
 			scrollFactor.y = 0;

@@ -45,9 +45,9 @@ package daydream.game {
 			add(background);
 			
 			background.add(new Background(Background.background)); //background!
-			background.add(new Background(Background.clouds1, 150, WORLD_HEIGHT / 5 - 150));
-			background.add(new Background(Background.clouds2, 350, WORLD_HEIGHT / 3.5 - 350));
-			background.add(new Background(Background.ocean, WORLD_HEIGHT - 130, -40));
+			//background.add(new Background(Background.clouds1, 150, WORLD_HEIGHT / 5 - 150));
+			//background.add(new Background(Background.clouds2, 350, WORLD_HEIGHT / 3.5 - 350));
+			//background.add(new Background(Background.ocean, WORLD_HEIGHT - 130, -40));
 			
 			rainbow = new Rainbow();
 			background.add(rainbow);
@@ -67,7 +67,7 @@ package daydream.game {
 			foreground = new FlxGroup();
 			add(foreground);
 			
-			foreground.add(new Background(Background.ocean, WORLD_HEIGHT, -80));
+			//foreground.add(new Background(Background.ocean, WORLD_HEIGHT, -80));
 			
 			rain = new Rain(this, rainbow, 30, 10, 3, 5);
 			foreground.add(rain);

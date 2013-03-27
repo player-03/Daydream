@@ -14,8 +14,9 @@ package daydream.game {
 							new ColorTransform(0.4, 0.4, 0.95), //blue
 							new ColorTransform(0.2, 0.85, 0.85), //cyan
 							new ColorTransform(0.3, 0.9, 0.3), //green
-							new ColorTransform(0.85, 0.85, 0.2), //yellow
+							//new ColorTransform(0.85, 0.85, 0.2), //yellow
 							new ColorTransform(0.95, 0.4, 0.92)]); //pink
+		public static var BLACK:ColorTransform = new ColorTransform(0, 0, 0);
 		
 		[Embed(source = "../../../lib/PlatformLeft.png")] private static var LeftTiles:Class;
 		private static var leftTileSprite:FlxSprite;
@@ -51,7 +52,8 @@ package daydream.game {
 			FlxSpriteUtils.fillAreaWithTiles(width - rightTileSprite.width, 0, width, TILE_WIDTH, this, rightTileSprite);
 			
 			pixels.colorTransform(new Rectangle(0, 0, pixels.width, pixels.height),
-					PASTELS[int(Math.random() * PASTELS.length)]);
+					//PASTELS[int(Math.random() * PASTELS.length)]);
+					BLACK);
 			
 			pixels.unlock();
 			
