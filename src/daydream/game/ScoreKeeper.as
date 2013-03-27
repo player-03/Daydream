@@ -17,6 +17,7 @@ package daydream.game
 			color = 0x00000000;
 			
 			this.child = child;
+			this.size = 11;
 		}
 		
 		public override function update():void

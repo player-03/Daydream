@@ -75,10 +75,10 @@ package daydream.game {
 			item_queue = new ItemQueue(child, 10, 40);
 			foreground.add(item_queue);
 			
-			scoreKeeper = new ScoreKeeper(child, 10, 10);
+			scoreKeeper = new ScoreKeeper(child, 50, 10);
 			foreground.add(scoreKeeper);
 			
-			foreground.add(new JumpReplenishIndicator(child, 90, 10));
+			foreground.add(new JumpReplenishIndicator(child, 10, 10));
 			
 			FlxG.camera.follow(child);
 			FlxG.camera.deadzone = new FlxRect(Main.STAGE_WIDTH * 0.16,
