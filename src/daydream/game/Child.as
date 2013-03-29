@@ -69,6 +69,7 @@ package daydream.game {
 		//**we can use the timer activation to also cancel any items that need to be cancelled on hit
 		private var hitTimer:Number = -1;
 		private static const HIT_TIMER_END:Number = 1;
+		private var invincibleTimeLeft:Number = 0;
 		
 		/**
 		 * The number of points earned per pixel travelled.
@@ -142,6 +143,12 @@ package daydream.game {
 				return;
 			}
 			
+			//ignore collisions while invincible
+			if(invincibleTimeLeft > 0) {
+				//TODO: Allow attacking while invincible.
+				return;
+			}
+			
 			//the hit timer doesn't start counting until the child
 			//leaves contact with the enemy
 			if(hitTimer >= 0)
@@ -149,20 +156,20 @@ package daydream.game {
 				hitTimer = 0;
 				flicker(HIT_TIMER_END);
 			}
-			else if((enemy as Enemy).isDragon())
+			else if(enemy is Dragon)
 			{
-				var enemyOffset:FlxPoint = (enemy as Enemy).offset;
+				var enemyOffset:FlxPoint = (enemy as Dragon).offset;
 				//check if the child landed on the dragon's neck (not too
 				//far forward, not too far back, and not from below)
 				if(x + offset.x + width < enemy.x + enemyOffset.x + enemy.width - 80
-					&& x + offset.x > enemy.x + enemyOffset.x + enemy.width - 360
+					&& x + offset.x > enemy.x + enemyOffset.x + enemy.width - 400
 					&& y + offset.y + height < enemy.y + enemyOffset.y + 10)
 				{
 					enemy.kill();
 					
 					score += DRAGON_RIDE_POINTS;
 					
-					dragonSprite.activate();
+					dragonSprite.activate(enemy as Dragon);
 					visible = false;
 					
 					acceleration.y = -10;
@@ -381,6 +388,11 @@ package daydream.game {
 				attackTimer = 0;
 			}
 			
+			//invincibility
+			if(invincibleTimeLeft > 0) {
+				invincibleTimeLeft -= FlxG.elapsed;
+			}
+			
 			//recovering from damage
 			if (hitTimer >= 0)
 			{
@@ -504,6 +516,12 @@ package daydream.game {
 						play("fall");
 					}
 				}
+			}
+		}
+		
+		public function setInvincibleFor(time:Number):void {
+			if(time > invincibleTimeLeft) {
+				invincibleTimeLeft = time;
 			}
 		}
 		

@@ -57,7 +57,7 @@ package daydream.game {
 			objectPoint.x += object.width / 2;
 			objectPoint.y += object.height / 2;
 			
-			var r:Number = width / 2 + 150 + Math.max(object.width / 2, object.health / 2);
+			var r:Number = width / 2 + 100 + Math.max(object.width / 2, object.health / 2);
 			var xDiff:Number = objectPoint.x - _point.x;
 			var yDiff:Number = objectPoint.y - _point.y;
 			

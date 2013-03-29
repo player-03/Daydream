@@ -169,7 +169,7 @@ package daydream.game {
 				gameState.addEnemy(new Enemy(
 							lastPlatformX + 3
 									+ Math.random() * (lastPlatformWidth - 63),
-							lastPlatformY - 97, Enemy.SOLDIER));
+							lastPlatformY - 97));
 			}
 		}
 		

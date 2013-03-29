@@ -13,6 +13,8 @@ package daydream.game {
 		
 		private var timeLeft:Number;
 		
+		private var currentDragon:Dragon;
+		
 		public function DragonRideSprite(child:Child) {
 			super(0, 0, image);
 			
@@ -29,6 +31,15 @@ package daydream.game {
 				
 				if(timeLeft <= 0) {
 					visible = false;
+					
+					currentDragon.revive();
+					currentDragon.x = child.x + X_OFFSET / 2
+								+ child.velocity.x * FlxG.elapsed;
+					currentDragon.y = child.y + Y_OFFSET / 2;
+					currentDragon.timeAlive += RIDE_LENGTH;
+					currentDragon.update();
+					
+					child.setInvincibleFor(1);
 				}
 			}
 		}
@@ -41,9 +52,10 @@ package daydream.game {
 			}
 		}
 		
-		public function activate():void {
+		public function activate(dragon:Dragon):void {
 			visible = true;
 			timeLeft = RIDE_LENGTH;
+			currentDragon = dragon;
 		}
 	}
 }
