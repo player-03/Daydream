@@ -383,8 +383,9 @@ package daydream.game {
 					attackTimer = -1;
 				}
 			}
-			else if (attackTimer < 0 && attackJustPressed() && itemInUse == null)
+			else if (attackTimer < 0 && attackJustPressed() && (itemInUse == null || itemInUse == Umbrella))
 			{
+				itemInUse = null;
 				attackTimer = 0;
 			}
 			
