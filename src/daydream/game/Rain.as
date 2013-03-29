@@ -3,8 +3,10 @@ package daydream.game {
 	import daydream.utils.NumberInterval;
 	import org.flixel.FlxG;
 	import org.flixel.FlxSprite;
+	import Math;
 	
 	public class Rain extends FlxSprite {
+		//[Embed(source = "../../../lib/Rain_master.jpg")] private static var RainImage:Class;
 		[Embed(source = "../../../lib/Rain.jpg")] private static var RainImage:Class;
 		
 		private var gameState:GameState;
@@ -17,6 +19,9 @@ package daydream.game {
 		private var timeRemaining:Number;
 		
 		private var alphaSet:Boolean;
+		
+		//number to indicate angle of rotation based on child speed
+		private var rainRot:Number;
 		
 		public function Rain(gameState:GameState, rainbow:Rainbow,
 								dryTime:Number, rainTime:Number,
@@ -41,15 +46,29 @@ package daydream.game {
 			scrollFactor.x = 0;
 			scrollFactor.y = 0;
 			
+			//uncomment this
+			//loadGraphic(RainImage);
+			
 			loadGraphic(RainImage, true, false, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
 			addAnimation("rain", [0, 1, 2, 3, 4/*, 5, 6, 7, 8, 9, 10, 11,
 								12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24*/], 24);
 			play("rain");
 			
+			//this.angle = 45;
+			
 			blend = "screen";
 		}
 		
 		public override function update():void {
+			/*place equation to change angle based on speed
+			 */
+			 
+			/*place equation to scroll based on angle
+			 */
+			//amount is arbitrary for now
+			//this.y += 5
+			//this.x -= 5
+			
 			timeRemaining -= FlxG.elapsed;
 			if(timeRemaining <= 0) {
 				visible = !visible;
