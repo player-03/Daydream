@@ -32,6 +32,8 @@ package daydream.game {
 		 * Refer to this instead of angle.
 		 */
 		private var rotation:Number;
+		//can be changed
+		private static const RAIN_SPEED:Number = 5;
 		
 		public function Rain(gameState:GameState, rainbow:Rainbow,
 								dryTime:Number, rainTime:Number,
@@ -58,8 +60,9 @@ package daydream.game {
 			//the final bitmap should be large enough to hold any rotation
 			makeGraphic(sourceImageDiagonal, sourceImageDiagonal, 0x00000000);
 			
-			setRotation(45);
+			//setRotation(45);
 			setRotation(30);
+			//setRotation(15);
 		}
 		
 		private function setRotation(rotation:Number):void {
@@ -80,17 +83,12 @@ package daydream.game {
 			/*place equation to change angle based on speed
 			 */
 			 
-			/*place equation to scroll based on angle
-			 */
-			//amount is arbitrary for now
-			//this.y += 5
-			//this.x -= 5
-			
 			timeRemaining -= FlxG.elapsed;
 			if(timeRemaining <= 0) {
 				visible = !visible;
 				
-				if(visible) {
+				if (visible) {
+					//trace("IS RAINING: " + rotation + ", " + Math.abs(Math.cos(-rotation * Math.PI/180)) + ", " + Math.abs(Math.sin(-rotation * Math.PI/180)) +"\n");
 					timeRemaining = rainTime;
 					rainTime += rainTimeIncrease;
 				} else {
@@ -101,7 +99,7 @@ package daydream.game {
 				}
 			}
 			
-			//this is supposed to fade the rain in/out (keywords: supposed to)
+			//rain fading in/out
 			if (timeRemaining > 3 && visible)
 			{
 				if (!alphaSet)
@@ -121,6 +119,18 @@ package daydream.game {
 				{
 					this.alpha -= 0.01;
 				}
+			}
+		}
+		
+		public override function draw():void
+		{
+			if (visible)
+			{
+				//this.y += RAIN_SPEED * Math.abs(Math.sin(-rotation * Math.PI/180));
+				//this.x -= RAIN_SPEED * Math.abs(Math.cos(-rotation * Math.PI/180));
+				this.x -= RAIN_SPEED * Math.abs(Math.sin(-rotation * Math.PI/180));
+				this.y += RAIN_SPEED * Math.abs(Math.cos(-rotation * Math.PI/180));
+				super.draw();
 			}
 		}
 	}
