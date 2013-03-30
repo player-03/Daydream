@@ -397,7 +397,15 @@ package daydream.game {
 			//recovering from damage
 			if (hitTimer >= 0)
 			{
-				hitTimer += FlxG.elapsed;
+				if(rainbow.visible && rainbow.withinRainbow(this))
+				{
+					//recovery is a lot faster within the rainbow
+					hitTimer += 4 * FlxG.elapsed;
+				}
+				else
+				{
+					hitTimer += FlxG.elapsed;
+				}
 				
 				if (hitTimer >= HIT_TIMER_END)
 				{
