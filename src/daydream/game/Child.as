@@ -209,7 +209,7 @@ package daydream.game {
 				visible = !dragonSprite.visible;
 				if(visible) {
 					acceleration.y = GRAVITY;
-					velocity.y = -JUMP_STRENGTH;
+					velocity.y = -JUMP_STRENGTH * 1.4;
 					jumpReplenish = 0;
 					usedMidairJump = false;
 					maxVelocity.y = 10000; //magic number meaning "infinity"
