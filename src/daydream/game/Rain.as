@@ -87,7 +87,7 @@ package daydream.game {
 			visible = false;
 			
 			timeRemaining = dryTime;
-			timeRemaining = 2; //for quick testing
+			//timeRemaining = 2; //for quick testing
 			
 			scrollFactor.x = 0;
 			scrollFactor.y = 0;

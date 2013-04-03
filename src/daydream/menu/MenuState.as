@@ -6,8 +6,12 @@ package daydream.menu {
 	import org.flixel.FlxState;
 	
 	public class MenuState extends FlxState {
+		[Embed(source="../../../lib/Daydream.mp3")] private static var Music:Class;
+		
 		public override function create():void {
 			//the entry point for FlxState objects
+			
+			FlxG.playMusic(Music);
 			
 			FlxG.bgColor = 0xFFFFFFFF;
 			

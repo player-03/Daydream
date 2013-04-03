@@ -19,8 +19,10 @@ package daydream.game {
 			if(timeUntilNext <= 0) {
 				timeUntilNext = timeBetweenDragons;
 				
-				(FlxG.state as GameState).addEnemy(
-						new Dragon((FlxG.state as GameState).getChild().y + 100/*100 + Math.random() * 600*/));
+				(FlxG.state as GameState).addEnemy(new Dragon(
+							//(FlxG.state as GameState).getChild().y + 100
+							100 + Math.random() * 600
+							));
 			}
 		}
 	}

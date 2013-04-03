@@ -86,7 +86,7 @@ package daydream.game {
 			dragonSprite = new DragonRideSprite(this);
 			FlxG.state.add(dragonSprite);
 			
-			loadGraphic(ImgChild, true, false, 72, 72);
+			loadGraphic(ImgChild, true, false, 100, 100);
 			addAnimation("idle", [0, 1], 2);
 			addAnimation("run", [2, 3, 4, 5, 6, 7, 8, 9, 10, 11], 20);
 			addAnimation("jump", [12, 13, 14], 12, false);
@@ -98,9 +98,9 @@ package daydream.game {
 			addAnimation("pogo fall", [27]);
 			addAnimation("fly up", [28]);
 			addAnimation("fly down", [29]);
-			addAnimation("horse run", [30, 31, 32, 33, 34, 35], 20);
-			addAnimation("horse jump", [36, 37, 38], 12, false);
-			addAnimation("horse fall", [39]);
+			addAnimation("horse run", [30, 31, 32, 33, 34, 35, 36, 37, 38, 39], 20);
+			addAnimation("horse jump", [40, 41, 42], 12, false);
+			addAnimation("horse fall", [43]);
 			
 			FlxSpriteUtils.applyInset(this, 15, 10, 15, 2);
 			
@@ -149,12 +149,14 @@ package daydream.game {
 				return;
 			}
 			
-			//the hit timer doesn't start counting until the child
-			//leaves contact with the enemy
+			//the hit timer doesn't finish until the child leaves contact
+			//with the enemy
 			if(hitTimer >= 0)
 			{
-				hitTimer = 0;
-				flicker(HIT_TIMER_END);
+				if(hitTimer > HIT_TIMER_END * 0.6) {
+					hitTimer = HIT_TIMER_END * 0.6;
+					flicker(HIT_TIMER_END - hitTimer);
+				}
 			}
 			else if(enemy is Dragon)
 			{
