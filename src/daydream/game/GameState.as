@@ -96,7 +96,7 @@ package daydream.game {
 					new NumberInterval(WORLD_HEIGHT - 320, WORLD_HEIGHT - 10 - Platform.TILE_WIDTH),
 					new NumberInterval(370, 650),
 					new NumberInterval(Child.JUMP_DISTANCE / 3, Child.JUMP_DISTANCE),
-					child, 0, [HorseHead], [0.17], 0));
+					child, 0, [HorseHead], [0.17], 0.0015));
 			add(new PlatformSpawner(this, 550,
 					new NumberInterval(WORLD_HEIGHT - 700, WORLD_HEIGHT - 340),
 					new NumberInterval(280, 550),
@@ -111,7 +111,7 @@ package daydream.game {
 					new NumberInterval(WORLD_HEIGHT - 1900, WORLD_HEIGHT - 1130),
 					new NumberInterval(370, 550),
 					jumpDistInterval, child, 0,
-					[PogoStick], [0.03]));
+					[PogoStick], [0.03], 0.0015));
 			add(new PlatformSpawner(this, 7500,
 					new NumberInterval(WORLD_HEIGHT - 2400, WORLD_HEIGHT - 1920),
 					new NumberInterval(280, 450),

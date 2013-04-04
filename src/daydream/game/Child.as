@@ -41,6 +41,7 @@ package daydream.game {
 		//Item variables
 		public var currentItem:FlxObject = null;
 		public var itemInUse:FlxObject = null;
+		private static const ITEM_TIME:Number = 10;
 		private var itemTimeLeft:Number;
 		
 		private var previousVelocity:FlxPoint = new FlxPoint();
@@ -326,10 +327,10 @@ package daydream.game {
 				//the player is extending the jump
 				if(!usedMidairJump || rainbow.visible && rainbow.withinRainbow(this)) {
 					jumpReplenish += FlxG.elapsed * 7;
+				} else if(affectedByRain()) {
+					jumpReplenish += FlxG.elapsed * 0.2;
 				} else if(acceleration.y == JUMP_GRAVITY) {
 					jumpReplenish += FlxG.elapsed * 0.3;
-				} else if(affectedByRain()) {
-					jumpReplenish += FlxG.elapsed * 0.42;
 				} else {
 					jumpReplenish += FlxG.elapsed * 0.5;
 				}
@@ -349,16 +350,23 @@ package daydream.game {
 				else if (jumpHeld() && hitTimer == -1)
 				{
 					if(jumpJustPressed()) {
-						acceleration.y = -GRAVITY * 0.8;
-						//while raining, the player gets less of a boost from tapping space
-						if(affectedByRain()) {
-							acceleration.y *= 0.5 + 0.5 * Math.random();
-						}
+						//the player gets a burst of speed upon pressing
+						//space, but the strength of this burst depends on
+						//how long they've been riding
+						acceleration.y = -GRAVITY * (0.4 + 0.3 * (itemTimeLeft / ITEM_TIME));
 					} else {
-						//while raining, the player loses lift quickly,
-						//making them tap space frequently to keep going up
-						if(affectedByRain()) {
-							acceleration.y += GRAVITY * FlxG.elapsed;
+						//the player loses lift after a time, making them
+						//tap space to go up as fast as possible
+						if(!affectedByRain()) {
+							acceleration.y += GRAVITY * 0.2 * FlxG.elapsed;
+						} else {
+							//they lose lift faster while it's raining
+							acceleration.y += GRAVITY * 0.4 * FlxG.elapsed;
+						}
+						
+						//they end up accelerating downwards
+						if(acceleration.y >= GRAVITY * 0.2) {
+							acceleration.y = GRAVITY * 0.2;
 						}
 					}
 				}
@@ -421,7 +429,7 @@ package daydream.game {
 				itemInUse = currentItem;
 				currentItem = null;
 				
-				itemTimeLeft = 10;
+				itemTimeLeft = ITEM_TIME;
 				
 				if (itemInUse is Straw)
 				{
