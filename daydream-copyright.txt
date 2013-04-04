@@ -1,0 +1,2 @@
+Copyright 2013 Joseph Cloutier, Alexander Devik, Harrison Bond, Clement Perkins, Rensselaer Polytechnic Institute.
+All rights reserved.
