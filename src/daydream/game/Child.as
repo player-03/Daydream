@@ -78,6 +78,9 @@ package daydream.game {
 		private static const DISTANCE_MULTIPLIER:Number = 0.4;
 		private var score:int = 0;
 		
+		//coins
+		private var coins:int = 0;
+		
 		public function Child(gameState:GameState, rainbow:Rainbow, x:Number, y:Number) {
 			super(x, y);
 			
@@ -116,6 +119,9 @@ package daydream.game {
 				//this probably won't happen
 				return;
 			}
+			
+			if (item is Coin)
+				coins += 1;
 			
 			//check the item picked up
 			if (item is HorseHead
@@ -546,6 +552,10 @@ package daydream.game {
 		
 		public function getScore():Number {
 			return score + x * DISTANCE_MULTIPLIER;
+		}
+		
+		public function getCoins():Number {
+			return coins;
 		}
 		
 		public function affectedByRain():Boolean {

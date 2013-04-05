@@ -32,6 +32,9 @@ package daydream.game {
 		
 		private var scoreKeeper:ScoreKeeper;
 		
+		private var coinCounterSprite:CoinCounterSprite;
+		private var coinCounter:CoinCounter;
+		
 		public override function create():void {
 			//FlxG.bgColor = 0xFFCCDDFF;
 			
@@ -78,6 +81,12 @@ package daydream.game {
 			scoreKeeper = new ScoreKeeper(child, 50, 10);
 			foreground.add(scoreKeeper);
 			
+			coinCounterSprite = new CoinCounterSprite(100, 50);
+			foreground.add(coinCounterSprite);
+			
+			coinCounter = new CoinCounter(child, 120, 50);
+			foreground.add(coinCounter);
+			
 			foreground.add(new JumpReplenishIndicator(child, 10, 10));
 			
 			FlxG.camera.follow(child);
@@ -90,6 +99,8 @@ package daydream.game {
 			addPlatform(new Platform(630, WORLD_HEIGHT - 250, 170));
 			
 			addItem(new Straw(590, WORLD_HEIGHT - 700));
+			
+			addItem(new Coin(680, WORLD_HEIGHT - 280));
 			
 			var jumpDistInterval:NumberInterval = new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE * 2);
 			add(new PlatformSpawner(this, 630,
