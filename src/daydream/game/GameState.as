@@ -133,6 +133,11 @@ package daydream.game {
 					new NumberInterval(300, 350),
 					jumpDistInterval, child, 0.2,
 					[HorseHead], [0.2], 0.0005));
+					
+			//Coin spawning
+			add(new CoinSpawner(this, new NumberInterval(0, WORLD_HEIGHT - 1900), 0.8));
+			add(new CoinSpawner(this, new NumberInterval(WORLD_HEIGHT - 1900, WORLD_HEIGHT - 700), 0.5));
+			add(new CoinSpawner(this, new NumberInterval(WORLD_HEIGHT - 700, WORLD_HEIGHT - 10 - Platform.TILE_WIDTH - 15), 0.2));
 			
 			add(new DragonSpawner(10));
 			
