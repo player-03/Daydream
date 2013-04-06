@@ -142,7 +142,8 @@ package daydream.game {
 			}
 			
 			//kill everything while riding a dragon
-			if(dragonSprite.visible) {
+			if (dragonSprite.visible) {
+				gameState.add(new Coin(enemy.x + 75, enemy.y + 35));
 				enemy.kill();
 				
 				score += ENEMY_KILL_POINTS;
@@ -174,6 +175,7 @@ package daydream.game {
 					&& x + offset.x > enemy.x + enemyOffset.x + enemy.width - 400
 					&& y + offset.y + height < enemy.y + enemyOffset.y + 10)
 				{
+					gameState.add(new Coin(enemy.x + 75, enemy.y + 35));
 					enemy.kill();
 					
 					score += DRAGON_RIDE_POINTS;
@@ -197,6 +199,7 @@ package daydream.game {
 			else if(itemInUse is HorseHead || rainbow.visible && rainbow.withinRainbow(this)
 				|| attackTimer >= ATTACK_DAMAGE_START && attackTimer <= ATTACK_DAMAGE_END)
 			{
+				gameState.add(new Coin(enemy.x + 75, enemy.y + 35));
 				enemy.kill();
 				
 				score += ENEMY_KILL_POINTS;
