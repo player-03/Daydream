@@ -14,6 +14,8 @@ package daydream.game
 		private static const SPAWNCHECKINTERVAL:Number = 2;
 		private var spawnCheckTimer:Number = 0;
 		
+		private var spawnBool:Boolean = false;
+		
 		public function CoinSpawner(gameState:GameState, yInterval:NumberInterval, frequency:Number) 
 		{
 			super();
@@ -27,6 +29,8 @@ package daydream.game
 		{
 			if (spawnCheckTimer >= 0 && spawnCheckTimer < SPAWNCHECKINTERVAL)
 			{
+				spawnBool = false;
+				
 				spawnCheckTimer += FlxG.elapsed;
 			}
 			
@@ -34,11 +38,13 @@ package daydream.game
 			{
 				var check:Number = Math.random();
 				
-				if (check <= frequency)
+				if (check <= frequency && spawnBool == false)
 				{
 					var yVal:Number = Math.floor(Math.random() * (yInterval.max - yInterval.min + 1)) + yInterval.min;
 					
 					gameState.addItem(new Coin(FlxG.worldBounds.right, yVal));
+					
+					spawnBool = true;
 				}
 					
 				spawnCheckTimer = 0;
