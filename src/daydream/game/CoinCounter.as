@@ -22,7 +22,10 @@ package daydream.game
 		
 		public override function update():void
 		{
-			coinCount = child.getCoins();
+			var coins:int = child.getCoins();
+			
+			if (coins != coinCount)
+				coinCount = coins;
 			
 			if (coinCount < 10)
 				text = "X0" + coinCount;

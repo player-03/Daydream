@@ -1,4 +1,5 @@
 package daydream.game {
+	import daydream.upgrades.UpgradesState;
 	import daydream.utils.FlxSpriteUtils;
 	import org.flixel.FlxG;
 	import org.flixel.FlxObject;
@@ -233,6 +234,7 @@ package daydream.game {
 				deadTime += FlxG.elapsed;
 				if(deadTime > 0.25) {
 					FlxG.resetState();
+					//FlxG.switchState(new UpgradesState());
 				}
 				return;
 			}
@@ -557,7 +559,7 @@ package daydream.game {
 			return score + x * DISTANCE_MULTIPLIER;
 		}
 		
-		public function getCoins():Number {
+		public function getCoins():int {
 			return coins;
 		}
 		
