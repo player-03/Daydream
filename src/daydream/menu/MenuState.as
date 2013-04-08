@@ -1,5 +1,6 @@
 package daydream.menu {
 	import daydream.game.GameState;
+	import daydream.menu.InstructState;
 	import daydream.Main;
 	import org.flixel.FlxButton;
 	import org.flixel.FlxG;
@@ -17,13 +18,20 @@ package daydream.menu {
 			
 			var playButton:FlxButton = new FlxButton(
 									Main.STAGE_WIDTH / 2 - 40,
-									Main.STAGE_HEIGHT / 2 - 10,
+									Main.STAGE_HEIGHT / 2 - 30,
 									"Play", onPlayClicked);
+			var instructionButton:FlxButton = new FlxButton(Main.STAGE_WIDTH / 2 - 40, Main.STAGE_HEIGHT / 2 + 30, "Instructions", onInstructClick);
 			add(playButton);
+			add(instructionButton);
 		}
 		
 		private function onPlayClicked():void {
 			FlxG.switchState(new GameState());
+		}
+		
+		private function onInstructClick():void
+		{
+			FlxG.switchState(new InstructState());
 		}
 	}
 }
