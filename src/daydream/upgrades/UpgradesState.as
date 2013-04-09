@@ -2,6 +2,8 @@
 //	So it's commented out for the time being
 package daydream.upgrades 
 {
+	import daydream.game.Child;
+	import daydream.game.ScoreKeeper;
 	import daydream.menu.MenuState;
 	import org.flixel.FlxButton;
 	import org.flixel.FlxG;
@@ -11,7 +13,6 @@ package daydream.upgrades
 	
 	public class UpgradesState extends FlxState
 	{
-		
 		public function UpgradesState() 
 		{
 			var playButton:FlxButton = new FlxButton(

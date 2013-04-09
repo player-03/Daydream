@@ -80,7 +80,7 @@ package daydream.game {
 		private var score:int = 0;
 		
 		//coins
-		private var coins:int = 0;
+		private static var coins:int = 0;
 		
 		public function Child(gameState:GameState, rainbow:Rainbow, x:Number, y:Number) {
 			super(x, y);
@@ -233,8 +233,8 @@ package daydream.game {
 			if(y > FlxG.camera.bounds.bottom) {
 				deadTime += FlxG.elapsed;
 				if(deadTime > 0.25) {
-					FlxG.resetState();
-					//FlxG.switchState(new UpgradesState());
+					//FlxG.resetState();
+					FlxG.switchState(new UpgradesState());
 				}
 				return;
 			}
@@ -561,6 +561,10 @@ package daydream.game {
 		
 		public function getCoins():int {
 			return coins;
+		}
+		
+		public function setCoins(c:int):void {
+			coins = c;
 		}
 		
 		public function affectedByRain():Boolean {
