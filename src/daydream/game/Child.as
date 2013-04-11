@@ -1,6 +1,7 @@
 package daydream.game {
 	import daydream.upgrades.UpgradesState;
 	import daydream.utils.FlxSpriteUtils;
+	import daydream.utils.Save;
 	import org.flixel.FlxG;
 	import org.flixel.FlxObject;
 	import org.flixel.FlxPoint;
@@ -51,6 +52,9 @@ package daydream.game {
 		
 		private var dragonSprite:DragonRideSprite;
 		
+		private var umbrellaSprite:Umbrella;
+		private var umbrellaOffset:FlxPoint;
+		
 		/**
 		 * The run speed, unless the child is on a horse, in which case
 		 * this is a fraction of the run speed.
@@ -80,7 +84,7 @@ package daydream.game {
 		private var score:int = 0;
 		
 		//coins
-		private static var coins:int = 0;
+		private var coins:int;
 		
 		public function Child(gameState:GameState, rainbow:Rainbow, x:Number, y:Number) {
 			super(x, y);
@@ -108,6 +112,13 @@ package daydream.game {
 			addAnimation("horse fall", [43]);
 			
 			FlxSpriteUtils.applyInset(this, 15, 10, 15, 2);
+			
+			umbrellaSprite = new Umbrella();
+			umbrellaOffset = new FlxPoint(-umbrellaSprite.width / 2 + width / 2,
+										15 - umbrellaSprite.height);
+			FlxG.state.add(umbrellaSprite);
+			
+			coins = Save.getInt("coins");
 			
 			baseXVelocity = RUN_SPEED_CUTOFF / 4;
 			acceleration.y = GRAVITY;
@@ -549,10 +560,23 @@ package daydream.game {
 			}
 		}
 		
+		public override function postUpdate():void {
+			super.postUpdate();
+			
+			umbrellaSprite.visible = itemInUse is Umbrella;
+			umbrellaSprite.x = x + umbrellaOffset.x;
+			umbrellaSprite.y = y + umbrellaOffset.y;
+		}
+		
 		public function setInvincibleFor(time:Number):void {
 			if(time > invincibleTimeLeft) {
 				invincibleTimeLeft = time;
 			}
+		}
+		
+		public override function destroy():void {
+			Save.storeInt("coins", coins);
+			super.destroy();
 		}
 		
 		public function getScore():Number {
@@ -568,7 +592,7 @@ package daydream.game {
 		}
 		
 		public function affectedByRain():Boolean {
-			return gameState.isRaining() && !(itemInUse is Umbrella);
+			return gameState.isRainingOnChild() && !(itemInUse is Umbrella);
 		}
 		
 		public function jumpReplenishPercent():Number {

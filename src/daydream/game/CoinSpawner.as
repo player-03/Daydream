@@ -1,5 +1,6 @@
 package daydream.game 
 {
+	import daydream.Main;
 	import org.flixel.FlxBasic;
 	import daydream.utils.NumberInterval;
 	import org.flixel.FlxG;
@@ -8,49 +9,31 @@ package daydream.game
 	public class CoinSpawner extends FlxBasic
 	{
 		private var gameState:GameState;
+		private var gapInterval:NumberInterval;
 		private var yInterval:NumberInterval;
-		private var frequency:Number;
 		
-		private static const SPAWNCHECKINTERVAL:Number = 2;
-		private var spawnCheckTimer:Number = 0;
+		private var nextX:Number;
 		
-		private var spawnBool:Boolean = false;
-		
-		public function CoinSpawner(gameState:GameState, yInterval:NumberInterval, frequency:Number) 
+		public function CoinSpawner(gameState:GameState, gapInterval:NumberInterval, yInterval:NumberInterval) 
 		{
 			super();
 			
 			this.gameState = gameState;
+			this.gapInterval = gapInterval;
 			this.yInterval = yInterval;
-			this.frequency = frequency;
+			
+			nextX = FlxG.camera.scroll.x + gapInterval.randomValue();
 		}
 		
 		public override function update():void
 		{
-			if (spawnCheckTimer >= 0 && spawnCheckTimer < SPAWNCHECKINTERVAL)
+			if(FlxG.camera.scroll.x >= nextX)
 			{
-				spawnBool = false;
+				nextX += gapInterval.randomValue();
 				
-				spawnCheckTimer += FlxG.elapsed;
-			}
-			
-			if (spawnCheckTimer >= SPAWNCHECKINTERVAL)
-			{
-				var check:Number = Math.random();
-				
-				if (check <= frequency && spawnBool == false)
-				{
-					var yVal:Number = Math.floor(Math.random() * (yInterval.max - yInterval.min + 1)) + yInterval.min;
-					
-					gameState.addItem(new Coin(FlxG.worldBounds.right, yVal));
-					
-					spawnBool = true;
-				}
-					
-				spawnCheckTimer = 0;
+				gameState.addItem(new Coin(FlxG.camera.scroll.x + Main.STAGE_WIDTH,
+											yInterval.randomValue()));
 			}
 		}
-		
 	}
-
 }

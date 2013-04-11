@@ -16,8 +16,9 @@ package daydream.game
 		}
 		
 		protected function initImage():void {
-			loadGraphic(defaultEnemyImg);
-			FlxSpriteUtils.applyInset(this, 30, 0, 0, 5);
+			loadGraphic(defaultEnemyImg, true, false, 79, 109);
+			FlxSpriteUtils.applyInset(this, 30, 15, 5, 1);
+			randomFrame();
 		}
 		
 		public override function update():void {

@@ -62,6 +62,8 @@ package daydream.game {
 		 * move the rain on and off the screen.
 		 */
 		private var xOffset:Number = 0;
+		private var xLoopDistance:Number = 1;
+		private var xLoops:int = 1;
 		
 		private var travelDirection:FlxPoint;
 		
@@ -100,6 +102,10 @@ package daydream.game {
 		}
 		
 		private function setRotation(rotation:Number):void {
+			if(rotation >= 90 || rotation < 0) {
+				trace("Invalid rain rotation: " + rotation);
+			}
+			
 			this.rotation = rotation;
 			
 			var matrix:Matrix = new Matrix();
@@ -112,8 +118,11 @@ package daydream.game {
 			pixels.draw(sourceImage, matrix);
 			pixels.unlock();
 			
-			travelDirection.x = Math.cos((rotation + 90) * Math.PI/180);
+			travelDirection.x = Math.cos((rotation + 90) * Math.PI / 180);
 			travelDirection.y = Math.sin((rotation + 90) * Math.PI / 180);
+			
+			xLoopDistance = sourceImage.width / Math.cos(rotation * Math.PI / 180);
+			xLoops = Math.ceil(Main.STAGE_WIDTH / xLoopDistance) + 1;
 			
 			drawFrame(true);
 		}
@@ -132,25 +141,20 @@ package daydream.game {
 				return;
 			}
 			
-			//rain entering/leaving the screen
-			if (xOffset > 0)
-			{
+			//horizontal scrolling
+			if(timeRemaining > 0) {
 				xOffset -= (FlxG.state as GameState).getChild().velocity.x * FlxG.elapsed;
-				if(xOffset < 0) {
-					xOffset = 0;
+				if(xOffset < -xLoopDistance) {
+					xOffset += xLoopDistance;
 				}
-			}
-			else if (timeRemaining <= 0)
-			{
-				if(xOffset == 0) {
+			} else {
+				if(rainbow.visible == false) {
 					rainbow.show();
 				}
 				
 				xOffset -= (FlxG.state as GameState).getChild().velocity.x * FlxG.elapsed * 1.5;
 				
-				//the rain doesn't actually go away until it's fully
-				//offscreen
-				if(xOffset <= -Main.STAGE_WIDTH * 2) {
+				if(xOffset <= -xLoopDistance * xLoops) {
 					visible = false;
 					timeRemaining = dryTime;
 					dryTime += dryTimeIncrease;
@@ -166,16 +170,24 @@ package daydream.game {
 		public override function draw():void {
 			if (visible)
 			{
-				//draw this at the current position in the cycle
-				x = centerX + xOffset + travelPosition * cycleDistance * travelDirection.x;
-				y = centerY + travelPosition * cycleDistance * travelDirection.y;
-				super.draw();
-				
-				//draw another image one cycle behind this
-				x = centerX + xOffset + (travelPosition - 1) * cycleDistance * travelDirection.x;
-				y = centerY + (travelPosition - 1) * cycleDistance * travelDirection.y;
-				super.draw();
+				for(var i:int = 0; i < xLoops; i++) {
+					//draw this at the current position in the cycle
+					x = centerX + xOffset + i * xLoopDistance
+								+ travelPosition * cycleDistance * travelDirection.x;
+					y = centerY + travelPosition * cycleDistance * travelDirection.y;
+					super.draw();
+					
+					//draw another image one cycle behind this
+					x = centerX + xOffset + i * xLoopDistance
+								+ (travelPosition - 1) * cycleDistance * travelDirection.x;
+					y = centerY + (travelPosition - 1) * cycleDistance * travelDirection.y;
+					super.draw();
+				}
 			}
+		}
+		
+		public function isRaining():Boolean {
+			return visible && timeRemaining > 0 && xOffset < 60;
 		}
 	}
 }

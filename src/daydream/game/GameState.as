@@ -135,9 +135,9 @@ package daydream.game {
 					[HorseHead], [0.2], 0.0005));
 					
 			//Coin spawning
-			add(new CoinSpawner(this, new NumberInterval(0, WORLD_HEIGHT - 1900), 0.8));
-			add(new CoinSpawner(this, new NumberInterval(WORLD_HEIGHT - 1900, WORLD_HEIGHT - 700), 0.5));
-			add(new CoinSpawner(this, new NumberInterval(WORLD_HEIGHT - 700, WORLD_HEIGHT - 10 - Platform.TILE_WIDTH - 15), 0.2));
+			add(new CoinSpawner(this, new NumberInterval(500, 1000), new NumberInterval(0, WORLD_HEIGHT - 1900)));
+			add(new CoinSpawner(this, new NumberInterval(750, 1250), new NumberInterval(WORLD_HEIGHT - 1900, WORLD_HEIGHT - 700)));
+			add(new CoinSpawner(this, new NumberInterval(1000, 1500), new NumberInterval(WORLD_HEIGHT - 700, WORLD_HEIGHT - 10 - Platform.TILE_WIDTH - 15)));
 			
 			add(new DragonSpawner(10));
 			
@@ -213,6 +213,10 @@ package daydream.game {
 		
 		public function isRaining():Boolean {
 			return rain.visible;
+		}
+		
+		public function isRainingOnChild():Boolean {
+			return rain.isRaining();
 		}
 		
 		public function getChild():Child {

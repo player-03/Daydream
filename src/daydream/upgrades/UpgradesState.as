@@ -36,9 +36,5 @@ package daydream.upgrades
 		{
 			FlxG.switchState(new MenuState());
 		}
-		
 	}
-	
-	
-
 }

@@ -1,11 +1,12 @@
 package daydream.game 
 {
+	import daydream.utils.Save;
 	import org.flixel.FlxText;
 	
 	public class ScoreKeeper extends FlxText
 	{
 		private var child:Child;
-		private static var highscore:int;
+		private var highscore:int;
 		
 		public function ScoreKeeper(child:Child, x:Number, y:Number) 
 		{
@@ -18,6 +19,14 @@ package daydream.game
 			
 			this.child = child;
 			this.size = 11;
+			
+			highscore = Save.getInt("highscore");
+		}
+		
+		public override function destroy():void {
+			Save.storeInt("highscore", highscore);
+			
+			super.destroy();
 		}
 		
 		public override function update():void
