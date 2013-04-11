@@ -3,6 +3,8 @@
 package daydream.upgrades 
 {
 	import daydream.game.Child;
+	import daydream.game.CoinCounter;
+	import daydream.game.CoinCounterSprite;
 	import daydream.game.ScoreKeeper;
 	import daydream.menu.MenuState;
 	import org.flixel.FlxButton;
@@ -13,8 +15,16 @@ package daydream.upgrades
 	
 	public class UpgradesState extends FlxState
 	{
-		public function UpgradesState() 
+		private var coinSprite:CoinCounterSprite;
+		private var coinCounter:CoinCounter;
+		private var child:Child;
+		private var availableCoins:int;
+		
+		public function UpgradesState(c:Child) 
 		{
+			coinSprite = new CoinCounterSprite(20, 20);
+			coinCounter = new CoinCounter(c, 40, 20);
+			
 			var playButton:FlxButton = new FlxButton(
 									Main.STAGE_WIDTH / 2 - 120,
 									Main.STAGE_HEIGHT - 50,
@@ -25,10 +35,16 @@ package daydream.upgrades
 									"Quit to Menu", onQuitClicked);
 			add(playButton);
 			add(quitButton);
+			add(coinSprite);
+			add(coinCounter);
+			
+			this.child = c;
+			availableCoins = child.getCoins();
 		}
 		
 		private function onPlayClicked():void
 		{
+			child.setCoins(availableCoins);
 			FlxG.switchState(new GameState());
 		}
 		

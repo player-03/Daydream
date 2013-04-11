@@ -245,7 +245,7 @@ package daydream.game {
 				deadTime += FlxG.elapsed;
 				if(deadTime > 0.25) {
 					//FlxG.resetState();
-					FlxG.switchState(new UpgradesState());
+					FlxG.switchState(new UpgradesState(this));
 				}
 				return;
 			}
