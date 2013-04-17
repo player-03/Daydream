@@ -133,7 +133,9 @@ package daydream.game {
 			}
 			
 			if (item is Coin)
+			{
 				coins += 1;
+			}
 			
 			//check the item picked up
 			if (item is HorseHead

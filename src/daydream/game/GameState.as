@@ -97,10 +97,10 @@ package daydream.game {
 			scoreKeeper = new ScoreKeeper(child, 50, 10);
 			foreground.add(scoreKeeper);
 			
-			coinCounterSprite = new CoinCounterSprite(100, 50);
+			coinCounterSprite = new CoinCounterSprite(125, 50);
 			foreground.add(coinCounterSprite);
 			
-			coinCounter = new CoinCounter(child.getCoins, 120, 50);
+			coinCounter = new CoinCounter(child.getCoins, 140, 50);
 			foreground.add(coinCounter);
 			
 			foreground.add(new JumpReplenishIndicator(child, 10, 10));

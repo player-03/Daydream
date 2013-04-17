@@ -14,36 +14,11 @@ package daydream.upgrades
 	
 	public class UpgradesState extends FlxState
 	{
-		//The following constants are identifiers for saved integers.
-		//These integers represent the number of upgrades of that type
-		//that have been purchased (alternately, the "upgrade level").
-		
-		/**
-		 * Pogo stick bounce height.
-		 */
-		public static const POGO:String = "pogo_upgrades";
-		/**
-		 * Horse speed and/or jump height.
-		 */
-		public static const HORSE:String = "horse_upgrades";
-		/**
-		 * The frequency at which items spawn, excluding coins.
-		 */
-		public static const ITEM_FREQUENCY:String = "item_upgrades";
-		/**
-		 * The frequency at which coins spawn, and the number of coins
-		 * dropped per enemy.
-		 */
-		public static const COIN_FREQUENCY:String = "coin_upgrades";
-		/**
-		 * The ease of landing on a dragon.
-		 */
-		public static const DRAGON:String = "dragon_upgrades";
-		
+		private var upgradeHandler:UpgradeHandler;
 		
 		private var coinSprite:CoinCounterSprite;
 		private var coinCounter:CoinCounter;
-		private var availableCoins:int;
+		public var availableCoins:int;
 		
 		public override function create():void
 		{
@@ -66,6 +41,9 @@ package daydream.upgrades
 			add(coinCounter);
 			
 			availableCoins = Save.getInt(CoinCounter.COINS);
+			
+			upgradeHandler = new UpgradeHandler(this);
+			add(upgradeHandler);
 		}
 		
 		public override function update():void
@@ -79,6 +57,14 @@ package daydream.upgrades
 		public function getCoins():int
 		{
 			return availableCoins;
+		}
+		
+		public function coinChange(x:int):void
+		{
+			if (x == 1)
+				availableCoins += 1;
+			if (x == -1)
+				availableCoins -= 1;
 		}
 		
 		private function onPlayClicked():void
