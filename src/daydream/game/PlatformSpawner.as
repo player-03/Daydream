@@ -4,6 +4,8 @@ package daydream.game {
 	import org.flixel.FlxBasic;
 	import org.flixel.FlxG;
 	import org.flixel.FlxObject;
+	import daydream.utils.Save;
+	import daydream.upgrades.UpgradesState;
 	
 	public class PlatformSpawner extends FlxBasic {
 		/**
@@ -147,7 +149,7 @@ package daydream.game {
 					//for a frequency array containing [0.2, 0.3],
 					//the first item should be spawned if itemRandValue < 0.2,
 					//and the second should be if 0.2 <= itemRandValue < 0.5
-					if(itemRandValue < itemFrequencies[i]) {
+					if(itemRandValue < (itemFrequencies[i] + 0.005 * Save.getInt(UpgradesState.ITEM_FREQUENCY))) {
 						var itemType:Class = itemTypes[i];
 						item = new itemType(itemX, itemY) as FlxObject;
 						break;

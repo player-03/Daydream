@@ -85,6 +85,7 @@ package daydream.game {
 		
 		//coins
 		private var coins:int;
+		private static const coinMax:int = 20;
 		
 		public function Child(gameState:GameState, rainbow:Rainbow, x:Number, y:Number) {
 			super(x, y);
@@ -132,7 +133,7 @@ package daydream.game {
 				return;
 			}
 			
-			if (item is Coin)
+			if (item is Coin && coins < coinMax)
 			{
 				coins += 1;
 			}
@@ -185,9 +186,9 @@ package daydream.game {
 				var enemyOffset:FlxPoint = (enemy as Dragon).offset;
 				//check if the child landed on the dragon's neck (not too
 				//far forward, not too far back, and not from below)
-				if(x + offset.x + width < enemy.x + enemyOffset.x + enemy.width - 80
-					&& x + offset.x > enemy.x + enemyOffset.x + enemy.width - 400
-					&& y + offset.y + height < enemy.y + enemyOffset.y + 10)
+				if(x + offset.x + width < enemy.x + enemyOffset.x + enemy.width - (80)
+					&& x + offset.x > enemy.x + enemyOffset.x + enemy.width - (400)
+					&& y + offset.y + height < enemy.y + enemyOffset.y + (10))
 				{
 					gameState.addItem(new Coin(enemy.x + 75, enemy.y + 35));
 					enemy.kill();
@@ -274,7 +275,7 @@ package daydream.game {
 				
 				velocity.y = -JUMP_STRENGTH - previousVelocity.y * 0.7;
 				if(hitTimer < 0) {
-					velocity.y -= JUMP_STRENGTH * 0.3 * pogoStickBounces;
+					velocity.y -= JUMP_STRENGTH * (0.2 + 0.05 * Save.getInt(UpgradesState.POGO)) * pogoStickBounces;
 				}
 				
 				if(affectedByRain()) {
@@ -462,7 +463,7 @@ package daydream.game {
 			//x velocity
 			var targetXVelocity:Number = baseXVelocity;
 			if (itemInUse is HorseHead) {
-				targetXVelocity = baseXVelocity * HORSE_MULTIPLIER;
+				targetXVelocity = baseXVelocity * (HORSE_MULTIPLIER + 0.05 * Save.getInt(UpgradesState.HORSE));
 			} else if(dragonSprite.visible) {
 				targetXVelocity = baseXVelocity * DRAGON_SPEED_MULTIPLIER;
 			}
