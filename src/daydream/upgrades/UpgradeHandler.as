@@ -7,43 +7,20 @@ package daydream.upgrades
 	
 	public class UpgradeHandler extends FlxBasic
 	{
-		//The following constants are identifiers for saved integers.
-		//These integers represent the number of upgrades of that type
-		//that have been purchased (alternately, the "upgrade level").
-		
-		/**
-		 * Pogo stick bounce height.
-		 */
-		public static const POGO:String = "pogo_upgrades";
-		/**
-		 * Horse speed and/or jump height.
-		 */
-		public static const HORSE:String = "horse_upgrades";
-		/**
-		 * The frequency at which items spawn, excluding coins.
-		 */
-		public static const ITEM_FREQUENCY:String = "item_upgrades";
-		/**
-		 * The frequency at which coins spawn, and the number of coins
-		 * dropped per enemy.
-		 */
-		public static const COIN_FREQUENCY:String = "coin_upgrades";
-		/**
-		 * The ease of landing on a dragon.
-		 */
-		public static const DRAGON:String = "dragon_upgrades";
-		
-		
 		private var upgradeState:UpgradesState;
 		
 		public var pogo_text:FlxText;
 		public var pogo_count:int;
+		
 		public var horse_text:FlxText;
 		public var horse_count:int;
+		
 		public var item_text:FlxText;
 		public var item_count:int;
+		
 		public var coin_text:FlxText;
 		public var coin_count:int;
+		
 		public var dragon_text:FlxText;
 		public var dragon_count:int;
 		
@@ -54,7 +31,7 @@ package daydream.upgrades
 			this.upgradeState = upgradeState;
 			
 			//POGO START
-			pogo_count = 0;
+			pogo_count = upgradeState.getPogoCount();
 			
 			var pogo_neg_button:FlxButton = new FlxButton(10, 75, "-", pogo_neg);
 			var pogo_pos_button:FlxButton = new FlxButton(110, 75, "+", pogo_pos);
@@ -70,7 +47,7 @@ package daydream.upgrades
 			//POGO END
 			
 			//HORSE START
-			horse_count = 0;
+			horse_count = upgradeState.getHorseCount();
 			
 			var horse_neg_button:FlxButton = new FlxButton(10, 150, "-", horse_neg);
 			var horse_pos_button:FlxButton = new FlxButton(110, 150, "+", horse_pos);
@@ -86,7 +63,7 @@ package daydream.upgrades
 			//HORSE END
 			
 			//ITEM START
-			item_count = 0;
+			item_count = upgradeState.getItemCount();
 			
 			var item_neg_button:FlxButton = new FlxButton(10, 225, "-", item_neg);
 			var item_pos_button:FlxButton = new FlxButton(110, 225, "+", item_pos);
@@ -102,7 +79,7 @@ package daydream.upgrades
 			//ITEM END
 			
 			//COIN START
-			coin_count = 0;
+			coin_count = upgradeState.getCoinCount();
 			
 			var coin_neg_button:FlxButton = new FlxButton(10, 300, "-", coin_neg);
 			var coin_pos_button:FlxButton = new FlxButton(110, 300, "+", coin_pos);
@@ -118,7 +95,7 @@ package daydream.upgrades
 			//COIN END
 			
 			//DRAGON START
-			dragon_count = 0;
+			dragon_count = upgradeState.getDragonCount();
 			
 			var dragon_neg_button:FlxButton = new FlxButton(10, 375, "-", dragon_neg);
 			var dragon_pos_button:FlxButton = new FlxButton(110, 375, "+", dragon_pos);
