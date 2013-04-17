@@ -45,7 +45,7 @@ package daydream.upgrades
 		private var coinCounter:CoinCounter;
 		private var availableCoins:int;
 		
-		public function UpgradesState() 
+		public override function create():void
 		{
 			FlxG.music.fadeOut(0.8, true);
 			

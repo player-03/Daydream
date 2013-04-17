@@ -25,8 +25,13 @@ package daydream.game {
 		public override function update():void {
 			timeAlive += FlxG.elapsed;
 			
-			velocity.x = (FlxG.state as GameState).getChild().velocity.x
+			velocity.x = (FlxG.state as GameState).getChild().baseXVelocity
 						+ 200 + 150 * timeAlive;
+			
+			//speed up based on onscreen position
+			/*if(x - FlxG.camera.scroll.x > Main.STAGE_WIDTH * 0.3) {
+				velocity.x += 
+			}*/
 			
 			if(x > FlxG.camera.scroll.x + Main.STAGE_WIDTH) {
 				//this will make GameState clean this up
@@ -34,6 +39,10 @@ package daydream.game {
 				
 				velocity.x = 0;
 				timeAlive = 0;
+			} else if(x > 0 && x < FlxG.camera.scroll.x - FRAME_WIDTH - 3) {
+				//keep this from falling so far behind the screen that it
+				//gets destroyed
+				x = FlxG.camera.scroll.x - FRAME_WIDTH - 3;
 			}
 		}
 	}

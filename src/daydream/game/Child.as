@@ -8,12 +8,12 @@ package daydream.game {
 	import org.flixel.FlxSprite;
 	
 	public class Child extends FlxSprite {
-		public static const RUN_SPEED_CUTOFF:Number = 400;
-		public static const SPRINT_SPEED_CUTOFF:Number = 1000;
+		public static const RUN_SPEED_CUTOFF:Number = 800;
+		public static const SPRINT_SPEED_CUTOFF:Number = 2000;
 		public static const HORSE_MULTIPLIER:Number = 2;
 		public static const WALK_ACCEL:Number = 100;
 		public static const RUN_ACCEL:Number = 10;
-		public static const SPRINT_ACCEL:Number = 2;
+		public static const SPRINT_ACCEL:Number = 3;
 		public static const JUMP_STRENGTH:Number = 300;
 		public static const JUMP_LENGTH:Number = 1;
 		public static const JUMP_GRAVITY:Number = 350;
@@ -237,7 +237,6 @@ package daydream.game {
 					jumpReplenish = 0;
 					usedMidairJump = false;
 					maxVelocity.y = 10000; //magic number meaning "infinity"
-					play("jump");
 				}
 			}
 			
@@ -271,8 +270,7 @@ package daydream.game {
 				jumpReplenish = 0;
 				play("pogo jump");
 				
-				velocity.y = -JUMP_STRENGTH * 0.5
-						- previousVelocity.y * 0.7;
+				velocity.y = -JUMP_STRENGTH - previousVelocity.y * 0.7;
 				if(hitTimer < 0) {
 					velocity.y -= JUMP_STRENGTH * 0.3 * pogoStickBounces;
 				}
@@ -312,13 +310,6 @@ package daydream.game {
 						jumpTime = 0;
 						jumpReplenish = 0;
 						
-						if(itemInUse is HorseHead) {
-							play("horse jump");
-						} else if(onGround) {
-							play("jump");
-						} else {
-							play("midair jump");
-						}
 						if(onGround) {
 							onGround = false;
 						} else {
@@ -417,7 +408,6 @@ package daydream.game {
 			}
 			else if (attackTimer < 0 && attackJustPressed() && (itemInUse == null || itemInUse is Umbrella))
 			{
-				itemInUse = null;
 				attackTimer = 0;
 			}
 			
@@ -499,17 +489,12 @@ package daydream.game {
 					if(pogoStickBounces >= 6) {
 						itemTimeLeft = 0;
 						itemInUse = null;
-						play("jump");
 					}
 				} else {
 					itemTimeLeft -= FlxG.elapsed;
 					if(itemTimeLeft <= 0) {
 						if (itemInUse is Straw) {
 							acceleration.y = GRAVITY;
-						}
-						
-						if(velocity.y < 0) {
-							play("fall");
 						}
 						
 						itemInUse = null;
@@ -555,6 +540,14 @@ package daydream.game {
 						play("horse fall");
 					} else {
 						play("fall");
+					}
+				} else {
+					if(itemInUse is HorseHead) {
+						play("horse jump");
+					} else if(usedMidairJump) {
+						play("midair jump");
+					} else {
+						play("jump");
 					}
 				}
 			}

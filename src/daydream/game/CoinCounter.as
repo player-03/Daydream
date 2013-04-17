@@ -10,7 +10,7 @@ package daydream.game
 		public static const COINS:String = "coins";
 		
 		private var getCoins:Function;
-		private static var coinCount:int;
+		private var coinCount:int = -1;
 		
 		public function CoinCounter(getCoins:Function, x:Number, y:Number) 
 		{
