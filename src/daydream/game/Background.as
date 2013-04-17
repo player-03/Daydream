@@ -6,8 +6,8 @@ package daydream.game {
 	
 	public class Background extends FlxSprite {
 		[Embed(source = "../../../lib/Background.png")] public static var background:Class;
-		[Embed(source = "../../../lib/Clouds 1.png")] public static var clouds1:Class;
-		[Embed(source = "../../../lib/Clouds 2.png")] public static var clouds2:Class;
+		[Embed(source = "../../../lib/Clouds1Colored.png")] public static var clouds1:Class;
+		[Embed(source = "../../../lib/Clouds2Colored.png")] public static var clouds2:Class;
 		[Embed(source = "../../../lib/Ocean.png")] public static var ocean:Class;
 		
 		/**

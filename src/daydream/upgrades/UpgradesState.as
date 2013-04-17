@@ -1,5 +1,3 @@
-//As of right now, switching to this state does not save the coins, but it saves the score
-//	So it's commented out for the time being
 package daydream.upgrades 
 {
 	import daydream.game.Child;
@@ -7,6 +5,7 @@ package daydream.upgrades
 	import daydream.game.CoinCounterSprite;
 	import daydream.game.ScoreKeeper;
 	import daydream.menu.MenuState;
+	import daydream.utils.Save;
 	import org.flixel.FlxButton;
 	import org.flixel.FlxG;
 	import org.flixel.FlxState;
@@ -15,15 +14,43 @@ package daydream.upgrades
 	
 	public class UpgradesState extends FlxState
 	{
+		//The following constants are identifiers for saved integers.
+		//These integers represent the number of upgrades of that type
+		//that have been purchased (alternately, the "upgrade level").
+		
+		/**
+		 * Pogo stick bounce height.
+		 */
+		public static const POGO:String = "pogo_upgrades";
+		/**
+		 * Horse speed and/or jump height.
+		 */
+		public static const HORSE:String = "horse_upgrades";
+		/**
+		 * The frequency at which items spawn, excluding coins.
+		 */
+		public static const ITEM_FREQUENCY:String = "item_upgrades";
+		/**
+		 * The frequency at which coins spawn, and the number of coins
+		 * dropped per enemy.
+		 */
+		public static const COIN_FREQUENCY:String = "coin_upgrades";
+		/**
+		 * The ease of landing on a dragon.
+		 */
+		public static const DRAGON:String = "dragon_upgrades";
+		
+		
 		private var coinSprite:CoinCounterSprite;
 		private var coinCounter:CoinCounter;
-		private var child:Child;
 		private var availableCoins:int;
 		
-		public function UpgradesState(c:Child) 
+		public function UpgradesState() 
 		{
+			FlxG.music.fadeOut(0.8, true);
+			
 			coinSprite = new CoinCounterSprite(20, 20);
-			coinCounter = new CoinCounter(c, 40, 20);
+			coinCounter = new CoinCounter(getCoins, 40, 20);
 			
 			var playButton:FlxButton = new FlxButton(
 									Main.STAGE_WIDTH / 2 - 120,
@@ -38,18 +65,31 @@ package daydream.upgrades
 			add(coinSprite);
 			add(coinCounter);
 			
-			this.child = c;
-			availableCoins = child.getCoins();
+			availableCoins = Save.getInt(CoinCounter.COINS);
+		}
+		
+		public override function update():void
+		{
+			super.update();
+			if(Child.jumpJustPressed()) {
+				onPlayClicked();
+			}
+		}
+		
+		public function getCoins():int
+		{
+			return availableCoins;
 		}
 		
 		private function onPlayClicked():void
 		{
-			child.setCoins(availableCoins);
+			Save.flush();
 			FlxG.switchState(new GameState());
 		}
 		
 		private function onQuitClicked():void
 		{
+			Save.flush();
 			FlxG.switchState(new MenuState());
 		}
 	}

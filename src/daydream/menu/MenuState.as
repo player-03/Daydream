@@ -2,19 +2,18 @@ package daydream.menu {
 	import daydream.game.GameState;
 	import daydream.menu.InstructState;
 	import daydream.Main;
+	import daydream.utils.Save;
 	import org.flixel.FlxButton;
 	import org.flixel.FlxG;
 	import org.flixel.FlxState;
 	
 	public class MenuState extends FlxState {
-		[Embed(source="../../../lib/Daydream.mp3")] private static var Music:Class;
-		
 		public override function create():void {
 			//the entry point for FlxState objects
 			
-			FlxG.playMusic(Music);
-			
 			FlxG.bgColor = 0xFFFFFFFF;
+			
+			FlxG.mute = Save.getBoolean(GameState.MUTE);
 			
 			var playButton:FlxButton = new FlxButton(
 									Main.STAGE_WIDTH / 2 - 40,

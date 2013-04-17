@@ -118,7 +118,7 @@ package daydream.game {
 										15 - umbrellaSprite.height);
 			FlxG.state.add(umbrellaSprite);
 			
-			coins = Save.getInt("coins");
+			coins = Save.getInt(CoinCounter.COINS);
 			
 			baseXVelocity = RUN_SPEED_CUTOFF / 4;
 			acceleration.y = GRAVITY;
@@ -245,7 +245,7 @@ package daydream.game {
 				deadTime += FlxG.elapsed;
 				if(deadTime > 0.25) {
 					//FlxG.resetState();
-					FlxG.switchState(new UpgradesState(this));
+					FlxG.switchState(new UpgradesState());
 				}
 				return;
 			}
@@ -575,7 +575,7 @@ package daydream.game {
 		}
 		
 		public override function destroy():void {
-			Save.storeInt("coins", coins);
+			Save.storeInt(CoinCounter.COINS, coins);
 			super.destroy();
 		}
 		
@@ -599,18 +599,18 @@ package daydream.game {
 			return jumpReplenish;
 		}
 		
-		private function jumpJustPressed():Boolean {
+		public static function jumpJustPressed():Boolean {
 			return FlxG.keys.justPressed("Z") || FlxG.keys.justPressed("A") || FlxG.keys.justPressed("UP") || FlxG.keys.justPressed("SPACE");
 		}
-		private function jumpHeld():Boolean {
+		public static function jumpHeld():Boolean {
 			return FlxG.keys.Z || FlxG.keys.A || FlxG.keys.UP || FlxG.keys.SPACE;
 		}
 		
-		private function useItemJustPressed():Boolean {
+		public static function useItemJustPressed():Boolean {
 			return FlxG.keys.justPressed("S") || FlxG.keys.justPressed("X") || FlxG.keys.justPressed("SHIFT");
 		}
 		
-		private function attackJustPressed():Boolean {
+		public static function attackJustPressed():Boolean {
 			return FlxG.keys.justPressed("D") || FlxG.keys.justPressed("C");
 		}
 	}

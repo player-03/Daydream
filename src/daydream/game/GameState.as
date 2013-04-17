@@ -5,6 +5,7 @@ package daydream.game {
 	import daydream.game.Platform;
 	import daydream.Main;
 	import daydream.utils.NumberInterval;
+	import daydream.utils.Save;
 	import org.flixel.FlxBasic;
 	import org.flixel.FlxG;
 	import org.flixel.FlxGroup;
@@ -13,9 +14,16 @@ package daydream.game {
 	import org.flixel.FlxState;
 	
 	public class GameState extends FlxState {
+		/**
+		 * Name of the muted variable in the save data.
+		 */
+		public static const MUTE:String = "mute";
+		
 		private static const WORLD_HEIGHT:Number = 2800;
 		public static const PHYSICS_BOUNDS_X_OFFSET:Number = 100;
 		public static const PHYSICS_BOUNDS_Y_OFFSET:Number = WORLD_HEIGHT - Main.STAGE_HEIGHT;
+		
+		[Embed(source="../../../lib/Daydream.mp3")] private static var Music:Class;
 		
 		private var child:Child;
 		private var platforms:FlxGroup;
@@ -36,7 +44,15 @@ package daydream.game {
 		private var coinCounter:CoinCounter;
 		
 		public override function create():void {
-			//FlxG.bgColor = 0xFFCCDDFF;
+			if(FlxG.music == null) {
+				FlxG.playMusic(Music);
+			}
+			if(Save.getBoolean(MUTE)) {
+				FlxG.music.stop();
+			} else {
+				FlxG.music.fadeIn(0.8);
+				FlxG.music.update();
+			}
 			
 			FlxG.worldBounds.width = Main.STAGE_WIDTH + 2 * PHYSICS_BOUNDS_X_OFFSET;
 			FlxG.worldBounds.height = Main.STAGE_HEIGHT + 2 * PHYSICS_BOUNDS_Y_OFFSET;
@@ -48,8 +64,8 @@ package daydream.game {
 			add(background);
 			
 			background.add(new Background(Background.background)); //background!
-			//background.add(new Background(Background.clouds1, 150, WORLD_HEIGHT / 5 - 150));
-			//background.add(new Background(Background.clouds2, 350, WORLD_HEIGHT / 3.5 - 350));
+			background.add(new Background(Background.clouds1, 150, WORLD_HEIGHT / 5 - 150));
+			background.add(new Background(Background.clouds2, 350, WORLD_HEIGHT / 3.5 - 350));
 			//background.add(new Background(Background.ocean, WORLD_HEIGHT - 130, -40));
 			
 			rainbow = new Rainbow();
@@ -84,7 +100,7 @@ package daydream.game {
 			coinCounterSprite = new CoinCounterSprite(100, 50);
 			foreground.add(coinCounterSprite);
 			
-			coinCounter = new CoinCounter(child, 120, 50);
+			coinCounter = new CoinCounter(child.getCoins, 120, 50);
 			foreground.add(coinCounter);
 			
 			foreground.add(new JumpReplenishIndicator(child, 10, 10));
@@ -127,7 +143,7 @@ package daydream.game {
 					new NumberInterval(WORLD_HEIGHT - 2400, WORLD_HEIGHT - 1920),
 					new NumberInterval(280, 450),
 					jumpDistInterval, child, 0.07,
-					[Straw], [0.08], 0.0005));
+					[Straw, PogoStick], [0.08, 0.03], 0.0005));
 			add(new PlatformSpawner(this, 10000,
 					new NumberInterval(0, WORLD_HEIGHT - 2420),
 					new NumberInterval(300, 350),
@@ -145,6 +161,11 @@ package daydream.game {
 		}
 		
 		public override function update():void {
+			if(FlxG.keys.justPressed("M") || FlxG.keys.justPressed("ZERO")) {
+				FlxG.mute = !FlxG.mute;
+				Save.storeBoolean(MUTE, FlxG.mute);
+			}
+			
 			if(FlxG.keys.justPressed("P") || FlxG.keys.justPressed("ESCAPE")) {
 				FlxG.paused = !FlxG.paused;
 				Main.getInstance().updatePauseScreen();

@@ -19,6 +19,9 @@ package daydream.utils {
 		public static function storeString(name:String, value:String):void {
 			saveFile.data[name] = value;
 		}
+		public static function storeBoolean(name:String, value:Boolean):void {
+			saveFile.data[name] = value;
+		}
 		
 		public static function getInt(name:String, defaultValue:int = 0):int {
 			if(saveFile.data[name] is int) {
@@ -36,6 +39,13 @@ package daydream.utils {
 		}
 		public static function getString(name:String, defaultValue:String = null):String {
 			if(saveFile.data[name] is String) {
+				return saveFile.data[name];
+			}
+			
+			return defaultValue;
+		}
+		public static function getBoolean(name:String, defaultValue:Boolean = false):Boolean {
+			if(saveFile.data[name] is Boolean) {
 				return saveFile.data[name];
 			}
 			

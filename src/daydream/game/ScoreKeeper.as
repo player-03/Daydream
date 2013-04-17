@@ -5,6 +5,11 @@ package daydream.game
 	
 	public class ScoreKeeper extends FlxText
 	{
+		/**
+		 * Name of the high score variable in the save data.
+		 */
+		public static const HIGHSCORE:String = "highscore";
+		
 		private var child:Child;
 		private var highscore:int;
 		
@@ -20,11 +25,11 @@ package daydream.game
 			this.child = child;
 			this.size = 11;
 			
-			highscore = Save.getInt("highscore");
+			highscore = Save.getInt(HIGHSCORE);
 		}
 		
 		public override function destroy():void {
-			Save.storeInt("highscore", highscore);
+			Save.storeInt(HIGHSCORE, highscore);
 			
 			super.destroy();
 		}
