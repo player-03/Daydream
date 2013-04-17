@@ -15,8 +15,8 @@ package daydream.game {
 		public function Rainbow() {
 			super(0, 0, rainbowImage);
 			
-			scrollFactor.x = 0.65;
-			scrollFactor.y = 0.65;
+			scrollFactor.x = 0.5;
+			scrollFactor.y = 0.5;
 			
 			y = (FlxG.camera.bounds.bottom - height) * scrollFactor.y;
 			
@@ -24,7 +24,8 @@ package daydream.game {
 		}
 		
 		public function show():void {
-			x = FlxG.camera.scroll.x * scrollFactor.x + Main.STAGE_WIDTH;
+			x = FlxG.camera.scroll.x * scrollFactor.x + Main.STAGE_WIDTH
+				+ (FlxG.state as GameState).getChild().baseXVelocity * 1.4 * scrollFactor.x;
 			visible = true;
 		}
 		

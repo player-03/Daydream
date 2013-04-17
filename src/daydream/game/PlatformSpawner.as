@@ -11,7 +11,7 @@ package daydream.game {
 		 * platform isn't allowed to be much higher than the one before,
 		 * it can be significantly lower.
 		 */
-		private static const EXTRA_FALL_DIST:Number = 2;
+		private static const EXTRA_FALL_DIST:Number = 2.5;
 		
 		/**
 		 * The percentage of jumpHeightInterval at which it starts
@@ -42,9 +42,12 @@ package daydream.game {
 		private var platformWidthInterval:NumberInterval;
 		private var distanceBetweenPlatformsInterval:NumberInterval;
 		
-		private var lastPlatformX:Number;
-		private var lastPlatformY:Number;
-		private var lastPlatformWidth:Number;
+		/**
+		 * 
+		 */
+		private var recentlySpawnedPlatforms:Vector.<PlatformDefinition>;
+		
+		private var nextPlatformX:Number;
 		
 		private var itemTypes:Vector.<Class>;
 		private var itemFrequencies:Vector.<Number>;
@@ -59,6 +62,7 @@ package daydream.game {
 		private var childSpeedMultiplier:Number;
 		
 		public function PlatformSpawner(gameState:GameState,
+									seriesCount:int,
 									firstPlatformX:Number,
 									yInterval:NumberInterval,
 									platformWidthInterval:NumberInterval,
@@ -78,9 +82,17 @@ package daydream.game {
 			this.childSpeedMultiplier = childSpeedMultiplier;
 			this.enemyFrequency = enemyFrequency;
 			
-			lastPlatformX = firstPlatformX;
-			lastPlatformY = (yInterval.min + yInterval.max) / 2;
-			lastPlatformWidth = platformWidthInterval.min;
+			recentlySpawnedPlatforms = new Vector.<PlatformDefinition>(seriesCount);
+			
+			for(var i:int = 0; i < seriesCount; i++) {
+				//the first platform series starts in the middle; the
+				//others start at random points
+				recentlySpawnedPlatforms[i] = new PlatformDefinition(
+							firstPlatformX,
+							i == 0 ? (yInterval.min + yInterval.max) / 2
+									: yInterval.randomValue(),
+							platformWidthInterval.min);
+			}
 			
 			if(itemTypes != null) {
 				this.itemTypes = Vector.<Class>(itemTypes);
@@ -109,34 +121,49 @@ package daydream.game {
 				wasRaining = false;
 			}
 			
-			if(FlxG.camera.scroll.x + Main.STAGE_WIDTH >=
-					lastPlatformX + lastPlatformWidth
-					+ distanceBetweenPlatformsInterval.min
-					* xMultiplier()) {
-				spawnPlatform();
+			for each(var def:PlatformDefinition in recentlySpawnedPlatforms) {
+				if(FlxG.camera.scroll.x + Main.STAGE_WIDTH >=
+						def.x + def.width
+						+ distanceBetweenPlatformsInterval.min
+						* xMultiplier()) {
+					spawnPlatform(def);
+				}
 			}
 		}
 		
-		private function spawnPlatform():void {
+		private function spawnPlatform(def:PlatformDefinition):void {
 			var percentOfJump:Number;
 			do {
 				percentOfJump = getRandJumpPercentage();
-			} while(!yInterval.contains(lastPlatformY
+			} while(!yInterval.contains(def.y
 					+ jumpHeightInterval.getPercentageOfRange(percentOfJump)));
 			
-			lastPlatformX += lastPlatformWidth
+			def.x += def.width
 						+ distanceBetweenPlatformsInterval.getPercentageOfRange(percentOfJump)
 						* xMultiplier();
-			lastPlatformY += jumpHeightInterval.getPercentageOfRange(percentOfJump);
+			def.y += jumpHeightInterval.getPercentageOfRange(percentOfJump);
 			
-			lastPlatformWidth = platformWidthInterval.randomValue() * xMultiplier();
+			def.width = platformWidthInterval.randomValue() * xMultiplier();
 			
-			var platform:Platform = new Platform(lastPlatformX, lastPlatformY, lastPlatformWidth);
+			//don't spawn anything if the platform would be too close to another
+			for each(var other:Platform in gameState.getPlatforms()) {
+				if(other != null && other.exists) {
+					//they're too close if they're within 100 pixels
+					//horizontally and 200 vertically
+					if(def.x < other.x + other.width + 100
+						&& other.x < def.x + def.width + 100
+						&& Math.abs(other.y - def.y) < 200) {
+						return;
+					}
+				}
+			}
+			
+			var platform:Platform = new Platform(def.x, def.y, def.width);
 			gameState.addPlatform(platform);
 			
 			//now see if an item should be spawned as well
-			var itemX:Number = lastPlatformX + 5 + Math.random() * lastPlatformWidth * 1.8;
-			var itemY:Number = lastPlatformY + 5 - Math.random() * 120;
+			var itemX:Number = def.x + 5 + Math.random() * def.width * 1.8;
+			var itemY:Number = def.y + 5 - Math.random() * 120;
 			var item:FlxObject;
 			if(spawnUmbrellaNext) {
 				spawnUmbrellaNext = false;
@@ -167,9 +194,8 @@ package daydream.game {
 			//also spawn a standing enemy if appropriate
 			if(Math.random() < enemyFrequency) {
 				gameState.addEnemy(new Enemy(
-							lastPlatformX + 3
-									+ Math.random() * (lastPlatformWidth - 63),
-							lastPlatformY - 97));
+							def.x + 3 + Math.random() * (def.width - 63),
+							def.y - 97));
 			}
 		}
 		
@@ -189,5 +215,17 @@ package daydream.game {
 			itemTypes.push(itemType);
 			itemFrequencies.push(chance);
 		}
+	}
+}
+
+class PlatformDefinition {
+	public var x:Number;
+	public var y:Number;
+	public var width:Number;
+	
+	public function PlatformDefinition(x:Number, y:Number, width:Number) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
 	}
 }

@@ -19,7 +19,7 @@ package daydream.game {
 		 */
 		public static const MUTE:String = "mute";
 		
-		private static const WORLD_HEIGHT:Number = 2800;
+		private static const WORLD_HEIGHT:Number = 3200;
 		public static const PHYSICS_BOUNDS_X_OFFSET:Number = 100;
 		public static const PHYSICS_BOUNDS_Y_OFFSET:Number = WORLD_HEIGHT - Main.STAGE_HEIGHT;
 		
@@ -119,43 +119,44 @@ package daydream.game {
 			addItem(new Coin(680, WORLD_HEIGHT - 280));
 			
 			var jumpDistInterval:NumberInterval = new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE * 2);
-			add(new PlatformSpawner(this, 630,
+			add(new PlatformSpawner(this, 1, 630,
 					new NumberInterval(WORLD_HEIGHT - 320, WORLD_HEIGHT - 10 - Platform.TILE_WIDTH),
 					new NumberInterval(470, 750),
 					new NumberInterval(Child.JUMP_DISTANCE / 3, Child.JUMP_DISTANCE),
-					child, 0, [HorseHead], [0.17], 0.0015));
-			add(new PlatformSpawner(this, 550,
+					child, 0, [HorseHead], [0.17], 0.002));
+			add(new PlatformSpawner(this, 2, 550,
 					new NumberInterval(WORLD_HEIGHT - 700, WORLD_HEIGHT - 340),
 					new NumberInterval(330, 600),
 					jumpDistInterval, child, 0.1,
-					[HorseHead, PogoStick], [0.04, 0.03]));
-			add(new PlatformSpawner(this, 2500,
+					[HorseHead, PogoStick], [0.04, 0.03], 0.0015));
+			add(new PlatformSpawner(this, 2, 2500,
 					new NumberInterval(WORLD_HEIGHT - 1100, WORLD_HEIGHT - 720),
 					new NumberInterval(300, 540),
 					jumpDistInterval, child, 0.05,
-					[HorseHead, PogoStick], [0.05, 0.03]));
-			add(new PlatformSpawner(this, 5000,
+					[HorseHead, PogoStick, Straw], [0.05, 0.03, 0.002],
+					0.0015));
+			add(new PlatformSpawner(this, 2, 5000,
 					new NumberInterval(WORLD_HEIGHT - 1900, WORLD_HEIGHT - 1130),
-					new NumberInterval(470, 650),
+					new NumberInterval(440, 600),
 					jumpDistInterval, child, 0,
-					[PogoStick], [0.03], 0.0015));
-			add(new PlatformSpawner(this, 7500,
+					[PogoStick], [0.03], 0.002));
+			add(new PlatformSpawner(this, 2, 7500,
 					new NumberInterval(WORLD_HEIGHT - 2400, WORLD_HEIGHT - 1920),
 					new NumberInterval(310, 550),
 					jumpDistInterval, child, 0.07,
-					[Straw, PogoStick], [0.08, 0.03], 0.0005));
-			add(new PlatformSpawner(this, 10000,
+					[Straw, PogoStick], [0.08, 0.03], 0.001));
+			add(new PlatformSpawner(this, 2, 10000,
 					new NumberInterval(0, WORLD_HEIGHT - 2420),
 					new NumberInterval(350, 400),
 					jumpDistInterval, child, 0.2,
-					[HorseHead], [0.2], 0.0005));
+					[HorseHead], [0.2], 0.001));
 					
 			//Coin spawning
 			add(new CoinSpawner(this, new NumberInterval(500, 1000), new NumberInterval(0, WORLD_HEIGHT - 1900)));
 			add(new CoinSpawner(this, new NumberInterval(750, 1250), new NumberInterval(WORLD_HEIGHT - 1900, WORLD_HEIGHT - 700)));
 			add(new CoinSpawner(this, new NumberInterval(1000, 1500), new NumberInterval(WORLD_HEIGHT - 700, WORLD_HEIGHT - 10 - Platform.TILE_WIDTH - 15)));
 			
-			add(new DragonSpawner(10));
+			add(new DragonSpawner(15));
 			
 			child.y = FlxG.camera.bounds.bottom - 600;
 		}
@@ -188,20 +189,23 @@ package daydream.game {
 			FlxG.collide(enemies, platforms);
 			
 			removeOOBMembers(platforms, false);
-			removeOOBMembers(items, true);
-			removeOOBMembers(enemies, true);
+			removeOOBMembers(items, false);
+			removeOOBMembers(enemies, false);
 		}
 		
 		private function removeOOBMembers(group:FlxGroup, recycle:Boolean):void {
 			var member:FlxObject;
 			for(var i:int = group.members.length - 1; i >= 0; i--) {
 				member = group.members[i] as FlxObject;
-				if(member != null && member.exists && member.x + member.width < FlxG.camera.scroll.x - PHYSICS_BOUNDS_X_OFFSET * 3) {
+				if(member != null && (member.exists || !recycle)
+					&& member.x + member.width < FlxG.camera.scroll.x - PHYSICS_BOUNDS_X_OFFSET * 3) {
 					if(recycle) {
 						member.kill();
 					} else {
-						//if the second parameter is false, the target
-						//group will become unordered
+						//if the second parameter is false, the object
+						//will be set to null and a future object will be
+						//added in its place (this is faster but means
+						//the group will become unordered)
 						group.remove(member, false);
 						member.destroy();
 					}
@@ -242,6 +246,10 @@ package daydream.game {
 		
 		public function getChild():Child {
 			return child;
+		}
+		
+		public function getPlatforms():Array {
+			return platforms.members;
 		}
 	}
 }

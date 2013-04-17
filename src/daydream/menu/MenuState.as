@@ -1,4 +1,5 @@
 package daydream.menu {
+	import daydream.game.Child;
 	import daydream.game.GameState;
 	import daydream.menu.InstructState;
 	import daydream.Main;
@@ -22,6 +23,13 @@ package daydream.menu {
 			var instructionButton:FlxButton = new FlxButton(Main.STAGE_WIDTH / 2 - 40, Main.STAGE_HEIGHT / 2 + 30, "Instructions", onInstructClick);
 			add(playButton);
 			add(instructionButton);
+		}
+		
+		public override function update():void {
+			super.update();
+			if(Child.jumpJustPressed()) {
+				onPlayClicked();
+			}
 		}
 		
 		private function onPlayClicked():void {

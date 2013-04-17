@@ -29,9 +29,9 @@ package daydream.game {
 						+ 200 + 150 * timeAlive;
 			
 			//speed up based on onscreen position
-			/*if(x - FlxG.camera.scroll.x > Main.STAGE_WIDTH * 0.3) {
-				velocity.x += 
-			}*/
+			if(x - FlxG.camera.scroll.x > Main.STAGE_WIDTH * 0.2) {
+				velocity.x += (x - FlxG.camera.scroll.x - Main.STAGE_WIDTH * 0.2) * 1.5;
+			}
 			
 			if(x > FlxG.camera.scroll.x + Main.STAGE_WIDTH) {
 				//this will make GameState clean this up
