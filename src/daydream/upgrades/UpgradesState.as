@@ -40,10 +40,17 @@ package daydream.upgrades
 		 */
 		public static const DRAGON:String = "dragon_upgrades";
 		
+		private var upgradeHandler:UpgradeHandler;
 		
 		private var coinSprite:CoinCounterSprite;
 		private var coinCounter:CoinCounter;
 		private var availableCoins:int;
+		
+		private var pogo_count:int;
+		private var horse_count:int;
+		private var item_count:int;
+		private var coin_count:int;
+		private var dragon_count:int;
 		
 		public override function create():void
 		{
@@ -66,6 +73,14 @@ package daydream.upgrades
 			add(coinCounter);
 			
 			availableCoins = Save.getInt(CoinCounter.COINS);
+			pogo_count = Save.getInt(POGO);
+			horse_count = Save.getInt(HORSE);
+			item_count = Save.getInt(ITEM_FREQUENCY);
+			coin_count = Save.getInt(COIN_FREQUENCY);
+			dragon_count = Save.getInt(DRAGON);
+			
+			upgradeHandler = new UpgradeHandler(this);
+			add(upgradeHandler);
 		}
 		
 		public override function update():void
@@ -74,6 +89,12 @@ package daydream.upgrades
 			if(Child.jumpJustPressed()) {
 				onPlayClicked();
 			}
+			
+			pogo_count = upgradeHandler.pogo_count;
+			horse_count = upgradeHandler.horse_count;
+			item_count = upgradeHandler.item_count;
+			coin_count = upgradeHandler.coin_count;
+			dragon_count = upgradeHandler.dragon_count;
 		}
 		
 		public function getCoins():int
@@ -81,16 +102,61 @@ package daydream.upgrades
 			return availableCoins;
 		}
 		
+		public function getPogoCount():int
+		{
+			return pogo_count;
+		}
+		
+		public function getHorseCount():int
+		{
+			return horse_count;
+		}
+		
+		public function getItemCount():int
+		{
+			return item_count;
+		}
+		
+		public function getCoinCount():int
+		{
+			return coin_count;
+		}
+		
+		public function getDragonCount():int
+		{
+			return dragon_count;
+		}
+		
+		public function coinChange(x:int):void
+		{
+			if (x == 1)
+				availableCoins += 1;
+			if (x == -1)
+				availableCoins -= 1;
+		}
+		
 		private function onPlayClicked():void
 		{
+			saveUpgrades();
 			Save.flush();
 			FlxG.switchState(new GameState());
 		}
 		
 		private function onQuitClicked():void
 		{
+			saveUpgrades();
 			Save.flush();
 			FlxG.switchState(new MenuState());
+		}
+		
+		private function saveUpgrades():void
+		{
+			Save.storeInt(CoinCounter.COINS, availableCoins);
+			Save.storeInt(POGO, pogo_count);
+			Save.storeInt(HORSE, horse_count);
+			Save.storeInt(ITEM_FREQUENCY, item_count);
+			Save.storeInt(COIN_FREQUENCY, coin_count);
+			Save.storeInt(DRAGON, dragon_count);
 		}
 	}
 }

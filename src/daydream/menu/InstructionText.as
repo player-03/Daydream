@@ -14,7 +14,8 @@ package daydream.menu
 							"Keys\n" +
 							"Up/Space : Jump\n" +
 							"S : Use Item\n" +
-							"D : Attack\n";
+							"D : Attack\n" +
+							"M : Mute\n";
 			this.color = 0x00000000;
 			this.size = 15;
 		}
