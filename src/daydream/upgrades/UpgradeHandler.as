@@ -170,66 +170,96 @@ package daydream.upgrades
 		//POGO BUTTON FUNCTIONS
 		public function pogo_neg():void
 		{
-			coinUp();
-			pogo_count -= 1;
+			if (pogo_count != 0)
+			{
+				coinUp();
+				pogo_count -= 1;
+			}
 		}
 		
 		public function pogo_pos():void
 		{
-			coinDown();
-			pogo_count += 1;
+			if (upgradeState.getCoins() != 0)
+			{
+				coinDown();
+				pogo_count += 1;
+			}
 		}
 		
 		//HORSE BUTTON FUNCTIONS
 		public function horse_neg():void
 		{
-			coinUp();
-			horse_count -= 1;
+			if (horse_count != 0)
+			{
+				coinUp();
+				horse_count -= 1;
+			}
 		}
 		
 		public function horse_pos():void
 		{
-			coinDown();
-			horse_count += 1;
+			if (upgradeState.getCoins() != 0)
+			{
+				coinDown();
+				horse_count += 1;
+			}
 		}
 		
 		//ITEM BUTTON FUNCTIONS
 		public function item_neg():void
 		{
-			coinUp();
-			item_count -= 1;
+			if (item_count != 0)
+			{
+				coinUp();
+				item_count -= 1;
+			}
 		}
 		
 		public function item_pos():void
 		{
-			coinDown();
-			item_count += 1;
+			if (upgradeState.getCoins() != 0)
+			{
+				coinDown();
+				item_count += 1;
+			}
 		}
 		
 		//COIN BUTTON FUNCTIONS
 		public function coin_neg():void
 		{
-			coinUp();
-			item_count -= 1;
+			if (coin_count != 0)
+			{
+				coinUp();
+				coin_count -= 1;
+			}
 		}
 		
 		public function coin_pos():void
 		{
-			coinDown();
-			item_count += 1;
+			if (upgradeState.getCoins() != 0)
+			{
+				coinDown();
+				coin_count += 1;
+			}
 		}
 		
 		//DRAGON BUTTON FUNCTIONS
 		public function dragon_neg():void
 		{
-			coinUp();
-			item_count -= 1;
+			if (dragon_count != 0)
+			{
+				coinUp();
+				dragon_count -= 1;
+			}
 		}
 		
 		public function dragon_pos():void
 		{
-			coinDown();
-			item_count += 1;
+			if (upgradeState.getCoins() != 0)
+			{
+				coinDown();
+				dragon_count += 1;
+			}
 		}
 		
 		//Coin changing functions
