@@ -8,6 +8,8 @@ package daydream{
 
 	[Frame(factoryClass="daydream.Preloader")]
 	public class Main extends FlxGame {
+		[Embed(source = "../../lib/SFX_BUTTON.mp3")] public static var buttonSound:Class;
+		
 		public static const STAGE_WIDTH:int = 1600;
 		public static const STAGE_HEIGHT:int = 600;
 		

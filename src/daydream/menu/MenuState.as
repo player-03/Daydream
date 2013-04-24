@@ -25,11 +25,13 @@ package daydream.menu {
 		}
 		
 		private function onPlayClicked():void {
+			FlxG.play(Main.buttonSound);
 			FlxG.switchState(new GameState());
 		}
 		
 		private function onInstructClick():void
 		{
+			FlxG.play(Main.buttonSound);
 			FlxG.switchState(new InstructState());
 		}
 	}

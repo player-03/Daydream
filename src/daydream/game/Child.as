@@ -27,6 +27,9 @@ package daydream.game {
 		[Embed(source = "../../../lib/SFX_JUMP.mp3")] private static var jumpSound:Class;
 		[Embed(source = "../../../lib/SFX_JUMP_POGO.mp3")] private static var pogoSound:Class;
 		[Embed(source = "../../../lib/SFX_NEIGH.mp3")] private static var neighSound:Class;
+		[Embed(source = "../../../lib/SFX_COIN.mp3")] private static var coinPickupSound:Class;
+		[Embed(source = "../../../lib/SFX_ENEMY_DIE.mp3")] private static var enemyDeathSound:Class;
+		[Embed(source = "../../../lib/SFX_STICK_SWING.mp3")] private static var attackSound:Class;
 		
 		/**
 		 * Estimated distance the child can cover by the apex of his jump.
@@ -140,9 +143,12 @@ package daydream.game {
 				return;
 			}
 			
-			if (item is Coin && coins < coinMax)
+			if (item is Coin)
 			{
-				coins += 1;
+				FlxG.play(coinPickupSound);
+				
+				if(coins < coinMax)
+					coins += 1;
 			}
 			
 			//check the item picked up
@@ -167,6 +173,8 @@ package daydream.game {
 			if (dragonSprite.visible) {
 				gameState.addItem(new Coin(enemy.x + 75, enemy.y + 35));
 				enemy.kill();
+				
+				FlxG.play(enemyDeathSound);
 				
 				score += ENEMY_KILL_POINTS;
 				
@@ -193,8 +201,8 @@ package daydream.game {
 				var enemyOffset:FlxPoint = (enemy as Dragon).offset;
 				//check if the child landed on the dragon's neck (not too
 				//far forward, not too far back, and not from below)
-				if(x + offset.x + width < enemy.x + enemyOffset.x + enemy.width - (80)
-					&& x + offset.x > enemy.x + enemyOffset.x + enemy.width - (400)
+				if(x + offset.x + width < enemy.x + enemyOffset.x + enemy.width - (80) + (Save.getInt(UpgradesState.DRAGON) * 2)
+					&& x + offset.x > enemy.x + enemyOffset.x + enemy.width - (400) - (Save.getInt(UpgradesState.DRAGON) * 2)
 					&& y + offset.y + height < enemy.y + enemyOffset.y + (10))
 				{
 					gameState.addItem(new Coin(enemy.x + 75, enemy.y + 35));
@@ -223,6 +231,8 @@ package daydream.game {
 			{
 				gameState.addItem(new Coin(enemy.x + 75, enemy.y + 35));
 				enemy.kill();
+				
+				FlxG.play(enemyDeathSound);
 				
 				score += ENEMY_KILL_POINTS;
 			}
@@ -420,6 +430,7 @@ package daydream.game {
 			}
 			else if (attackTimer < 0 && attackJustPressed() && (itemInUse == null || itemInUse is Umbrella))
 			{
+				FlxG.play(attackSound);
 				attackTimer = 0;
 			}
 			
