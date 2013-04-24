@@ -12,6 +12,7 @@ package daydream.game {
 	import org.flixel.FlxObject;
 	import org.flixel.FlxRect;
 	import org.flixel.FlxState;
+	import daydream.upgrades.UpgradesState;
 	
 	public class GameState extends FlxState {
 		/**
@@ -152,9 +153,9 @@ package daydream.game {
 					[HorseHead], [0.2], 0.001));
 					
 			//Coin spawning
-			add(new CoinSpawner(this, new NumberInterval(500, 1000), new NumberInterval(0, WORLD_HEIGHT - 1900)));
-			add(new CoinSpawner(this, new NumberInterval(750, 1250), new NumberInterval(WORLD_HEIGHT - 1900, WORLD_HEIGHT - 700)));
-			add(new CoinSpawner(this, new NumberInterval(1000, 1500), new NumberInterval(WORLD_HEIGHT - 700, WORLD_HEIGHT - 10 - Platform.TILE_WIDTH - 15)));
+			add(new CoinSpawner(this, new NumberInterval(1000, (2000 - 100 * Save.getInt(UpgradesState.COIN_FREQUENCY))), new NumberInterval(0, WORLD_HEIGHT - 1900)));
+			add(new CoinSpawner(this, new NumberInterval(2000, (3000 - 100 * Save.getInt(UpgradesState.COIN_FREQUENCY))), new NumberInterval(WORLD_HEIGHT - 1900, WORLD_HEIGHT - 700)));
+			add(new CoinSpawner(this, new NumberInterval(3000, (4000 - 100 * Save.getInt(UpgradesState.COIN_FREQUENCY))), new NumberInterval(WORLD_HEIGHT - 700, WORLD_HEIGHT - 10 - Platform.TILE_WIDTH - 15)));
 			
 			add(new DragonSpawner(15));
 			

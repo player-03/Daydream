@@ -19,6 +19,7 @@ package daydream.menu
 		
 		private function onBackClick():void
 		{
+			FlxG.play(Main.buttonSound);
 			FlxG.switchState(new MenuState());
 		}
 		

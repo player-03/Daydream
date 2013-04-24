@@ -137,6 +137,7 @@ package daydream.upgrades
 		
 		private function onPlayClicked():void
 		{
+			FlxG.play(Main.buttonSound);
 			saveUpgrades();
 			Save.flush();
 			FlxG.switchState(new GameState());
@@ -144,6 +145,7 @@ package daydream.upgrades
 		
 		private function onQuitClicked():void
 		{
+			FlxG.play(Main.buttonSound);
 			saveUpgrades();
 			Save.flush();
 			FlxG.switchState(new MenuState());

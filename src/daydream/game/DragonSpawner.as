@@ -6,6 +6,8 @@ package daydream.game {
 		private var timeUntilNext:Number;
 		private var timeBetweenDragons:Number;
 		
+		[Embed(source = "../../../lib/SFX_DRAGON.mp3")] private static var dragonSound:Class;
+		
 		public function DragonSpawner(timeBetweenDragons:Number) {
 			super();
 			
@@ -18,6 +20,8 @@ package daydream.game {
 			
 			if(timeUntilNext <= 0) {
 				timeUntilNext = timeBetweenDragons;
+				
+				FlxG.play(dragonSound);
 				
 				(FlxG.state as GameState).addEnemy(new Dragon(
 							//(FlxG.state as GameState).getChild().y + 100

@@ -6,6 +6,7 @@ package daydream.game {
 	import org.flixel.FlxObject;
 	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
+	import org.flixel.FlxSound;
 	
 	public class Child extends FlxSprite {
 		public static const RUN_SPEED_CUTOFF:Number = 500; //800 when upgraded
@@ -20,6 +21,18 @@ package daydream.game {
 		public static const FALL_SPEED:Number = 400;
 		public static const GRAVITY:Number = 650;
 		public static const CHILD_HEIGHT:Number = 60;
+		
+		//SFX
+		[Embed(source = "../../../lib/SFX_GALLOP.mp3")] private static var gallopSound:Class;
+		[Embed(source = "../../../lib/SFX_JUMP.mp3")] private static var jumpSound:Class;
+		[Embed(source = "../../../lib/SFX_JUMP_POGO.mp3")] private static var pogoSound:Class;
+		[Embed(source = "../../../lib/SFX_NEIGH.mp3")] private static var neighSound:Class;
+		[Embed(source = "../../../lib/SFX_COIN.mp3")] private static var coinPickupSound:Class;
+		[Embed(source = "../../../lib/SFX_ENEMY_DIE.mp3")] private static var enemyDeathSound:Class;
+		[Embed(source = "../../../lib/SFX_STICK_SWING.mp3")] private static var attackSound:Class;
+		[Embed(source = "../../../lib/SFX_RAIN_NOUMBRELLA.mp3")] private static var rainNoUmbrellaSound:Class;
+		[Embed(source = "../../../lib/SFX_RAIN_UMBRELLA.mp3")] private static var rainWithUmbrellaSound:Class;
+		[Embed(source = "../../../lib/SFX_DRAGON.mp3")] private static var dragonSound:Class;
 		
 		/**
 		 * Estimated distance the child can cover by the apex of his jump.
@@ -85,6 +98,7 @@ package daydream.game {
 		
 		//coins
 		private var coins:int;
+		private static const coinMax:int = 20;
 		
 		public function Child(gameState:GameState, rainbow:Rainbow, x:Number, y:Number) {
 			super(x, y);
@@ -134,7 +148,10 @@ package daydream.game {
 			
 			if (item is Coin)
 			{
-				coins += 1;
+				FlxG.play(coinPickupSound);
+				
+				if(coins < coinMax)
+					coins += 1;
 			}
 			
 			//check the item picked up
@@ -159,6 +176,8 @@ package daydream.game {
 			if (dragonSprite.visible) {
 				gameState.addItem(new Coin(enemy.x + 75, enemy.y + 35));
 				enemy.kill();
+				
+				FlxG.play(enemyDeathSound);
 				
 				score += ENEMY_KILL_POINTS;
 				
@@ -185,12 +204,14 @@ package daydream.game {
 				var enemyOffset:FlxPoint = (enemy as Dragon).offset;
 				//check if the child landed on the dragon's neck (not too
 				//far forward, not too far back, and not from below)
-				if(x + offset.x + width < enemy.x + enemyOffset.x + enemy.width - 80
-					&& x + offset.x > enemy.x + enemyOffset.x + enemy.width - 400
-					&& y + offset.y + height < enemy.y + enemyOffset.y + 10)
+				if(x + offset.x + width < enemy.x + enemyOffset.x + enemy.width - (80) + (Save.getInt(UpgradesState.DRAGON) * 2)
+					&& x + offset.x > enemy.x + enemyOffset.x + enemy.width - (400) - (Save.getInt(UpgradesState.DRAGON) * 2)
+					&& y + offset.y + height < enemy.y + enemyOffset.y + (10))
 				{
 					gameState.addItem(new Coin(enemy.x + 75, enemy.y + 35));
 					enemy.kill();
+					
+					FlxG.play(dragonSound);
 					
 					score += DRAGON_RIDE_POINTS;
 					
@@ -217,6 +238,8 @@ package daydream.game {
 				gameState.addItem(new Coin(enemy.x + 75, enemy.y + 35));
 				enemy.kill();
 				
+				FlxG.play(enemyDeathSound);
+				
 				score += ENEMY_KILL_POINTS;
 			}
 			else if(hitTimer < 0)
@@ -232,6 +255,15 @@ package daydream.game {
 		}
 		
 		public override function update():void {
+			//This should loop the right SFX during these conditions
+			if (gameState.isRainingOnChild())
+			{
+				if (itemInUse is Umbrella)
+					FlxG.play(rainWithUmbrellaSound, 1, true);
+				else
+					FlxG.play(rainNoUmbrellaSound, 1, true);
+			}
+			
 			if(visible == dragonSprite.visible) {
 				visible = !dragonSprite.visible;
 				if(visible) {
@@ -272,11 +304,12 @@ package daydream.game {
 				jumpTime = JUMP_LENGTH;
 				jumpReplenish = 0;
 				play("pogo jump");
+				FlxG.play(pogoSound);
 				
 				velocity.y = -JUMP_STRENGTH * 0.5
 						- previousVelocity.y * 0.7;
 				if(hitTimer < 0) {
-					velocity.y -= JUMP_STRENGTH * 0.3 * pogoStickBounces;
+					velocity.y -= JUMP_STRENGTH * (0.2 + 0.05 * Save.getInt(UpgradesState.POGO)) * pogoStickBounces;
 				}
 				
 				if(affectedByRain()) {
@@ -370,6 +403,7 @@ package daydream.game {
 						//the player gets a burst of speed upon pressing
 						//space, but the strength of this burst depends on
 						//how long they've been riding
+						FlxG.play(jumpSound);
 						acceleration.y = -GRAVITY * (0.4 + 0.3 * (itemTimeLeft / ITEM_TIME));
 					} else {
 						//the player loses lift after a time, making them
@@ -412,6 +446,7 @@ package daydream.game {
 			}
 			else if (attackTimer < 0 && attackJustPressed() && (itemInUse == null || itemInUse is Umbrella))
 			{
+				FlxG.play(attackSound);
 				attackTimer = 0;
 			}
 			
@@ -442,6 +477,9 @@ package daydream.game {
 			//using held items
 			if (currentItem != null && useItemJustPressed())
 			{
+				if (currentItem is HorseHead)
+					FlxG.play(neighSound);
+					
 				itemInUse = currentItem;
 				currentItem = null;
 				
@@ -464,7 +502,7 @@ package daydream.game {
 			//x velocity
 			var targetXVelocity:Number = baseXVelocity;
 			if (itemInUse is HorseHead) {
-				targetXVelocity = baseXVelocity * HORSE_MULTIPLIER;
+				targetXVelocity = baseXVelocity * (HORSE_MULTIPLIER + 0.05 * Save.getInt(UpgradesState.HORSE));
 			} else if(dragonSprite.visible) {
 				targetXVelocity = baseXVelocity * DRAGON_SPEED_MULTIPLIER;
 			}
@@ -524,7 +562,8 @@ package daydream.game {
 			} */else if(attackTimer >= 0) {
 				play("attack");
 			} else if(onGround) {
-				if(itemInUse is HorseHead) {
+				if (itemInUse is HorseHead) {
+					FlxG.play(gallopSound);
 					play("horse run");
 				} else if(velocity.x < 30) {
 					play("idle");

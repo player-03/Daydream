@@ -24,6 +24,13 @@ package daydream.upgrades
 		public var dragon_text:FlxText;
 		public var dragon_count:int;
 		
+		//these are just for now
+		private static const pogo_max:int = 10;
+		private static const horse_max:int = 10;
+		private static const item_max:int = 10;
+		private static const coin_max:int = 10;
+		private static const dragon_max:int = 10;
+		
 		public function UpgradeHandler(upgradeState:UpgradesState) 
 		{
 			super();
@@ -115,39 +122,39 @@ package daydream.upgrades
 		{
 			//Pogo
 			if(pogo_count < 10)
-				pogo_text.text = "Pogo Bounce Height Modifyer\n0" + pogo_count.toString();
+				pogo_text.text = "Pogo Bounce Height Modifier\n0" + pogo_count.toString();
 			else
-				pogo_text.text = "Pogo Bounce Height Modifyer\n" + pogo_count.toString();
+				pogo_text.text = "Pogo Bounce Height Modifier\n" + pogo_count.toString();
 				
 			//Horse
 			if(horse_count < 10)
-				horse_text.text = "Horse Jump Height Modifyer\n0" + horse_count.toString();
+				horse_text.text = "Horse Speed Modifier\n0" + horse_count.toString();
 			else
-				horse_text.text = "Horse Jump Height Modifyer\n" + horse_count.toString();
+				horse_text.text = "Horse Speed Modifier\n" + horse_count.toString();
 				
 			//Item
 			if(item_count < 10)
-				item_text.text = "Item Spawn Frequency Modifyer\n0" + item_count.toString();
+				item_text.text = "Item Spawn Frequency Modifier\n0" + item_count.toString();
 			else
-				item_text.text = "Item Spawn Frequency Modifyer\n" + item_count.toString();
+				item_text.text = "Item Spawn Frequency Modifier\n" + item_count.toString();
 				
 			//Coin
 			if(coin_count < 10)
-				coin_text.text = "Coin Spawn Frequency Modifyer\n0" + coin_count.toString();
+				coin_text.text = "Coin Spawn Frequency Modifier\n0" + coin_count.toString();
 			else
-				coin_text.text = "Coin Spawn Frequency Modifyer\n" + coin_count.toString();
+				coin_text.text = "Coin Spawn Frequency Modifier\n" + coin_count.toString();
 				
 			//Dragon
 			if(dragon_count < 10)
-				dragon_text.text = "Dragon Riding Activation Ease Modifyer\n0" + dragon_count.toString();
+				dragon_text.text = "Dragon Riding Activation Ease Modifier\n0" + dragon_count.toString();
 			else
-				dragon_text.text = "Dragon Riding Activation Ease Modifyer\n" + dragon_count.toString();
+				dragon_text.text = "Dragon Riding Activation Ease Modifier\n" + dragon_count.toString();
 		}
 		
 		//POGO BUTTON FUNCTIONS
 		public function pogo_neg():void
 		{
-			if (pogo_count != 0)
+			if (pogo_count != 0 && upgradeState.getCoins() < 15)
 			{
 				coinUp();
 				pogo_count -= 1;
@@ -156,7 +163,7 @@ package daydream.upgrades
 		
 		public function pogo_pos():void
 		{
-			if (upgradeState.getCoins() != 0)
+			if (upgradeState.getCoins() != 0 && pogo_count < pogo_max)
 			{
 				coinDown();
 				pogo_count += 1;
@@ -166,7 +173,7 @@ package daydream.upgrades
 		//HORSE BUTTON FUNCTIONS
 		public function horse_neg():void
 		{
-			if (horse_count != 0)
+			if (horse_count != 0 && upgradeState.getCoins() < 15)
 			{
 				coinUp();
 				horse_count -= 1;
@@ -175,7 +182,7 @@ package daydream.upgrades
 		
 		public function horse_pos():void
 		{
-			if (upgradeState.getCoins() != 0)
+			if (upgradeState.getCoins() != 0 && horse_count < horse_max)
 			{
 				coinDown();
 				horse_count += 1;
@@ -185,7 +192,7 @@ package daydream.upgrades
 		//ITEM BUTTON FUNCTIONS
 		public function item_neg():void
 		{
-			if (item_count != 0)
+			if (item_count != 0 && upgradeState.getCoins() < 15)
 			{
 				coinUp();
 				item_count -= 1;
@@ -194,7 +201,7 @@ package daydream.upgrades
 		
 		public function item_pos():void
 		{
-			if (upgradeState.getCoins() != 0)
+			if (upgradeState.getCoins() != 0 && item_count < item_max)
 			{
 				coinDown();
 				item_count += 1;
@@ -204,7 +211,7 @@ package daydream.upgrades
 		//COIN BUTTON FUNCTIONS
 		public function coin_neg():void
 		{
-			if (coin_count != 0)
+			if (coin_count != 0 && upgradeState.getCoins() < 15)
 			{
 				coinUp();
 				coin_count -= 1;
@@ -213,7 +220,7 @@ package daydream.upgrades
 		
 		public function coin_pos():void
 		{
-			if (upgradeState.getCoins() != 0)
+			if (upgradeState.getCoins() != 0 && coin_count < coin_max)
 			{
 				coinDown();
 				coin_count += 1;
@@ -223,7 +230,7 @@ package daydream.upgrades
 		//DRAGON BUTTON FUNCTIONS
 		public function dragon_neg():void
 		{
-			if (dragon_count != 0)
+			if (dragon_count != 0 && upgradeState.getCoins() < 15)
 			{
 				coinUp();
 				dragon_count -= 1;
@@ -232,7 +239,7 @@ package daydream.upgrades
 		
 		public function dragon_pos():void
 		{
-			if (upgradeState.getCoins() != 0)
+			if (upgradeState.getCoins() != 0 && dragon_count < dragon_max)
 			{
 				coinDown();
 				dragon_count += 1;
