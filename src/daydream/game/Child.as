@@ -32,6 +32,7 @@ package daydream.game {
 		[Embed(source = "../../../lib/SFX_STICK_SWING.mp3")] private static var attackSound:Class;
 		[Embed(source = "../../../lib/SFX_RAIN_NOUMBRELLA.mp3")] private static var rainNoUmbrellaSound:Class;
 		[Embed(source = "../../../lib/SFX_RAIN_UMBRELLA.mp3")] private static var rainWithUmbrellaSound:Class;
+		[Embed(source = "../../../lib/SFX_DRAGON.mp3")] private static var dragonSound:Class;
 		
 		/**
 		 * Estimated distance the child can cover by the apex of his jump.
@@ -210,6 +211,8 @@ package daydream.game {
 					gameState.addItem(new Coin(enemy.x + 75, enemy.y + 35));
 					enemy.kill();
 					
+					FlxG.play(dragonSound);
+					
 					score += DRAGON_RIDE_POINTS;
 					
 					dragonSprite.activate(enemy as Dragon);
@@ -257,7 +260,7 @@ package daydream.game {
 				if (itemInUse is Umbrella)
 					FlxG.play(rainWithUmbrellaSound, 1, true);
 				else
-					FlxG.play(rainNoUmbrellaSound, 1 , true);
+					FlxG.play(rainNoUmbrellaSound, 1, true);
 			}
 			
 			if(visible == dragonSprite.visible) {
