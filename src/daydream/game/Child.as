@@ -100,6 +100,8 @@ package daydream.game {
 		private var coins:int;
 		private static const coinMax:int = 20;
 		
+		private var rainStart:Boolean;
+		
 		public function Child(gameState:GameState, rainbow:Rainbow, x:Number, y:Number) {
 			super(x, y);
 			
@@ -138,6 +140,8 @@ package daydream.game {
 			acceleration.y = GRAVITY;
 			//Handling this manually so that it doesn't get in the way of jumps
 			//maxVelocity.y = FALL_SPEED;
+			
+			rainStart = false;
 		}
 		
 		public function onItemCollision(child:FlxObject, item:FlxObject):void {
@@ -256,12 +260,19 @@ package daydream.game {
 		
 		public override function update():void {
 			//This should loop the right SFX during these conditions
-			if (gameState.isRainingOnChild())
+			if (gameState.isRaining() && rainStart == false)
 			{
+				rainStart = true;
+				
 				if (itemInUse is Umbrella)
 					FlxG.play(rainWithUmbrellaSound, 1, true);
 				else
 					FlxG.play(rainNoUmbrellaSound, 1, true);
+			}
+			
+			if (!gameState.isRaining() && rainStart == true)
+			{
+				rainStart = false;
 			}
 			
 			if(visible == dragonSprite.visible) {
