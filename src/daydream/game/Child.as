@@ -403,7 +403,6 @@ package daydream.game {
 						//the player gets a burst of speed upon pressing
 						//space, but the strength of this burst depends on
 						//how long they've been riding
-						FlxG.play(jumpSound);
 						acceleration.y = -GRAVITY * (0.4 + 0.3 * (itemTimeLeft / ITEM_TIME));
 					} else {
 						//the player loses lift after a time, making them
