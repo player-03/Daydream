@@ -310,7 +310,7 @@ package daydream.game {
 				var percentUpgraded:Number = UpgradeHandler.pogoPercentUpgraded();
 				
 				velocity.y = -JUMP_STRENGTH * 0.5 - previousVelocity.y
-						* NumberInterval.interpolate(0.7, 0.9, percentUpgraded);
+						* NumberInterval.interpolate(0.6, 0.8, percentUpgraded);
 				velocity.y -= JUMP_STRENGTH * pogoStickBounces
 					* NumberInterval.interpolate(0.05, 0.3, percentUpgraded)
 					* (hitTimer < 0 ? 1 : 0.5);
