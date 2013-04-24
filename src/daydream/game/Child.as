@@ -6,6 +6,7 @@ package daydream.game {
 	import org.flixel.FlxObject;
 	import org.flixel.FlxPoint;
 	import org.flixel.FlxSprite;
+	import org.flixel.FlxSound;
 	
 	public class Child extends FlxSprite {
 		public static const RUN_SPEED_CUTOFF:Number = 800;
@@ -20,6 +21,12 @@ package daydream.game {
 		public static const FALL_SPEED:Number = 400;
 		public static const GRAVITY:Number = 650;
 		public static const CHILD_HEIGHT:Number = 60;
+		
+		//SFX
+		[Embed(source = "../../../lib/SFX_GALLOP.mp3")] private static var gallopSound:Class;
+		[Embed(source = "../../../lib/SFX_JUMP.mp3")] private static var jumpSound:Class;
+		[Embed(source = "../../../lib/SFX_JUMP_POGO.mp3")] private static var pogoSound:Class;
+		[Embed(source = "../../../lib/SFX_NEIGH.mp3")] private static var neighSound:Class;
 		
 		/**
 		 * Estimated distance the child can cover by the apex of his jump.
@@ -272,6 +279,7 @@ package daydream.game {
 				jumpTime = JUMP_LENGTH;
 				jumpReplenish = 0;
 				play("pogo jump");
+				FlxG.play(pogoSound);
 				
 				velocity.y = -JUMP_STRENGTH - previousVelocity.y * 0.7;
 				if(hitTimer < 0) {
@@ -369,6 +377,7 @@ package daydream.game {
 						//the player gets a burst of speed upon pressing
 						//space, but the strength of this burst depends on
 						//how long they've been riding
+						FlxG.play(jumpSound);
 						acceleration.y = -GRAVITY * (0.4 + 0.3 * (itemTimeLeft / ITEM_TIME));
 					} else {
 						//the player loses lift after a time, making them
@@ -441,6 +450,9 @@ package daydream.game {
 			//using held items
 			if (currentItem != null && useItemJustPressed())
 			{
+				if (currentItem is HorseHead)
+					FlxG.play(neighSound);
+					
 				itemInUse = currentItem;
 				currentItem = null;
 				
@@ -522,7 +534,8 @@ package daydream.game {
 			} */else if(attackTimer >= 0) {
 				play("attack");
 			} else if(onGround) {
-				if(itemInUse is HorseHead) {
+				if (itemInUse is HorseHead) {
+					FlxG.play(gallopSound);
 					play("horse run");
 				} else if(velocity.x < 30) {
 					play("idle");

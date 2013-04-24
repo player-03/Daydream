@@ -9,8 +9,9 @@ package daydream.menu
 		public function InstructionText() 
 		{
 			super(0, 0, 500);
-			this.text = "Instructions page.\n" +
-							"Get as far as you can before falling!\n\n" +
+			this.text = "Instructions:\n\n" +
+							"Get as far as you can before falling!\n" +
+							"Use coins to purchase upgrades!\n\n" +
 							"Keys\n" +
 							"Up/Space : Jump\n" +
 							"S : Use Item\n" +
