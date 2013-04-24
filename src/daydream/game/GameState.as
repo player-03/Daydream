@@ -47,6 +47,7 @@ package daydream.game {
 		public override function create():void {
 			if(FlxG.music == null) {
 				FlxG.playMusic(Music);
+				FlxG.volume = 0.65;
 			}
 			if(Save.getBoolean(MUTE)) {
 				FlxG.music.stop();
