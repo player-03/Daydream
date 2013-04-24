@@ -30,6 +30,8 @@ package daydream.game {
 		[Embed(source = "../../../lib/SFX_COIN.mp3")] private static var coinPickupSound:Class;
 		[Embed(source = "../../../lib/SFX_ENEMY_DIE.mp3")] private static var enemyDeathSound:Class;
 		[Embed(source = "../../../lib/SFX_STICK_SWING.mp3")] private static var attackSound:Class;
+		[Embed(source = "../../../lib/SFX_RAIN_NOUMBRELLA.mp3")] private static var rainNoUmbrellaSound:Class;
+		[Embed(source = "../../../lib/SFX_RAIN_UMBRELLA.mp3")] private static var rainWithUmbrellaSound:Class;
 		
 		/**
 		 * Estimated distance the child can cover by the apex of his jump.
@@ -249,6 +251,15 @@ package daydream.game {
 		}
 		
 		public override function update():void {
+			//This should loop the right SFX during these conditions
+			if (gameState.isRainingOnChild())
+			{
+				if (itemInUse is Umbrella)
+					FlxG.play(rainWithUmbrellaSound, 1, true);
+				else
+					FlxG.play(rainNoUmbrellaSound, 1 , true);
+			}
+			
 			if(visible == dragonSprite.visible) {
 				visible = !dragonSprite.visible;
 				if(visible) {
