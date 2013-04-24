@@ -1,6 +1,7 @@
 package daydream.game 
 {
 	import daydream.Main;
+	import daydream.upgrades.UpgradeHandler;
 	import org.flixel.FlxBasic;
 	import daydream.utils.NumberInterval;
 	import org.flixel.FlxG;
@@ -29,7 +30,8 @@ package daydream.game
 		{
 			if(FlxG.camera.scroll.x >= nextX)
 			{
-				nextX += gapInterval.randomValue();
+				nextX += gapInterval.randomValue()
+					* NumberInterval.interpolate(1.5, 0.5, UpgradeHandler.coinPercentUpgraded());
 				
 				gameState.addItem(new Coin(FlxG.camera.scroll.x + Main.STAGE_WIDTH,
 											yInterval.randomValue()));

@@ -1,10 +1,14 @@
 package daydream.game {
+	import daydream.upgrades.UpgradeHandler;
 	import daydream.upgrades.UpgradesState;
+	import daydream.utils.BetterSound;
 	import daydream.utils.FlxSpriteUtils;
+	import daydream.utils.NumberInterval;
 	import daydream.utils.Save;
 	import org.flixel.FlxG;
 	import org.flixel.FlxObject;
 	import org.flixel.FlxPoint;
+	import org.flixel.FlxRect;
 	import org.flixel.FlxSprite;
 	import org.flixel.FlxSound;
 	
@@ -32,7 +36,6 @@ package daydream.game {
 		[Embed(source = "../../../lib/SFX_STICK_SWING.mp3")] private static var attackSound:Class;
 		[Embed(source = "../../../lib/SFX_RAIN_NOUMBRELLA.mp3")] private static var rainNoUmbrellaSound:Class;
 		[Embed(source = "../../../lib/SFX_RAIN_UMBRELLA.mp3")] private static var rainWithUmbrellaSound:Class;
-		[Embed(source = "../../../lib/SFX_DRAGON.mp3")] private static var dragonSound:Class;
 		
 		/**
 		 * Estimated distance the child can cover by the apex of his jump.
@@ -98,9 +101,11 @@ package daydream.game {
 		
 		//coins
 		private var coins:int;
-		private static const coinMax:int = 20;
 		
-		private var rainStart:Boolean;
+		//instances for ongoing sounds
+		private var gallopSoundInstance:BetterSound;
+		private var rainSoundInstance:BetterSound;
+		private var rainUmbrellaSoundInstance:BetterSound;
 		
 		public function Child(gameState:GameState, rainbow:Rainbow, x:Number, y:Number) {
 			super(x, y);
@@ -127,12 +132,23 @@ package daydream.game {
 			addAnimation("horse jump", [40, 41, 42], 12, false);
 			addAnimation("horse fall", [43]);
 			
-			FlxSpriteUtils.applyInset(this, 15, 10, 15, 2);
+			FlxSpriteUtils.applyInset(this, 15, 20, 17, 2);
 			
 			umbrellaSprite = new Umbrella();
 			umbrellaOffset = new FlxPoint(-umbrellaSprite.width / 2 + width / 2,
 										15 - umbrellaSprite.height);
 			FlxG.state.add(umbrellaSprite);
+			
+			//sound instances
+			gallopSoundInstance = new BetterSound();
+			gallopSoundInstance.loadEmbedded(gallopSound, true);
+			FlxG.state.add(gallopSoundInstance);
+			rainSoundInstance = new BetterSound();
+			rainSoundInstance.loadEmbedded(rainNoUmbrellaSound, true);
+			FlxG.state.add(rainSoundInstance);
+			rainUmbrellaSoundInstance = new BetterSound();
+			rainUmbrellaSoundInstance.loadEmbedded(rainWithUmbrellaSound, true);
+			FlxG.state.add(rainUmbrellaSoundInstance);
 			
 			coins = Save.getInt(CoinCounter.COINS);
 			
@@ -140,8 +156,6 @@ package daydream.game {
 			acceleration.y = GRAVITY;
 			//Handling this manually so that it doesn't get in the way of jumps
 			//maxVelocity.y = FALL_SPEED;
-			
-			rainStart = false;
 		}
 		
 		public function onItemCollision(child:FlxObject, item:FlxObject):void {
@@ -153,9 +167,7 @@ package daydream.game {
 			if (item is Coin)
 			{
 				FlxG.play(coinPickupSound);
-				
-				if(coins < coinMax)
-					coins += 1;
+				coins += 1;
 			}
 			
 			//check the item picked up
@@ -205,17 +217,11 @@ package daydream.game {
 			}
 			else if(enemy is Dragon)
 			{
-				var enemyOffset:FlxPoint = (enemy as Dragon).offset;
-				//check if the child landed on the dragon's neck (not too
-				//far forward, not too far back, and not from below)
-				if(x + offset.x + width < enemy.x + enemyOffset.x + enemy.width - (80) + (Save.getInt(UpgradesState.DRAGON) * 2)
-					&& x + offset.x > enemy.x + enemyOffset.x + enemy.width - (400) - (Save.getInt(UpgradesState.DRAGON) * 2)
-					&& y + offset.y + height < enemy.y + enemyOffset.y + (10))
-				{
-					gameState.addItem(new Coin(enemy.x + 75, enemy.y + 35));
+				var safeHitbox:FlxRect = (enemy as Dragon).getSafeHitbox();
+				
+				if(x >= safeHitbox.left && x + width <= safeHitbox.right
+						&& y + height <= safeHitbox.bottom) {
 					enemy.kill();
-					
-					FlxG.play(dragonSound);
 					
 					score += DRAGON_RIDE_POINTS;
 					
@@ -259,22 +265,6 @@ package daydream.game {
 		}
 		
 		public override function update():void {
-			//This should loop the right SFX during these conditions
-			if (gameState.isRaining() && rainStart == false)
-			{
-				rainStart = true;
-				
-				if (itemInUse is Umbrella)
-					FlxG.play(rainWithUmbrellaSound, 1, true);
-				else
-					FlxG.play(rainNoUmbrellaSound, 1, true);
-			}
-			
-			if (!gameState.isRaining() && rainStart == true)
-			{
-				rainStart = false;
-			}
-			
 			if(visible == dragonSprite.visible) {
 				visible = !dragonSprite.visible;
 				if(visible) {
@@ -317,11 +307,13 @@ package daydream.game {
 				play("pogo jump");
 				FlxG.play(pogoSound);
 				
-				velocity.y = -JUMP_STRENGTH * 0.5
-						- previousVelocity.y * 0.7;
-				if(hitTimer < 0) {
-					velocity.y -= JUMP_STRENGTH * (0.2 + 0.05 * Save.getInt(UpgradesState.POGO)) * pogoStickBounces;
-				}
+				var percentUpgraded:Number = UpgradeHandler.pogoPercentUpgraded();
+				
+				velocity.y = -JUMP_STRENGTH * 0.5 - previousVelocity.y
+						* NumberInterval.interpolate(0.7, 0.9, percentUpgraded);
+				velocity.y -= JUMP_STRENGTH * pogoStickBounces
+					* NumberInterval.interpolate(0.05, 0.3, percentUpgraded)
+					* (hitTimer < 0 ? 1 : 0.5);
 				
 				if(affectedByRain()) {
 					velocity.y *= 0.8;
@@ -512,7 +504,8 @@ package daydream.game {
 			//x velocity
 			var targetXVelocity:Number = baseXVelocity;
 			if (itemInUse is HorseHead) {
-				targetXVelocity = baseXVelocity * (HORSE_MULTIPLIER + 0.05 * Save.getInt(UpgradesState.HORSE));
+				targetXVelocity = baseXVelocity * HORSE_MULTIPLIER 
+						* NumberInterval.interpolate(1.05, 1.5, UpgradeHandler.horsePercentUpgraded());
 			} else if(dragonSprite.visible) {
 				targetXVelocity = baseXVelocity * DRAGON_SPEED_MULTIPLIER;
 			}
@@ -573,7 +566,6 @@ package daydream.game {
 				play("attack");
 			} else if(onGround) {
 				if (itemInUse is HorseHead) {
-					FlxG.play(gallopSound);
 					play("horse run");
 				} else if(velocity.x < 30) {
 					play("idle");
@@ -603,6 +595,32 @@ package daydream.game {
 					} else {
 						play("jump");
 					}
+				}
+			}
+			
+			//ongoing sounds
+			if(itemInUse is HorseHead && onGround) {
+				gallopSoundInstance.play();
+			} else {
+				gallopSoundInstance.stop();
+			}
+			
+			if(gameState.isRaining()) {
+				if(itemInUse is Umbrella && gameState.isRainingOnChild()) {
+					rainUmbrellaSoundInstance.play();
+					rainSoundInstance.stop();
+				} else if(rainUmbrellaSoundInstance.isPlaying()) {
+					rainUmbrellaSoundInstance.stop();
+					rainSoundInstance.play();
+				} else if(!rainSoundInstance.isPlaying()) {
+					rainSoundInstance.fadeIn(0.5);
+				}
+			} else {
+				if(rainSoundInstance.isPlaying() && !rainSoundInstance.isFadingOut()) {
+					rainSoundInstance.fadeOut(0.5);
+				}
+				if(rainUmbrellaSoundInstance.isPlaying() && !rainUmbrellaSoundInstance.isFadingOut()) {
+					rainUmbrellaSoundInstance.fadeOut(0.5);
 				}
 			}
 		}

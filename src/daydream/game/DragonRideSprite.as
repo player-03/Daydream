@@ -29,13 +29,15 @@ package daydream.game {
 			if(visible) {
 				timeLeft -= FlxG.elapsed;
 				
+				//do this continuously, to keep the dragon from being destroyed
+				currentDragon.x = child.x + X_OFFSET + currentDragon.offset.x
+								+ child.velocity.x * FlxG.elapsed;
+				
 				if(timeLeft <= 0) {
 					visible = false;
 					
 					currentDragon.revive();
-					currentDragon.x = child.x + X_OFFSET / 2
-								+ child.velocity.x * FlxG.elapsed;
-					currentDragon.y = child.y + Y_OFFSET / 2;
+					currentDragon.y = child.y + Y_OFFSET + currentDragon.offset.y;
 					currentDragon.timeAlive += RIDE_LENGTH;
 					currentDragon.update();
 					

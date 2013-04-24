@@ -1,5 +1,6 @@
 package daydream.upgrades 
 {
+	import daydream.utils.Save;
 	import mx.core.ButtonAsset;
 	import org.flixel.FlxBasic;
 	import org.flixel.FlxButton;
@@ -24,12 +25,27 @@ package daydream.upgrades
 		public var dragon_text:FlxText;
 		public var dragon_count:int;
 		
-		//these are just for now
-		private static const pogo_max:int = 10;
-		private static const horse_max:int = 10;
-		private static const item_max:int = 10;
-		private static const coin_max:int = 10;
-		private static const dragon_max:int = 10;
+		public static const POGO_MAX_UPGRADES:int = 10;
+		public static const HORSE_MAX_UPGRADES:int = 10;
+		public static const ITEM_MAX_UPGRADES:int = 10;
+		public static const COIN_MAX_UPGRADES:int = 10;
+		public static const DRAGON_MAX_UPGRADES:int = 10;
+		
+		public static function pogoPercentUpgraded():Number {
+			return Save.getInt(UpgradesState.POGO) / POGO_MAX_UPGRADES;
+		}
+		public static function horsePercentUpgraded():Number {
+			return Save.getInt(UpgradesState.HORSE) / HORSE_MAX_UPGRADES;
+		}
+		public static function itemPercentUpgraded():Number {
+			return Save.getInt(UpgradesState.ITEM_FREQUENCY) / ITEM_MAX_UPGRADES;
+		}
+		public static function coinPercentUpgraded():Number {
+			return Save.getInt(UpgradesState.COIN_FREQUENCY) / COIN_MAX_UPGRADES;
+		}
+		public static function dragonPercentUpgraded():Number {
+			return Save.getInt(UpgradesState.DRAGON) / DRAGON_MAX_UPGRADES;
+		}
 		
 		public function UpgradeHandler(upgradeState:UpgradesState) 
 		{
@@ -163,7 +179,7 @@ package daydream.upgrades
 		
 		public function pogo_pos():void
 		{
-			if (upgradeState.getCoins() != 0 && pogo_count < pogo_max)
+			if (upgradeState.getCoins() != 0 && pogo_count < POGO_MAX_UPGRADES)
 			{
 				coinDown();
 				pogo_count += 1;
@@ -182,7 +198,7 @@ package daydream.upgrades
 		
 		public function horse_pos():void
 		{
-			if (upgradeState.getCoins() != 0 && horse_count < horse_max)
+			if (upgradeState.getCoins() != 0 && horse_count < HORSE_MAX_UPGRADES)
 			{
 				coinDown();
 				horse_count += 1;
@@ -201,7 +217,7 @@ package daydream.upgrades
 		
 		public function item_pos():void
 		{
-			if (upgradeState.getCoins() != 0 && item_count < item_max)
+			if (upgradeState.getCoins() != 0 && item_count < ITEM_MAX_UPGRADES)
 			{
 				coinDown();
 				item_count += 1;
@@ -220,7 +236,7 @@ package daydream.upgrades
 		
 		public function coin_pos():void
 		{
-			if (upgradeState.getCoins() != 0 && coin_count < coin_max)
+			if (upgradeState.getCoins() != 0 && coin_count < COIN_MAX_UPGRADES)
 			{
 				coinDown();
 				coin_count += 1;
@@ -239,7 +255,7 @@ package daydream.upgrades
 		
 		public function dragon_pos():void
 		{
-			if (upgradeState.getCoins() != 0 && dragon_count < dragon_max)
+			if (upgradeState.getCoins() != 0 && dragon_count < DRAGON_MAX_UPGRADES)
 			{
 				coinDown();
 				dragon_count += 1;

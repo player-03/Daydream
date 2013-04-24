@@ -25,7 +25,7 @@ package daydream.utils {
 		}
 		
 		public function getPercentageOfRange(p:Number):Number {
-			return mMin + p * (mMax - mMin);
+			return interpolate(mMin, mMax, p);
 		}
 		
 		public function contains(value:Number):Boolean {
@@ -40,6 +40,10 @@ package daydream.utils {
 			} else {
 				return value;
 			}
+		}
+		
+		public static function interpolate(start:Number, end:Number, percent:Number):Number {
+			return start + percent * (end - start);
 		}
 	}
 }
