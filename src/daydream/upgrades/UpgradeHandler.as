@@ -136,37 +136,30 @@ package daydream.upgrades
 			//DRAGON END
 		}
 		
+		public function countToString(coinCount:int):String {
+			if(coinCount < 10) {
+				return "0" + coinCount;
+			} else {
+				return coinCount.toString();
+			}
+		}
+		
 		public override function update():void
 		{
 			//Pogo
-			if(pogo_count < 10)
-				pogo_text.text = "Pogo Bounce Height Modifier\n0" + pogo_count.toString();
-			else
-				pogo_text.text = "Pogo Bounce Height Modifier\n" + pogo_count.toString();
-				
+			pogo_text.text = "Pogo stick bounce height\n" + countToString(pogo_count);
+			
 			//Horse
-			if(horse_count < 10)
-				horse_text.text = "Horse Speed Modifier\n0" + horse_count.toString();
-			else
-				horse_text.text = "Horse Speed Modifier\n" + horse_count.toString();
-				
+			horse_text.text = "Horse speed\n" + countToString(horse_count);
+			
 			//Item
-			if(item_count < 10)
-				item_text.text = "Item Spawn Frequency Modifier\n0" + item_count.toString();
-			else
-				item_text.text = "Item Spawn Frequency Modifier\n" + item_count.toString();
-				
+			item_text.text = "Item spawn frequency\n" + countToString(item_count);
+			
 			//Coin
-			if(coin_count < 10)
-				coin_text.text = "Coin Spawn Frequency Modifier\n0" + coin_count.toString();
-			else
-				coin_text.text = "Coin Spawn Frequency Modifier\n" + coin_count.toString();
-				
+			coin_text.text = "Coin spawn frequency\n" + countToString(coin_count);
+			
 			//Dragon
-			if(dragon_count < 10)
-				dragon_text.text = "Dragon Riding Activation Ease Modifier\n0" + dragon_count.toString();
-			else
-				dragon_text.text = "Dragon Riding Activation Ease Modifier\n" + dragon_count.toString();
+			dragon_text.text = "Dragon taming\n" + countToString(dragon_count);
 		}
 		
 		//POGO BUTTON FUNCTIONS

@@ -31,7 +31,7 @@ package daydream.game
 			if(FlxG.camera.scroll.x >= nextX)
 			{
 				nextX += gapInterval.randomValue()
-					* NumberInterval.interpolate(1.5, 0.5, UpgradeHandler.coinPercentUpgraded());
+					* NumberInterval.interpolate(1, 0.4, UpgradeHandler.coinPercentUpgraded());
 				
 				gameState.addItem(new Coin(FlxG.camera.scroll.x + Main.STAGE_WIDTH,
 											yInterval.randomValue()));

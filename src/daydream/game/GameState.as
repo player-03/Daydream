@@ -106,11 +106,11 @@ package daydream.game {
 										Main.STAGE_HEIGHT * 0.35,
 										0, Main.STAGE_HEIGHT * 0.2);
 			
-			addPlatform(new Platform(30, WORLD_HEIGHT - 500, 300));
-			addPlatform(new Platform(550, WORLD_HEIGHT - 650, 111));
-			addPlatform(new Platform(630, WORLD_HEIGHT - 250, 170));
+			addPlatform(new Platform(30, WORLD_HEIGHT - 1200, 300));
+			addPlatform(new Platform(550, WORLD_HEIGHT - 1350, 111));
+			addPlatform(new Platform(630, WORLD_HEIGHT - 950, 170));
 			
-			addItem(new Straw(590, WORLD_HEIGHT - 700));
+			//addItem(new Straw(590, WORLD_HEIGHT - 700));
 			
 			addItem(new Coin(680, WORLD_HEIGHT - 280));
 			
@@ -125,23 +125,23 @@ package daydream.game {
 					new NumberInterval(330, 600),
 					jumpDistInterval, child, 0.1,
 					[HorseHead, PogoStick], [0.04, 0.03], 0.0015));
-			add(new PlatformSpawner(this, 2, 2500,
+			add(new PlatformSpawner(this, 2, 450,
 					new NumberInterval(WORLD_HEIGHT - 1100, WORLD_HEIGHT - 720),
 					new NumberInterval(300, 540),
 					jumpDistInterval, child, 0.05,
 					[HorseHead, PogoStick, Straw], [0.05, 0.03, 0.002],
 					0.0015));
-			add(new PlatformSpawner(this, 2, 5000,
+			add(new PlatformSpawner(this, 2, 460,
 					new NumberInterval(WORLD_HEIGHT - 1900, WORLD_HEIGHT - 1130),
 					new NumberInterval(440, 600),
 					jumpDistInterval, child, 0,
 					[PogoStick], [0.03], 0.002));
-			add(new PlatformSpawner(this, 2, 7500,
+			add(new PlatformSpawner(this, 2, 2500,
 					new NumberInterval(WORLD_HEIGHT - 2400, WORLD_HEIGHT - 1920),
 					new NumberInterval(310, 550),
 					jumpDistInterval, child, 0.07,
 					[Straw, PogoStick], [0.08, 0.03], 0.001));
-			add(new PlatformSpawner(this, 2, 10000,
+			add(new PlatformSpawner(this, 2, 5000,
 					new NumberInterval(0, WORLD_HEIGHT - 2420),
 					new NumberInterval(350, 400),
 					jumpDistInterval, child, 0.2,
@@ -154,7 +154,7 @@ package daydream.game {
 			
 			add(new DragonSpawner(15));
 			
-			child.y = FlxG.camera.bounds.bottom - 600;
+			child.y = FlxG.camera.bounds.bottom - 1300;
 		}
 		
 		private function onUpdateMute():void {
