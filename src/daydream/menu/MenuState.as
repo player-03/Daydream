@@ -3,6 +3,7 @@ package daydream.menu {
 	import daydream.game.GameState;
 	import daydream.menu.InstructState;
 	import daydream.Main;
+	import daydream.upgrades.UpgradesState;
 	import daydream.utils.Save;
 	import org.flixel.FlxButton;
 	import org.flixel.FlxG;
@@ -18,11 +19,12 @@ package daydream.menu {
 			
 			var playButton:FlxButton = new FlxButton(
 									Main.STAGE_WIDTH / 2 - 40,
-									Main.STAGE_HEIGHT / 2 - 30,
+									Main.STAGE_HEIGHT / 2 - 80,
 									"Play", onPlayClicked);
-			var instructionButton:FlxButton = new FlxButton(Main.STAGE_WIDTH / 2 - 40, Main.STAGE_HEIGHT / 2 + 30, "Instructions", onInstructClick);
+			var instructionButton:FlxButton = new FlxButton(Main.STAGE_WIDTH / 2 - 40, Main.STAGE_HEIGHT / 2 - 40, "Upgrade", onInstructClick);
 			add(playButton);
 			add(instructionButton);
+			add(new InstructionText());
 		}
 		
 		public override function update():void {
@@ -40,7 +42,7 @@ package daydream.menu {
 		private function onInstructClick():void
 		{
 			FlxG.play(Main.buttonSound);
-			FlxG.switchState(new InstructState());
+			FlxG.switchState(new UpgradesState());
 		}
 	}
 }

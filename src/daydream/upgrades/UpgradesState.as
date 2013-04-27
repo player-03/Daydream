@@ -54,7 +54,9 @@ package daydream.upgrades
 		
 		public override function create():void
 		{
-			FlxG.music.fadeOut(0.8, true);
+			if(FlxG.music != null) {
+				FlxG.music.fadeOut(0.8, true);
+			}
 			
 			coinSprite = new CoinCounterSprite(20, 20);
 			coinCounter = new CoinCounter(getCoins, 40, 20);

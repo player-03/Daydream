@@ -446,11 +446,11 @@ package daydream.game {
 					attackTimer = -1;
 				}
 			}
-			else if (attackTimer < 0 && attackJustPressed() && (itemInUse == null || itemInUse is Umbrella))
+			/*else if (attackTimer < 0 && attackJustPressed() && (itemInUse == null || itemInUse is Umbrella))
 			{
 				FlxG.play(attackSound);
 				attackTimer = 0;
-			}
+			}*/
 			
 			//invincibility
 			if(invincibleTimeLeft > 0) {
