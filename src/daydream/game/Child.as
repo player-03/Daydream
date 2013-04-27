@@ -245,7 +245,14 @@ package daydream.game {
 			else if(itemInUse is HorseHead || rainbow.visible && rainbow.withinRainbow(this)
 				|| attackTimer >= ATTACK_DAMAGE_START && attackTimer <= ATTACK_DAMAGE_END)
 			{
-				gameState.addItem(new Coin(enemy.x + 75, enemy.y + 35));
+				gameState.addItem(new Coin(enemy.x + 85, enemy.y + (enemy.height - 25) * Math.random()));
+				var coinUpgrades:int = Save.getInt(UpgradesState.COIN_FREQUENCY);
+				if(coinUpgrades >= UpgradeHandler.COIN_MAX_UPGRADES / 2) {
+					gameState.addItem(new Coin(enemy.x + 50, enemy.y + (enemy.height - 25) * Math.random()));
+					if(coinUpgrades >= UpgradeHandler.COIN_MAX_UPGRADES / 2) {
+						gameState.addItem(new Coin(enemy.x + 108, enemy.y + (enemy.height - 25) * Math.random()));
+					}
+				}
 				enemy.kill();
 				
 				FlxG.play(enemyDeathSound);

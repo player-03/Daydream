@@ -8,6 +8,8 @@ package daydream.upgrades
 	
 	public class UpgradeHandler extends FlxBasic
 	{
+		public static const UPGRADE_COST:int = 10;
+		
 		private var upgradeState:UpgradesState;
 		
 		public var pogo_text:FlxText;
@@ -265,12 +267,12 @@ package daydream.upgrades
 		//Coin changing functions
 		public function coinUp():void
 		{
-			upgradeState.coinChange(1);
+			upgradeState.coinChange(UPGRADE_COST);
 		}
 		
 		public function coinDown():void
 		{
-			upgradeState.coinChange(-1);
+			upgradeState.coinChange(-UPGRADE_COST);
 		}
 		
 	}
