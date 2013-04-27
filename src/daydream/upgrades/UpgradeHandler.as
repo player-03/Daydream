@@ -170,7 +170,7 @@ package daydream.upgrades
 		//POGO BUTTON FUNCTIONS
 		public function pogo_neg():void
 		{
-			if (pogo_count != 0 && upgradeState.getCoins() < 15)
+			if (pogo_count != 0)
 			{
 				coinUp();
 				pogo_count -= 1;
@@ -189,7 +189,7 @@ package daydream.upgrades
 		//HORSE BUTTON FUNCTIONS
 		public function horse_neg():void
 		{
-			if (horse_count != 0 && upgradeState.getCoins() < 15)
+			if (horse_count != 0)
 			{
 				coinUp();
 				horse_count -= 1;
@@ -208,7 +208,7 @@ package daydream.upgrades
 		//ITEM BUTTON FUNCTIONS
 		public function item_neg():void
 		{
-			if (item_count != 0 && upgradeState.getCoins() < 15)
+			if (item_count != 0)
 			{
 				coinUp();
 				item_count -= 1;
@@ -227,7 +227,7 @@ package daydream.upgrades
 		//COIN BUTTON FUNCTIONS
 		public function coin_neg():void
 		{
-			if (coin_count != 0 && upgradeState.getCoins() < 15)
+			if (coin_count != 0)
 			{
 				coinUp();
 				coin_count -= 1;
@@ -246,7 +246,7 @@ package daydream.upgrades
 		//DRAGON BUTTON FUNCTIONS
 		public function dragon_neg():void
 		{
-			if (dragon_count != 0 && upgradeState.getCoins() < 15)
+			if (dragon_count != 0)
 			{
 				coinUp();
 				dragon_count -= 1;
