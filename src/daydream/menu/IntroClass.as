@@ -1,17 +1,22 @@
 package daydream.menu 
 {
+	import daydream.Main;
+	import flash.events.Event;
+	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
+	import flash.ui.Keyboard;
 	import org.flixel.FlxG;
 	import org.flixel.FlxSprite;
 	import daydream.game.Child;
 	
 	public class IntroClass extends FlxSprite
 	{
-		[Embed(source = "../../../lib/frame1-01.png")] private static var frame1:Class;
-		[Embed(source = "../../../lib/frame2-01.png")] private static var frame2:Class;
-		[Embed(source = "../../../lib/frame3-01.png")] private static var frame3:Class;
-		[Embed(source = "../../../lib/frame4-01.png")] private static var frame4:Class;
-		[Embed(source = "../../../lib/frame5-01.png")] private static var frame5:Class;
-		[Embed(source = "../../../lib/frame6_new-01.png")] private static var frame6:Class;
+		[Embed(source = "../../../lib/frame1.png")] private static var frame1:Class;
+		[Embed(source = "../../../lib/frame2.png")] private static var frame2:Class;
+		[Embed(source = "../../../lib/frame3.png")] private static var frame3:Class;
+		[Embed(source = "../../../lib/frame4.png")] private static var frame4:Class;
+		[Embed(source = "../../../lib/frame5.png")] private static var frame5:Class;
+		[Embed(source = "../../../lib/frame6.png")] private static var frame6:Class;
 		
 		public var frameCount:int;
 		
@@ -21,20 +26,20 @@ package daydream.menu
 			
 			loadGraphic(frame1);
 			
+			x = Main.STAGE_WIDTH / 2 - width / 2;
+			
 			frameCount = 1;
+			
+			FlxG.stage.addEventListener(MouseEvent.CLICK, advanceFrame, false, 0, true);
+			FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, advanceFrame, false, 0, true);
 		}
 		
-		public override function update():void
-		{
-			if (Child.jumpJustPressed())
-			{
+		public function advanceFrame(e:Event = null):void {
+			if(e is KeyboardEvent && (e as KeyboardEvent).keyCode == Keyboard.ESCAPE) {
+				FlxG.switchState(new MenuState());
+			} else {
 				frameCount += 1;
 				showFrame();
-			}
-			
-			if (FlxG.keys.justPressed("ESCAPE"))
-			{
-				FlxG.switchState(new MenuState());
 			}
 		}
 		
