@@ -382,9 +382,8 @@ package daydream.game {
 			if(jumpReplenish < 1) {
 				//the jump replenish rate should be a lot faster
 				//when in contact with the rainbow or before the
-				//first midair jump, and it should be a little
-				//slower when in the rain, and a lot slower if
-				//the player is extending the jump
+				//first midair jump, and it should be slower when
+				//in the rain and when doing an extended jump
 				if(!usedMidairJump || rainbow.visible && rainbow.withinRainbow(this)) {
 					jumpReplenish += FlxG.elapsed * 7;
 				} else if(affectedByRain()) {
@@ -392,7 +391,7 @@ package daydream.game {
 				} else if(acceleration.y == JUMP_GRAVITY) {
 					jumpReplenish += FlxG.elapsed * 0.3;
 				} else {
-					jumpReplenish += FlxG.elapsed * 0.5;
+					jumpReplenish += FlxG.elapsed * 0.6;
 				}
 				
 				if(jumpReplenish > 1) {

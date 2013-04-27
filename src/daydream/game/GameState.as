@@ -112,7 +112,7 @@ package daydream.game {
 			
 			//addItem(new Straw(590, WORLD_HEIGHT - 700));
 			
-			addItem(new Coin(680, WORLD_HEIGHT - 280));
+			addItem(new Coin(680, WORLD_HEIGHT - 980));
 			
 			var jumpDistInterval:NumberInterval = new NumberInterval(Child.JUMP_DISTANCE / 2, Child.JUMP_DISTANCE * 2);
 			add(new PlatformSpawner(this, 1, 630,
@@ -122,7 +122,7 @@ package daydream.game {
 					child, 0, [HorseHead], [0.17], 0.002));
 			add(new PlatformSpawner(this, 2, 550,
 					new NumberInterval(WORLD_HEIGHT - 700, WORLD_HEIGHT - 340),
-					new NumberInterval(330, 600),
+					new NumberInterval(400, 600),
 					jumpDistInterval, child, 0.1,
 					[HorseHead, PogoStick], [0.04, 0.03], 0.0015));
 			add(new PlatformSpawner(this, 2, 450,
