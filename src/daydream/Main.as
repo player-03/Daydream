@@ -1,5 +1,5 @@
 package daydream{
-	import daydream.menu.MenuState;
+	import daydream.menu.IntroState;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -19,7 +19,7 @@ package daydream{
 		}
 		
 		public function Main():void {
-			super(STAGE_WIDTH, STAGE_HEIGHT, MenuState, 1, 30, 30, true);
+			super(STAGE_WIDTH, STAGE_HEIGHT, IntroState, 1, 30, 30, true);
 			instance = this;
 			_focus.addEventListener(MouseEvent.CLICK, onPauseScreenClicked);
 		}
