@@ -48,12 +48,7 @@ package daydream.game {
 			if(FlxG.music == null) {
 				FlxG.playMusic(Music, 0.65);
 			}
-			if(Save.getBoolean(MUTE)) {
-				FlxG.music.stop();
-			} else {
-				FlxG.music.fadeIn(0.8);
-				FlxG.music.update();
-			}
+			onUpdateMute();
 			
 			FlxG.worldBounds.width = Main.STAGE_WIDTH + 2 * PHYSICS_BOUNDS_X_OFFSET;
 			FlxG.worldBounds.height = Main.STAGE_HEIGHT + 2 * PHYSICS_BOUNDS_Y_OFFSET;
@@ -162,10 +157,20 @@ package daydream.game {
 			child.y = FlxG.camera.bounds.bottom - 600;
 		}
 		
+		private function onUpdateMute():void {
+			if(FlxG.mute) {
+				FlxG.music.stop();
+			} else {
+				FlxG.music.fadeIn(0.8);
+				FlxG.music.update();
+			}
+		}
+		
 		public override function update():void {
 			if(FlxG.keys.justPressed("M") || FlxG.keys.justPressed("ZERO")) {
 				FlxG.mute = !FlxG.mute;
 				Save.storeBoolean(MUTE, FlxG.mute);
+				onUpdateMute();
 			}
 			
 			if(FlxG.keys.justPressed("P") || FlxG.keys.justPressed("ESCAPE")) {

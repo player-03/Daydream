@@ -181,9 +181,8 @@ package daydream.upgrades
 		
 		public function pogo_pos():void
 		{
-			if (upgradeState.getCoins() != 0 && pogo_count < POGO_MAX_UPGRADES)
+			if (pogo_count < POGO_MAX_UPGRADES && coinDown())
 			{
-				coinDown();
 				pogo_count += 1;
 			}
 		}
@@ -200,9 +199,8 @@ package daydream.upgrades
 		
 		public function horse_pos():void
 		{
-			if (upgradeState.getCoins() != 0 && horse_count < HORSE_MAX_UPGRADES)
+			if (horse_count < HORSE_MAX_UPGRADES && coinDown())
 			{
-				coinDown();
 				horse_count += 1;
 			}
 		}
@@ -219,9 +217,8 @@ package daydream.upgrades
 		
 		public function item_pos():void
 		{
-			if (upgradeState.getCoins() != 0 && item_count < ITEM_MAX_UPGRADES)
+			if (item_count < ITEM_MAX_UPGRADES && coinDown())
 			{
-				coinDown();
 				item_count += 1;
 			}
 		}
@@ -238,9 +235,8 @@ package daydream.upgrades
 		
 		public function coin_pos():void
 		{
-			if (upgradeState.getCoins() != 0 && coin_count < COIN_MAX_UPGRADES)
+			if (coin_count < COIN_MAX_UPGRADES && coinDown())
 			{
-				coinDown();
 				coin_count += 1;
 			}
 		}
@@ -257,9 +253,8 @@ package daydream.upgrades
 		
 		public function dragon_pos():void
 		{
-			if (upgradeState.getCoins() != 0 && dragon_count < DRAGON_MAX_UPGRADES)
+			if (dragon_count < DRAGON_MAX_UPGRADES && coinDown())
 			{
-				coinDown();
 				dragon_count += 1;
 			}
 		}
@@ -270,9 +265,9 @@ package daydream.upgrades
 			upgradeState.coinChange(UPGRADE_COST);
 		}
 		
-		public function coinDown():void
+		public function coinDown():Boolean
 		{
-			upgradeState.coinChange(-UPGRADE_COST);
+			return upgradeState.coinChange(-UPGRADE_COST);
 		}
 		
 	}

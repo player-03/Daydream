@@ -129,12 +129,13 @@ package daydream.upgrades
 			return dragon_count;
 		}
 		
-		public function coinChange(x:int):void
+		public function coinChange(x:int):Boolean
 		{
-			if (x == 1)
-				availableCoins += 1;
-			if (x == -1)
-				availableCoins -= 1;
+			if(availableCoins + x >= 0) {
+				availableCoins += x;
+				return true;
+			}
+			return false;
 		}
 		
 		private function onPlayClicked():void
