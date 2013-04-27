@@ -8,7 +8,8 @@ package daydream.upgrades
 	
 	public class UpgradeHandler extends FlxBasic
 	{
-		public static const UPGRADE_COST:int = 10;
+		public static const UPGRADE_BASE_COST:int = 3;
+		public static const UPGRADE_COST_PER_LEVEL:int = 2;
 		
 		private var upgradeState:UpgradesState;
 		
@@ -167,14 +168,14 @@ package daydream.upgrades
 		{
 			if (pogo_count != 0)
 			{
-				coinUp();
 				pogo_count -= 1;
+				coinUp(pogo_count);
 			}
 		}
 		
 		public function pogo_pos():void
 		{
-			if (pogo_count < POGO_MAX_UPGRADES && coinDown())
+			if (pogo_count < POGO_MAX_UPGRADES && coinDown(pogo_count))
 			{
 				pogo_count += 1;
 			}
@@ -185,14 +186,14 @@ package daydream.upgrades
 		{
 			if (horse_count != 0)
 			{
-				coinUp();
 				horse_count -= 1;
+				coinUp(horse_count);
 			}
 		}
 		
 		public function horse_pos():void
 		{
-			if (horse_count < HORSE_MAX_UPGRADES && coinDown())
+			if (horse_count < HORSE_MAX_UPGRADES && coinDown(horse_count))
 			{
 				horse_count += 1;
 			}
@@ -203,14 +204,14 @@ package daydream.upgrades
 		{
 			if (item_count != 0)
 			{
-				coinUp();
 				item_count -= 1;
+				coinUp(item_count);
 			}
 		}
 		
 		public function item_pos():void
 		{
-			if (item_count < ITEM_MAX_UPGRADES && coinDown())
+			if (item_count < ITEM_MAX_UPGRADES && coinDown(item_count))
 			{
 				item_count += 1;
 			}
@@ -221,14 +222,14 @@ package daydream.upgrades
 		{
 			if (coin_count != 0)
 			{
-				coinUp();
 				coin_count -= 1;
+				coinUp(coin_count);
 			}
 		}
 		
 		public function coin_pos():void
 		{
-			if (coin_count < COIN_MAX_UPGRADES && coinDown())
+			if (coin_count < COIN_MAX_UPGRADES && coinDown(coin_count))
 			{
 				coin_count += 1;
 			}
@@ -239,28 +240,28 @@ package daydream.upgrades
 		{
 			if (dragon_count != 0)
 			{
-				coinUp();
 				dragon_count -= 1;
+				coinUp(dragon_count);
 			}
 		}
 		
 		public function dragon_pos():void
 		{
-			if (dragon_count < DRAGON_MAX_UPGRADES && coinDown())
+			if (dragon_count < DRAGON_MAX_UPGRADES && coinDown(dragon_count))
 			{
 				dragon_count += 1;
 			}
 		}
 		
 		//Coin changing functions
-		public function coinUp():void
+		public function coinUp(upgradesRemaining:int):void
 		{
-			upgradeState.coinChange(UPGRADE_COST);
+			upgradeState.coinChange(UPGRADE_BASE_COST + upgradesRemaining * UPGRADE_COST_PER_LEVEL);
 		}
 		
-		public function coinDown():Boolean
+		public function coinDown(upgradesBoughtAlready:int):Boolean
 		{
-			return upgradeState.coinChange(-UPGRADE_COST);
+			return upgradeState.coinChange(-UPGRADE_BASE_COST - upgradesBoughtAlready * UPGRADE_COST_PER_LEVEL);
 		}
 		
 	}
